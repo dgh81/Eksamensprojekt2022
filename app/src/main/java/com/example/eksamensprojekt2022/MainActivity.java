@@ -1,16 +1,9 @@
 package com.example.eksamensprojekt2022;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.View;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,29 +14,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void test(View view) throws InterruptedException {
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         System.out.println("Klik");
 
         MySQL mysql = new MySQL();
 
         Thread t = new Thread(mysql);
-        Thread t2 = new Thread(new MySQL());
         // t.run(): kør den ene tråd først
         // t.start(): kør tråde synkront
-        //t.run();
+
         t.start();
-
-        t2.start();
-
         // join venter på threads er færdige inden resten af koden køres
         t.join();
-        t2.join();
+
         System.out.println(mysql.getConnection());
-        //final String s = mysql.userType("a@a.dk");
-        //System.out.println(mysql.userType("a@a.dk"));
-        // isAlive kører tråden?
+        System.out.println(mysql.userType("a@a.dk"));
         System.out.println(t.isAlive());
 
-        //t2.isAlive();
     }
 
 
