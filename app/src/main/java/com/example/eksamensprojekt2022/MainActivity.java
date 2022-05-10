@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         //System.out.println(t.isAlive());
 
         //Print alle questiongroups fra SQL:
-        ArrayList<String> questionGroups = mysql.getQuestionGroups();
+        ArrayList<String> questionGroups = mysql.getQuestionGroupTitles();
         for (int i = 0; i < questionGroups.size(); i++) {
             //System.out.println(questionGroups.get(i));
         }

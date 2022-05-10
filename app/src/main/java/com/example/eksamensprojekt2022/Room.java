@@ -9,9 +9,10 @@ public class Room {
     int fk_InspectionID = 0;
     String roomName = "";
 
+    //Ikke sikker på at vi skal bruge denne?
     ArrayList<QuestionGroup> questionGroups = null;
-    //TODO Husk at tilføje tabellerne (measurement)
 
+    //TODO Husk at tilføje tabellerne (measurement)
 
     public Room(int roomID, Inspection inspection, int fk_InspectionID, String roomName, ArrayList<QuestionGroup> questionGroups) {
         this.roomID = roomID;

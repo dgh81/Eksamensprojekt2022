@@ -52,7 +52,7 @@ public class MySQL implements Runnable {
         return result;
     }
 
-    public ArrayList<String> getQuestionGroups() {
+    public ArrayList<String> getQuestionGroupTitles() {
         ArrayList<String> questionGroups = new ArrayList<>();
 
         try {
@@ -92,11 +92,11 @@ public class MySQL implements Runnable {
             PreparedStatement userType = connection.
                     prepareStatement("SELECT * FROM" +
                             " (Question INNER JOIN QuestionGroup ON Question.fk_questionGroup = QuestionGroup.Id)" +
-                            " INNER JOIN Answer ON Question.answer = Answer.Id WHERE (((QuestionGroup.title)='" + title + "'));");
+                            " WHERE QuestionGroup.title='" + title + "';");
             ResultSet rs = userType.executeQuery();
             while (rs.next()) {
                 Question q = new Question();
-                q.setAnswerText(rs.getString("answerText"));
+                //q.setAnswerText(rs.getString("answerText"));
                 q.setQuestion(rs.getString("question"));
                 questions.add(q);
             }
