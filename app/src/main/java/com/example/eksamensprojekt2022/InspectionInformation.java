@@ -6,6 +6,7 @@ public class InspectionInformation {
 
     String installationName = "";
     String inspectorName = "";
+    //Overvej at skifte navn til inspectionDate!
     LocalDate date = null;
 
     public InspectionInformation(String installationName, String inspectorName, LocalDate date) {
