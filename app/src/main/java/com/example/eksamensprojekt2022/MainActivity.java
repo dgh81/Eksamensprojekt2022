@@ -1,16 +1,24 @@
 package com.example.eksamensprojekt2022;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
     }
 
     public void test(View view) throws InterruptedException {
@@ -35,6 +43,18 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(t.isAlive());
 
     }
+
+    public void goToDocument(View view) {
+
+        Intent intent = new Intent(this, documentActivity.class);
+        startActivity(intent);
+    }
+
+
+
+
+
+
 
 
     /*class Task extends AsyncTask<Void, Void, Void>{
