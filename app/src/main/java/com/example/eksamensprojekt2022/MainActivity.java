@@ -15,13 +15,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void test(View view) throws InterruptedException {
 
+        //Flyt til onCreate?
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         System.out.println("Klik");
 
         MySQL mysql = new MySQL();
-
         Thread t = new Thread(mysql);
         // t.run(): kør den ene tråd først
         // t.start(): kør tråde synkront
