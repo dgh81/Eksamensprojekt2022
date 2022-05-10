@@ -9,13 +9,11 @@ public class ProjectInformation {
     String customerCity = "";
     String installationIdentification = "";
     String installationName = "";
-
-    // ensret store / små bogstaver - husk at ændre i SQL queries hvis ja.
-    int fk_UserID = 0;
-    int fk_RoomID = 0;
+    int fk_userID = 0;
+    int fk_roomID = 0;
     int fk_questionGroup = 0;
 
-    public ProjectInformation(int projectInformationID, String customerName, String customerAddress, String customerPostalCode, String customerCity, String installationIdentification, String installationName, int fk_UserID, int fk_RoomID, int fk_questionGroup) {
+    public ProjectInformation(int projectInformationID, String customerName, String customerAddress, String customerPostalCode, String customerCity, String installationIdentification, String installationName, int fk_userID, int fk_roomID, int fk_questionGroup) {
         this.projectInformationID = projectInformationID;
         this.customerName = customerName;
         this.customerAddress = customerAddress;
@@ -23,8 +21,8 @@ public class ProjectInformation {
         this.customerCity = customerCity;
         this.installationIdentification = installationIdentification;
         this.installationName = installationName;
-        this.fk_UserID = fk_UserID;
-        this.fk_RoomID = fk_RoomID;
+        this.fk_userID = fk_userID;
+        this.fk_roomID = fk_roomID;
         this.fk_questionGroup = fk_questionGroup;
     }
 
@@ -84,20 +82,20 @@ public class ProjectInformation {
         this.installationName = installationName;
     }
 
-    public int getFk_UserID() {
-        return fk_UserID;
+    public int getFk_userID() {
+        return fk_userID;
     }
 
-    public void setFk_UserID(int fk_UserID) {
-        this.fk_UserID = fk_UserID;
+    public void setFk_userID(int fk_userID) {
+        this.fk_userID = fk_userID;
     }
 
-    public int getFk_RoomID() {
-        return fk_RoomID;
+    public int getFk_roomID() {
+        return fk_roomID;
     }
 
-    public void setFk_RoomID(int fk_RoomID) {
-        this.fk_RoomID = fk_RoomID;
+    public void setFk_roomID(int fk_roomID) {
+        this.fk_roomID = fk_roomID;
     }
 
     public int getFk_questionGroup() {

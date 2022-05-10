@@ -7,8 +7,8 @@ public class QuestionGroup {
     int questionGroupID = 0;
     String title = "";
 
+    //måske vi ikke får brug for denne:
     ArrayList<Question> questions;
-
 
     public QuestionGroup(int questionGroupID, String title, ArrayList<Question> questions) {
         this.questionGroupID = questionGroupID;

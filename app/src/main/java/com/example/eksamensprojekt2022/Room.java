@@ -9,7 +9,7 @@ public class Room {
 
     //TODO Husk at tilføje tabellerne (measurement)
 
-    public Room(int roomID, String roomName, ArrayList<QuestionGroup> questionGroups) {
+    public Room(int roomID, String roomName) {
         this.roomID = roomID;
         this.roomName = roomName;
     }
@@ -21,9 +21,7 @@ public class Room {
         return roomID;
     }
 
-    public void setRoomID(int roomID) {
-        this.roomID = roomID;
-    }
+    public void setRoomID(int roomID) { this.roomID = roomID; }
 
     public String getRoomName() {
         return roomName;

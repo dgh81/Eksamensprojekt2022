@@ -8,7 +8,6 @@ public class MySQL implements Runnable {
     public MySQL() {
     }
 
-    // public static?
     public Connection connection;
 
     public Connection getConnection() {
@@ -68,24 +67,6 @@ public class MySQL implements Runnable {
         return questionGroups;
     }
 
-/*    public ArrayList<String> getQuestionsFromGroupTitle(String title) {
-        ArrayList<String> questions = new ArrayList<>();
-
-        try {
-            PreparedStatement userType = connection.
-                    prepareStatement("SELECT * FROM" +
-                            " (Question INNER JOIN QuestionGroup ON Question.fk_questionGroup = QuestionGroup.Id)" +
-                            " INNER JOIN Answer ON Question.answer = Answer.Id WHERE (((QuestionGroup.title)='" + title + "'));");
-            ResultSet rs = userType.executeQuery();
-            while (rs.next()) {
-                questions.add(rs.getString("question"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return questions;
-    }*/
-
     public ArrayList<Question> getQuestionsFromGroupTitle(String title) {
         ArrayList<Question> questions = new ArrayList<>();
         try {
@@ -105,4 +86,24 @@ public class MySQL implements Runnable {
         }
         return questions;
     }
+
+    public void getAnswerInfo() {
+        try {
+            PreparedStatement userType = connection.
+                    prepareStatement("SELECT ProjectInformation.installationIdentification, ProjectInformation.installationName, InspectionInformation.inspectorName, InspectionInformation.inspectionDate, Room.RoomName, QuestionGroup.title, Question.question, Answer.answerText\n" +
+                            "        FROM (Answer INNER JOIN ((Question INNER JOIN (Room INNER JOIN Inspection ON Room.Id = Inspection.fk_roomID) ON Question.Id = Inspection.fk_questionID) INNER JOIN QuestionGroup ON Question.fk_questionGroup = QuestionGroup.Id) ON Answer.Id = Inspection.fk_answerID) INNER JOIN (InspectionInformation INNER JOIN ProjectInformation ON InspectionInformation.fk_projectID = ProjectInformation.Id) ON Inspection.fk_inspectionInformationID = InspectionInformation.Id;");
+            ResultSet rs = userType.executeQuery();
+            while (rs.next()) {
+                System.out.println(rs.getString("roomName"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
 }
+
+

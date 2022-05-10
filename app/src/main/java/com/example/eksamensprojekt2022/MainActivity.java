@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println(questions2.get(j).getQuestion());
             }
         }
+
+        mysql.getAnswerInfo();
     }
 
 
