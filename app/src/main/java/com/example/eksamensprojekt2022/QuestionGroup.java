@@ -3,8 +3,10 @@ package com.example.eksamensprojekt2022;
 import java.util.ArrayList;
 
 public class QuestionGroup {
+
     int questionGroupID = 0;
     String title = "";
+
     ArrayList<Question> questions;
 
 

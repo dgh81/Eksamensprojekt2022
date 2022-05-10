@@ -52,7 +52,7 @@ public class MySQL implements Runnable {
         return result;
     }
 
-    public ArrayList<String> getQuestionGroupTitles() {
+    public ArrayList<String> getQuestionGroups() {
         ArrayList<String> questionGroups = new ArrayList<>();
 
         try {
@@ -91,8 +91,8 @@ public class MySQL implements Runnable {
         try {
             PreparedStatement userType = connection.
                     prepareStatement("SELECT * FROM" +
-                            " (Question INNER JOIN QuestionGroup ON Question.fk_questionGroup = QuestionGroup.Id)" +
-                            " WHERE QuestionGroup.title='" + title + "';");
+                            " Question INNER JOIN QuestionGroup ON Question.fk_questionGroup = QuestionGroup.Id" +
+                            "  WHERE QuestionGroup.title='" + title + "';");
             ResultSet rs = userType.executeQuery();
             while (rs.next()) {
                 Question q = new Question();
