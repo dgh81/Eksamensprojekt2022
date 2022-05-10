@@ -8,6 +8,8 @@ public class Document {
     private ArrayList<Inspection> inspections;
     private ArrayList<Room> rooms;
 
+    //
+
 
 
     private static Document documentInstance = null;
