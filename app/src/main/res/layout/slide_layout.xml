@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/questionText"
+        android:layout_width="match_parent"
+        android:layout_height="275dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp"
+        android:autoSizeMaxTextSize="30dp"
+        android:autoSizeTextType="uniform"
+        android:fontFamily="sans-serif-light"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="This is a long text to  simulate a long text to see how it will handle a long text and if there should be a limit to how long the text can be i guess this is long enough for all? Or the text should just get smaller as the question gets larger it does good  "
+        android:textAlignment="center" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/questionText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="75dp"
+        android:id="@+id/yesAndNo">
+
+
+        <Button
+            android:id="@+id/yesButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="75dp"
+            android:onClick="yesButtonClick"
+            android:text="Ja"
+            android:textStyle="bold"
+
+
+
+            app:strokeColor="#988C8C"
+            app:strokeWidth="2dp" />
+
+        <Button
+            android:id="@+id/noButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:text="Nej"
+            app:strokeColor="#988C8C"
+            app:strokeWidth="2dp"
+            android:layout_toRightOf="@+id/yesButton"/>
+
+    </RelativeLayout>
+
+
+    <Button
+        android:id="@+id/notSureButton"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:text="Ikke sikker"
+        app:strokeColor="#988C8C"
+        app:strokeWidth="2dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/yesAndNo"
+        android:layout_marginTop="15dp"
+        />
+
+
+
+
+
+
+
+
+
+</RelativeLayout>
