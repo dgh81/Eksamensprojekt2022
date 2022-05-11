@@ -4,26 +4,27 @@ import java.time.LocalDate;
 
 public class InspectionInformation {
 
-    String installationName = "";
+    int inspectorInformationID = 0;
     String inspectorName = "";
-    //Overvej at skifte navn til inspectionDate!
-    LocalDate date = null;
+    LocalDate inspectionDate = null;
+    int fk_projectID = 0;
 
-    public InspectionInformation(String installationName, String inspectorName, LocalDate date) {
-        this.installationName = installationName;
+    public InspectionInformation(int inspectorInformationID, String inspectorName, LocalDate inspectionDate, int fk_projectID) {
+        this.inspectorInformationID = inspectorInformationID;
         this.inspectorName = inspectorName;
-        this.date = date;
+        this.inspectionDate = inspectionDate;
+        this.fk_projectID = fk_projectID;
     }
 
     public InspectionInformation() {
     }
 
-    public String getInstallationName() {
-        return installationName;
+    public int getInspectorInformationID() {
+        return inspectorInformationID;
     }
 
-    public void setInstallationName(String installationName) {
-        this.installationName = installationName;
+    public void setInspectorInformationID(int inspectorInformationID) {
+        this.inspectorInformationID = inspectorInformationID;
     }
 
     public String getInspectorName() {
@@ -34,11 +35,19 @@ public class InspectionInformation {
         this.inspectorName = inspectorName;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getInspectionDate() {
+        return inspectionDate;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setInspectionDate(LocalDate inspectionDate) {
+        this.inspectionDate = inspectionDate;
+    }
+
+    public int getFk_projectID() {
+        return fk_projectID;
+    }
+
+    public void setFk_projectID(int fk_projectID) {
+        this.fk_projectID = fk_projectID;
     }
 }

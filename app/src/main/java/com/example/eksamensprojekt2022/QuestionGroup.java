@@ -3,10 +3,12 @@ package com.example.eksamensprojekt2022;
 import java.util.ArrayList;
 
 public class QuestionGroup {
+
     int questionGroupID = 0;
     String title = "";
-    ArrayList<Question> questions;
 
+    //måske vi ikke får brug for denne:
+    ArrayList<Question> questions;
 
     public QuestionGroup(int questionGroupID, String title, ArrayList<Question> questions) {
         this.questionGroupID = questionGroupID;

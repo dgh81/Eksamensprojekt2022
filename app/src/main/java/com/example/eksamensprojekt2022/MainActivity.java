@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         //System.out.println(t.isAlive());
 
         //Print alle questiongroups fra SQL:
-        ArrayList<String> questionGroups = mysql.getQuestionGroupTitles();
+        ArrayList<String> questionGroups = mysql.getQuestionGroups();
         for (int i = 0; i < questionGroups.size(); i++) {
             //System.out.println(questionGroups.get(i));
         }
@@ -71,9 +71,11 @@ public class MainActivity extends AppCompatActivity {
             System.out.println(questionGroups.get(i) + ":");
             ArrayList<Question> questions2 = mysql.getQuestionsFromGroupTitle(questionGroups.get(i));
             for (int j = 0; j < questions2.size(); j++) {
-                System.out.println(questions2.get(j).getQuestion() + " - " + questions2.get(j).getAnswerText());
+                System.out.println(questions2.get(j).getQuestion());
             }
         }
+
+        mysql.getAnswerInfo();
     }
 
     public void goToDocument(View view) {
