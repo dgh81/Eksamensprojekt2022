@@ -2,74 +2,21 @@ package com.example.eksamensprojekt2022;
 
 public class Inspection {
 
-    String customerName = "";
-    String customerAddress = "";
-    String customerPostalCode = "";
-    String customerCity = "";
-    String installationIdentification = "";
     int inspectionID = 0;
+    int fk_questionID = 0;
+    int fk_answerID = 0;
+    int fk_roomID = 0;
+    int fk_inspectionInformationID = 0;
 
-    // Måske denne skal laves alligevel? (customerOrderNumber)
-    // customerOrderNumber kommer jo ikke til at være det samme som ID i databasen...
-
-    // ensret store / små bogstaver - husk at ændre i SQL queries hvis ja.
-    int fk_UserID = 0;
-    int fk_RoomID = 0;
-    int fk_questionGroup = 0;
-
-    public Inspection(String customerName, String customerAddress, String customerPostalCode, String customerCity, String installationIdentification, int inspectionID, int fk_UserID, int fk_RoomID, int fk_questionGroup) {
-        this.customerName = customerName;
-        this.customerAddress = customerAddress;
-        this.customerPostalCode = customerPostalCode;
-        this.customerCity = customerCity;
-        this.installationIdentification = installationIdentification;
+    public Inspection(int inspectionID, int fk_questionID, int fk_answerID, int fk_roomID, int fk_inspectionInformationID) {
         this.inspectionID = inspectionID;
-        this.fk_UserID = fk_UserID;
-        this.fk_RoomID = fk_RoomID;
-        this.fk_questionGroup = fk_questionGroup;
+        this.fk_questionID = fk_questionID;
+        this.fk_answerID = fk_answerID;
+        this.fk_roomID = fk_roomID;
+        this.fk_inspectionInformationID = fk_inspectionInformationID;
     }
 
     public Inspection() {
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public String getCustomerAddress() {
-        return customerAddress;
-    }
-
-    public void setCustomerAddress(String customerAddress) {
-        this.customerAddress = customerAddress;
-    }
-
-    public String getCustomerPostalCode() {
-        return customerPostalCode;
-    }
-
-    public void setCustomerPostalCode(String customerPostalCode) {
-        this.customerPostalCode = customerPostalCode;
-    }
-
-    public String getCustomerCity() {
-        return customerCity;
-    }
-
-    public void setCustomerCity(String customerCity) {
-        this.customerCity = customerCity;
-    }
-
-    public String getInstallationIdentification() {
-        return installationIdentification;
-    }
-
-    public void setInstallationIdentification(String installationIdentification) {
-        this.installationIdentification = installationIdentification;
     }
 
     public int getInspectionID() {
@@ -80,27 +27,35 @@ public class Inspection {
         this.inspectionID = inspectionID;
     }
 
-    public int getFk_UserID() {
-        return fk_UserID;
+    public int getFk_questionID() {
+        return fk_questionID;
     }
 
-    public void setFk_UserID(int fk_UserID) {
-        this.fk_UserID = fk_UserID;
+    public void setFk_questionID(int fk_questionID) {
+        this.fk_questionID = fk_questionID;
     }
 
-    public int getFk_RoomID() {
-        return fk_RoomID;
+    public int getFk_answerID() {
+        return fk_answerID;
     }
 
-    public void setFk_RoomID(int fk_RoomID) {
-        this.fk_RoomID = fk_RoomID;
+    public void setFk_answerID(int fk_answerID) {
+        this.fk_answerID = fk_answerID;
     }
 
-    public int getFk_questionGroup() {
-        return fk_questionGroup;
+    public int getFk_roomID() {
+        return fk_roomID;
     }
 
-    public void setFk_questionGroup(int fk_questionGroup) {
-        this.fk_questionGroup = fk_questionGroup;
+    public void setFk_roomID(int fk_roomID) {
+        this.fk_roomID = fk_roomID;
+    }
+
+    public int getFk_inspectionInformationID() {
+        return fk_inspectionInformationID;
+    }
+
+    public void setFk_inspectionInformationID(int fk_inspectionInformationID) {
+        this.fk_inspectionInformationID = fk_inspectionInformationID;
     }
 }
