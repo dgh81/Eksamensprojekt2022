@@ -8,6 +8,8 @@ import android.os.StrictMode;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
 
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     public void test(View view) throws InterruptedException {
 
         //Flyt til onCreate?
+        //Research hvad der foregår her. Vi bliver måske spurgt ;)
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -38,10 +41,39 @@ public class MainActivity extends AppCompatActivity {
         // join venter på threads er færdige inden resten af koden køres
         t.join();
 
-        System.out.println(mysql.getConnection());
+        //System.out.println(mysql.getConnection());
         System.out.println(mysql.userType("a@a.dk"));
-        System.out.println(t.isAlive());
+        //System.out.println(t.isAlive());
 
+        //Print alle questiongroups fra SQL:
+        ArrayList<String> questionGroups = mysql.getQuestionGroupTitles();
+        for (int i = 0; i < questionGroups.size(); i++) {
+            //System.out.println(questionGroups.get(i));
+        }
+
+        /*//Print alle questions i en valgt questionGroup
+        ArrayList<String> questions = mysql.getQuestionsFromGroupTitle("Installation");
+        for (int i = 0; i < questions.size(); i++) {
+            //System.out.println(questions.get(i));
+        }
+
+        //Print alle questiongroups og deres tilhørende questions
+        for (int i = 0; i < questionGroups.size(); i++) {
+            System.out.println(questionGroups.get(i) + ":");
+            ArrayList<String> questions2 = mysql.getQuestionsFromGroupTitle(questionGroups.get(i));
+            for (int j = 0; j < questions2.size(); j++) {
+                System.out.println(questions2.get(j));
+            }
+        }*/
+
+        //Print alle questiongroups og deres tilhørende questions 2
+        for (int i = 0; i < questionGroups.size(); i++) {
+            System.out.println(questionGroups.get(i) + ":");
+            ArrayList<Question> questions2 = mysql.getQuestionsFromGroupTitle(questionGroups.get(i));
+            for (int j = 0; j < questions2.size(); j++) {
+                System.out.println(questions2.get(j).getQuestion() + " - " + questions2.get(j).getAnswerText());
+            }
+        }
     }
 
     public void goToDocument(View view) {

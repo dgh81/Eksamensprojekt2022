@@ -7,8 +7,12 @@ public class Inspection {
     String customerPostalCode = "";
     String customerCity = "";
     String installationIdentification = "";
-    int inspectionID = 0; // (customerOrderNumber)
+    int inspectionID = 0;
 
+    // Måske denne skal laves alligevel? (customerOrderNumber)
+    // customerOrderNumber kommer jo ikke til at være det samme som ID i databasen...
+
+    // ensret store / små bogstaver - husk at ændre i SQL queries hvis ja.
     int fk_UserID = 0;
     int fk_RoomID = 0;
     int fk_questionGroup = 0;

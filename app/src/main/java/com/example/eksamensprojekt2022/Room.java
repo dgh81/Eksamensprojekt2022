@@ -5,14 +5,19 @@ import java.util.ArrayList;
 public class Room {
     int roomID = 0;
     public Inspection inspection = null;
+    //DGH tilføjet fk:
+    int fk_InspectionID = 0;
     String roomName = "";
+
+    //Ikke sikker på at vi skal bruge denne?
     ArrayList<QuestionGroup> questionGroups = null;
+
     //TODO Husk at tilføje tabellerne (measurement)
 
-
-    public Room(int roomID, Inspection inspection, String roomName, ArrayList<QuestionGroup> questionGroups) {
+    public Room(int roomID, Inspection inspection, int fk_InspectionID, String roomName, ArrayList<QuestionGroup> questionGroups) {
         this.roomID = roomID;
         this.inspection = inspection;
+        this.fk_InspectionID = fk_InspectionID;
         this.roomName = roomName;
         this.questionGroups = questionGroups;
     }
@@ -34,6 +39,14 @@ public class Room {
 
     public void setInspection(Inspection inspection) {
         this.inspection = inspection;
+    }
+
+    public int getFk_InspectionID() {
+        return fk_InspectionID;
+    }
+
+    public void setFk_InspectionID(int fk_InspectionID) {
+        this.fk_InspectionID = fk_InspectionID;
     }
 
     public String getRoomName() {
