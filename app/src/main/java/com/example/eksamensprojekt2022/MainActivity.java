@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -41,15 +42,19 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView imageView;
     Button btOpen;
+    Button idBtnGeneratePDF;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         //Test Camera
         imageView = findViewById(R.id.imageView);
         btOpen = findViewById(R.id.btnCamera);
+        idBtnGeneratePDF = findViewById(R.id.idBtnGeneratePDF);
 
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             {
@@ -60,6 +65,19 @@ public class MainActivity extends AppCompatActivity {
                         100);
             }
         }
+        idBtnGeneratePDF.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    CreatePDF pdf = new CreatePDF();
+                    pdf.createPdf(MainActivity.this);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         btOpen.setOnClickListener(new View.OnClickListener() {
             @Override
