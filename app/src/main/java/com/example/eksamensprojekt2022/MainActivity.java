@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        julieTest();
 
         //Test Camera
         imageView = findViewById(R.id.imageView);
@@ -88,6 +88,23 @@ public class MainActivity extends AppCompatActivity {
         });
         //Test FTP
         //ftpclient = new MyFTPClientFunctions();
+    }
+
+    public void julieTest() {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        System.out.println("Klik");
+
+        MySQL mysql = new MySQL();
+        Thread mysqlConnection = new Thread(mysql);
+        mysqlConnection.run();
+        try {
+            mysqlConnection.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        User loggedInUser = mysql.logUserIn("Julie", "123");
     }
 
     @Override

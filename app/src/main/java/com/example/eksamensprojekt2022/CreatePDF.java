@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
+import android.preference.PreferenceActivity;
 import android.view.View;
 import android.widget.Toast;
 
@@ -13,8 +14,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.events.Event;
+import com.itextpdf.kernel.events.IEventHandler;
+import com.itextpdf.kernel.events.PdfDocumentEvent;
+import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.CanvasArtifact;
+import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
+import com.itextpdf.layout.Canvas;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.AreaBreak;
@@ -37,81 +46,78 @@ import java.util.Random;
 public class CreatePDF extends AppCompatActivity {
     ArrayList<Integer> answers;
     int index = 0;
+    int questionGroupIndex = 0;
     Context context;
+    MySQL mysql = new MySQL();
+    int orderID;
+
 
     public void createPdf(Context context) throws IOException {
         this.context = context;
+        orderID = 2;
         answers = answersInList();
-        Table personalInfo = createTablePersonalInfo();
+        ProjectInformation projectInfo = mysql.projectInfo(orderID);
+        InspectionInformation inspectionInfo = mysql.inspectionInfo(orderID);
+
+        Table personalInfo = createTablePersonalInfo(projectInfo, inspectionInfo);
         Table questions = createTableQuestions();
         Table questionsPage2 = createTableQuestions();
 
         String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
-        File file = new File(pdfPath, "myPDF1.pdf");
+        File file = new File(pdfPath, projectInfo.getCustomerAddress() + " - " + projectInfo.getCustomerCity() + ".pdf");
         OutputStream outputstream = new FileOutputStream(file);
 
         PdfWriter writer = new PdfWriter(file);
         PdfDocument pdfDocument = new PdfDocument(writer);
         Document document = new Document(pdfDocument);
 
+        /*PdfPage page = pdfDocument.addNewPage();
+        PdfCanvas pdfCanvas = new PdfCanvas(page);
+
+        Rectangle rectangle = new Rectangle(0, 0, 100, 100);
+
+        com.itextpdf.layout.Canvas canvas = new Canvas(pdfCanvas, pdfDocument, rectangle);
+        canvas.add(createHeader(1));
+
+        canvas.close();*/
+
+        /*pdfDocument.addEventHandler(PdfDocumentEvent.START_PAGE, new IEventHandler() {
+            @Override
+            public void handleEvent(Event event) {
+                createHeader(1);
+            }
+        });*/
+
         document.add(createHeader(1));
         document.add(new Paragraph("Elinstallation - Vertifikation af mindre elinstallation").setFontSize(18f).setPaddingTop(5f));
 
         document.add(personalInfo);
 
-        ArrayList<String> questionsGenerelt = questionGroup1();
-        ArrayList<String> questionsTavlen = questionGroup2();
-        ArrayList<String> questionsInstallation = questionGroup3();
-        ArrayList<String> questionsIndbygningsarmaturer = questionGroup4();
-        ArrayList<String> questionsBeskyttelsesledere = questionGroup5();
-        ArrayList<String> questionsFejlbeskyttelse = questionGroup6();
 
-        questions.addCell(new Cell(2, 1).add(new Paragraph("")).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
-        questions.addCell(new Cell(2, 1).add(new Paragraph("Ja")).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
-        questions.addCell(new Cell(2, 1).add(new Paragraph("Nej")).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
-        questions.addCell(new Cell(2, 1).add(new Paragraph("Ikke relevant")).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
-        questions.addCell(new Cell(1, 4).add(new Paragraph("1. Generelt:").setBold()).setBorder(Border.NO_BORDER));
 
-        for (int i = 0; i < questionsGenerelt.size(); i++) {
-            questions.addCell(new Cell().add(new Paragraph(questionsGenerelt.get(i))).setBorder(Border.NO_BORDER));
-            createCheckbox(answers.get(index), questions);
-        }
+        ArrayList<String> questionsGenerelt = mysql.getQuestionsFromGroup(1);
+        ArrayList<String> questionsTavlen = mysql.getQuestionsFromGroup(2);
+        ArrayList<String> questionsInstallation = mysql.getQuestionsFromGroup(3);
+        ArrayList<String> questionsIndbygningsarmaturer = mysql.getQuestionsFromGroup(4);
+        ArrayList<String> questionsBeskyttelsesledere = mysql.getQuestionsFromGroup(5);
+        ArrayList<String> questionsFejlbeskyttelse = mysql.getQuestionsFromGroup(6);
+        ArrayList<QuestionGroup> questionGroupTitle = mysql.getQuestionGroupTitle();
 
-        questions.addCell(new Cell(1, 4).add(new Paragraph("\n2. Tavlen:").setBold()).setBorder(Border.NO_BORDER));
-        for (int i = 0; i < questionsTavlen.size(); i++) {
-            questions.addCell(new Cell().add(new Paragraph(questionsTavlen.get(i))).setBorder(Border.NO_BORDER));
-            createCheckbox(answers.get(index), questions);
-        }
+        answerOptions(questions);
+
+        createQuestions(questions, questionGroupTitle, questionsGenerelt);
+        createQuestions(questions, questionGroupTitle, questionsTavlen);
 
         document.add(questions);
 
         document.add(new AreaBreak());
         document.add(createHeader(2));
+        answerOptions(questionsPage2);
 
-
-        questionsPage2.addCell(new Cell(1, 4).add(new Paragraph("\n3. Installation:").setBold()).setBorder(Border.NO_BORDER));
-        for (int i = 0; i < questionsInstallation.size(); i++) {
-            questionsPage2.addCell(new Cell().add(new Paragraph(questionsInstallation.get(i))).setBorder(Border.NO_BORDER));
-            createCheckbox(answers.get(index), questionsPage2);
-        }
-
-        questionsPage2.addCell(new Cell(1, 4).add(new Paragraph("\n4. Indbygningsarmaturer:").setBold()).setBorder(Border.NO_BORDER));
-        for (int i = 0; i < questionsIndbygningsarmaturer.size(); i++) {
-            questionsPage2.addCell(new Cell().add(new Paragraph(questionsIndbygningsarmaturer.get(i))).setBorder(Border.NO_BORDER));
-            createCheckbox(answers.get(index), questionsPage2);
-        }
-
-        questionsPage2.addCell(new Cell(1, 4).add(new Paragraph("\n5. Beskyttelsesledere og udligningsforbindelser:").setBold()).setBorder(Border.NO_BORDER));
-        for (int i = 0; i < questionsBeskyttelsesledere.size(); i++) {
-            questionsPage2.addCell(new Cell().add(new Paragraph(questionsBeskyttelsesledere.get(i))).setBorder(Border.NO_BORDER));
-            createCheckbox(answers.get(index), questionsPage2);
-        }
-
-        questionsPage2.addCell(new Cell(1, 4).add(new Paragraph("\n6. Fejlbeskyttelse/supplerende beskyttelse:\n").setBold()).setBorder(Border.NO_BORDER));
-        for (int i = 0; i < questionsFejlbeskyttelse.size(); i++) {
-            questionsPage2.addCell(new Cell().add(new Paragraph(questionsFejlbeskyttelse.get(i))).setBorder(Border.NO_BORDER));
-            createCheckbox(answers.get(index), questionsPage2);
-        }
+        createQuestions(questionsPage2, questionGroupTitle, questionsInstallation);
+        createQuestions(questionsPage2, questionGroupTitle, questionsIndbygningsarmaturer);
+        createQuestions(questionsPage2, questionGroupTitle, questionsBeskyttelsesledere);
+        createQuestions(questionsPage2, questionGroupTitle, questionsFejlbeskyttelse);
 
         document.add(questionsPage2);
 
@@ -126,6 +132,30 @@ public class CreatePDF extends AppCompatActivity {
 
         document.close();
         Toast.makeText(context, "Pdf Created", Toast.LENGTH_LONG).show();
+    }
+
+
+    public String getQuestionGroupTitle(ArrayList<QuestionGroup> group) {
+        String result = group.get(questionGroupIndex).getQuestionGroupID() + ". " + group.get(questionGroupIndex).getTitle() + ":";
+        questionGroupIndex++;
+        return result;
+    }
+
+    public void answerOptions(Table table) {
+        table.addCell(new Cell(2, 1).add(new Paragraph("")).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
+        table.addCell(new Cell(2, 1).add(new Paragraph("Ja")).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
+        table.addCell(new Cell(2, 1).add(new Paragraph("Nej")).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
+        table.addCell(new Cell(2, 1).add(new Paragraph("Ikke relevant")).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
+
+    }
+
+    public void createQuestions(Table table, ArrayList<QuestionGroup> groupTitle, ArrayList<String> questions) {
+        table.addCell(new Cell(1, 4).add(new Paragraph(getQuestionGroupTitle(groupTitle)).setBold()).setBorder(Border.NO_BORDER));
+        for (int i = 0; i < questions.size(); i++) {
+            table.addCell(new Cell().add(new Paragraph(questions.get(i))).setBorder(Border.NO_BORDER));
+            createCheckbox(answers.get(index), table);
+        }
+        table.addCell(new Cell(1, 4).setBorder(Border.NO_BORDER));
     }
 
     public Table createHeader(int page) {
@@ -210,81 +240,6 @@ public class CreatePDF extends AppCompatActivity {
         index++;
     }
 
-    public ArrayList<String> questionGroup1() {
-        ArrayList<String> questionsGenerelt = new ArrayList<>();
-        questionsGenerelt.add("Er der taget hensyn til ydre påvirkninger og anvendt korrekt kapslingsklasse?");
-        questionsGenerelt.add("Er der brandtætnet ved gennemføringer?");
-        questionsGenerelt.add("Er installationen isolationsprøvet?");
-        questionsGenerelt.add("Er der foretaget polaritetsprøve og kontrol af fasefølgen?");
-        questionsGenerelt.add("Er der foretaget funktionsprøver af installationen?");
-        questionsGenerelt.add("Er nul- og beskyttelsesledere korrekt identificeret?");
-        questionsGenerelt.add("Er ledere korrekt overstrømsbeskyttet og valgt efter strømværdi?");
-        questionsGenerelt.add("Er SPD’er (overspændingsbeskyttelsesudstyr) korrekt valgt og installeret?");
-        questionsGenerelt.add("Er permanent tilsluttede brugsgenstande egnet til den pågældende anvendelse?");
-        questionsGenerelt.add("Er nødvendig dokumentation til stede?");
-        questionsGenerelt.add("Er spændingsfald kontrolleret?");
-        questionsGenerelt.add("Er der foretaget foranstaltninger mod elektromagnetiske påvirkninger?");
-        questionsGenerelt.add("Er ejer/bruger informeret om funktion og betjening?");
-
-        return questionsGenerelt;
-    }
-
-    public ArrayList<String> questionGroup2() {
-        ArrayList<String> questionsTavlen = new ArrayList<>();
-        questionsTavlen.add("Er der tilstrækkelig plads til at arbejde på/adgang til tavlen?");
-        questionsTavlen.add("Er overstrømsbeskyttelsesudstyr korrekt valgt og evt. indstillet?");
-        questionsTavlen.add("Er der en entydig mærkning af beskyttelsesudstyr med tilhørsforhold?");
-        questionsTavlen.add("Er der mærkning om max. mærke-/indstillingsstrøm?");
-        questionsTavlen.add("Er mærkning med oplysninger om tekniske data for tavlen foretaget?");
-        questionsTavlen.add("Er udgående beskyttelsesledere anbragt i separate klemmer i tavlen?");
-        questionsTavlen.add("Er afdækning og dækplader monteret?");
-        questionsTavlen.add("Er indføringer tilpasset/tætnet, så tavlens kapslingsklasse er som mærket?");
-
-        return questionsTavlen;
-    }
-
-    public ArrayList<String> questionGroup3() {
-        ArrayList<String> questionsInstallation = new ArrayList<>();
-        questionsInstallation.add("Er udstyr til adskillelse og afbrydelse korrekt valgt, placeret og installeret?");
-        questionsInstallation.add("Er stikkontakter og udtag m.m. installeret i henhold til gældende bestemmelser?");
-        questionsInstallation.add("Er kabler/ledninger korrekt oplagt, afsluttet og forbundet?");
-        questionsInstallation.add("Er kabler beskyttet mod mekanisk overlast ved opføringer fra gulv/jord?");
-        questionsInstallation.add("Er tilledninger aflastet for træk og vridning ved tilslutning til installationen?");
-        questionsInstallation.add("Er alle dæksler og afdækninger monteret, så der ikke er berøringsfare?");
-        questionsInstallation.add("Er alle samlinger let tilgængelige?");
-
-        return questionsInstallation;
-    }
-
-    public ArrayList<String> questionGroup4() {
-        ArrayList<String> questionsIndbygningsarmaturer = new ArrayList<>();
-        questionsIndbygningsarmaturer.add("Er indbygningsarmaturer korrekt valgt og monteret?");
-        questionsIndbygningsarmaturer.add("Er indbygningsarmaturer installeret således, at overophedning undgås?");
-
-        return questionsIndbygningsarmaturer;
-    }
-
-    public ArrayList<String> questionGroup5() {
-        ArrayList<String> questionsBeskyttelsesledere = new ArrayList<>();
-        questionsBeskyttelsesledere.add("Er jordingslederen korrekt valgt (minimum 6 mm\u00B2)?");
-        questionsBeskyttelsesledere.add("Er der etableret beskyttende potentialudligning?");
-        questionsBeskyttelsesledere.add("Er supplerende beskyttende potentialudligning etableret?");
-        questionsBeskyttelsesledere.add("Er den gennemgående forbindelse i udligningsforbindelser kontrolleret?");
-        questionsBeskyttelsesledere.add("Er den gennemgående forbindelse i beskyttelsesledere kontrolleret?");
-        questionsBeskyttelsesledere.add("Er overgangsmodstand for jordelektroden kontrolleret?");
-
-        return questionsBeskyttelsesledere;
-    }
-
-    public ArrayList<String> questionGroup6() {
-        ArrayList<String> questionsFejlbeskyttelse = new ArrayList<>();
-        questionsFejlbeskyttelse.add("Er beskyttelsesmetode korrekt valgt i forhold til installationstype og systemjording?");
-        questionsFejlbeskyttelse.add("Er RCD’er (fejlstrømsafbrydere) kontrolleret og afprøvet?");
-        questionsFejlbeskyttelse.add("Er klasse I brugsgenstande tilsluttet til beskyttelseslederen?");
-
-        return questionsFejlbeskyttelse;
-    }
-
     public ArrayList<Integer> answersInList() {
         ArrayList<Integer> answers = new ArrayList<>();
         for (int i = 0; i < 39; i++) {
@@ -301,23 +256,32 @@ public class CreatePDF extends AppCompatActivity {
         return random.nextInt(max - min + 1) + min;
     }
 
-    private Table createTablePersonalInfo() {
+    private Table createTablePersonalInfo(ProjectInformation projectInfo, InspectionInformation inspectionInfo) {
         float[] columnWidth1 = {150, 200, 200};
         Table personalInfo = new Table(columnWidth1);
         personalInfo.setFontSize(10f);
         personalInfo.setPadding(0);
 
-        personalInfo.addCell(new Cell(1, 3).add(new Paragraph("Kundenavn: ")));
-        personalInfo.addCell(new Cell(1, 3).add(new Paragraph("Adresse: ")));
-        personalInfo.addCell(new Cell().add(new Paragraph("Post nr: ")));
-        personalInfo.addCell(new Cell().add(new Paragraph("By: ")));
-        personalInfo.addCell(new Cell().add(new Paragraph("Ordernummer: ")));
-        personalInfo.addCell(new Cell(1, 3).add(new Paragraph("Identifikation af installationen: ")));
-        personalInfo.addCell(new Cell(1, 3).add(new Paragraph("Installationen er udført af: ")));
-        personalInfo.addCell(new Cell(1, 2).add(new Paragraph("Verifikation af installationen er udført af: ")));
-        personalInfo.addCell(new Cell().add(new Paragraph("Dato: ")));
+        personalInfo.addCell(new Cell(1, 3).add(new Paragraph("Kundenavn: " + projectInfo.getCustomerName())));
+        personalInfo.addCell(new Cell(1, 3).add(new Paragraph("Adresse: " + projectInfo.getCustomerAddress())));
+        personalInfo.addCell(new Cell().add(new Paragraph("Post nr: " + projectInfo.getCustomerPostalCode())));
+        personalInfo.addCell(new Cell().add(new Paragraph("By: " + projectInfo.getCustomerCity())));
+        personalInfo.addCell(new Cell().add(new Paragraph("Ordernummer: " + projectInfo.getProjectInformationID())));
+        personalInfo.addCell(new Cell(1, 3).add(new Paragraph("Identifikation af installationen: " + projectInfo.getInstallationIdentification())));
+        personalInfo.addCell(new Cell(1, 3).add(new Paragraph("Installationen er udført af: " + projectInfo.getInstallationName())));
+        personalInfo.addCell(new Cell(1, 2).add(new Paragraph("Verifikation af installationen er udført af: " + inspectionInfo.getInspectorName())));
+        personalInfo.addCell(new Cell().add(new Paragraph("Dato: " + dateFormatted(inspectionInfo))));
 
         return personalInfo;
+    }
+
+    private String dateFormatted(InspectionInformation info) {
+        String date = info.getInspectionDate().toString();
+        String year = date.substring(0, 4);
+        String month = date.substring(5, 7);
+        String day = date.substring(8);
+
+        return day + "-" + month + "-" + year;
     }
 
     private Table createTableQuestions() {
@@ -452,4 +416,8 @@ public class CreatePDF extends AppCompatActivity {
 
         return table;
     }
+
+
+
 }
+
