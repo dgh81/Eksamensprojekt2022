@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -41,15 +42,19 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView imageView;
     Button btOpen;
+    Button idBtnGeneratePDF;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        julieTest();
 
         //Test Camera
         imageView = findViewById(R.id.imageView);
         btOpen = findViewById(R.id.btnCamera);
+        idBtnGeneratePDF = findViewById(R.id.idBtnGeneratePDF);
 
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             {
@@ -60,6 +65,19 @@ public class MainActivity extends AppCompatActivity {
                         100);
             }
         }
+        idBtnGeneratePDF.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    CreatePDF pdf = new CreatePDF();
+                    pdf.createPdf(MainActivity.this);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         btOpen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +88,23 @@ public class MainActivity extends AppCompatActivity {
         });
         //Test FTP
         //ftpclient = new MyFTPClientFunctions();
+    }
+
+    public void julieTest() {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        System.out.println("Klik");
+
+        MySQL mysql = new MySQL();
+        Thread mysqlConnection = new Thread(mysql);
+        mysqlConnection.run();
+        try {
+            mysqlConnection.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        User loggedInUser = mysql.logUserIn("Julie", "123");
     }
 
     @Override

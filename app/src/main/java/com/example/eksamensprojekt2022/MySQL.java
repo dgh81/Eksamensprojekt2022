@@ -70,6 +70,23 @@ public class MySQL implements Runnable {
         return questionGroups;
     }
 
+    public ArrayList<QuestionGroup> getQuestionGroupTitle() {
+        ArrayList<QuestionGroup> questionGroups = new ArrayList<>();
+        try {
+            PreparedStatement userType = connection.prepareStatement("SELECT * FROM QuestionGroup");
+            ResultSet rs = userType.executeQuery();
+            while (rs.next()) {
+                QuestionGroup group = new QuestionGroup(
+                        rs.getInt("ID"),
+                        rs.getString("title"));
+                questionGroups.add(group);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return questionGroups;
+    }
+
     public ArrayList<Question> getQuestionsFromGroupTitle(String title) {
         ArrayList<Question> questions = new ArrayList<>();
         try {
@@ -116,6 +133,90 @@ public class MySQL implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public ArrayList<String> getAnswerText() {
+        ArrayList<String> result = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Answer");
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                //System.out.print(rs.getString("answerText" + " - "));
+                result.add(rs.getString("answerText"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public ProjectInformation projectInfo(int ID) {
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM ProjectInformation WHERE ID = '" + ID + "';");
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                ProjectInformation info = new ProjectInformation(
+                        rs.getInt("ID"),
+                        rs.getString("customerName"),
+                        rs.getString("customerAddress"),
+                        rs.getString("customerPostalCode"),
+                        rs.getString("customerCity"),
+                        rs.getString("installationIdentification"),
+                        rs.getString("installationName")
+                );
+                System.out.println("oprettet");
+                return info;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("kunne ikke oprette");
+        return null;
+    }
+
+    public InspectionInformation inspectionInfo(int ID) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM InspectionInformation WHERE ID = '" + ID + "';");
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                InspectionInformation info = new InspectionInformation(
+                        rs.getInt("ID"),
+                        rs.getString("inspectorName"),
+                        rs.getDate("inspectionDate"),
+                        rs.getInt("fk_projectID")
+
+                );
+                System.out.println("oprettet");
+                return info;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("kunne ikke oprette");
+        return null;
+    }
+
+    public ArrayList<String> getQuestionsFromGroup(int group) {
+        ArrayList<String> list = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Question WHERE fk_questionGroup = '" + group + "';");
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                list.add(rs.getString("question"));
+                System.out.println("added question");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("questions not added");
+        }
+        return list;
     }
 }
 
