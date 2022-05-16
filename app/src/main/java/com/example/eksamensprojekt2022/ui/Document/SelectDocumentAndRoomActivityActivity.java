@@ -7,18 +7,23 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.example.eksamensprojekt2022.LoginAuthentication;
 import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
 import com.example.eksamensprojekt2022.R;
 import com.example.eksamensprojekt2022.UserCase;
+import com.example.eksamensprojekt2022.ui.Login.LoginActivity;
+import com.example.eksamensprojekt2022.ui.QuestionPage.DocumentActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -157,7 +162,7 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
 
                                 ProjectInformation projectInformation = projectFragment.getProjectInformation();
 
-                                projectInformation.getRooms().clear();
+                                projectInformation.getInspectionInformations().clear();
 
                                 FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -187,6 +192,21 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.app_bar_menu ,menu );
         return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)  {
+
+        if (item.getTitle().equals("Log ud")) {
+            LoginAuthentication.logOut();
+
+            Intent intent = new Intent(this,  LoginActivity.class);
+            startActivity(intent);
+
+        }
+
+        return true;
+    }
+
 
 
 

@@ -8,7 +8,6 @@ public class Room {
     int inspected = 0;
     int roomID = 0;
     String roomName = "";
-    ArrayList<QuestionGroup> questionGroups;
 
 
     public void setFk_projectID(int fk_projectID) {
@@ -19,9 +18,7 @@ public class Room {
         this.inspected = inspected;
     }
 
-    public void setQuestionGroups(ArrayList<QuestionGroup> questionGroups) {
-        this.questionGroups = questionGroups;
-    }
+
 
     public int getFk_projectID() {
         return fk_projectID;
@@ -31,9 +28,7 @@ public class Room {
         return inspected;
     }
 
-    public ArrayList<QuestionGroup> getQuestionGroups() {
-        return questionGroups;
-    }
+
 
 
 //TODO Husk at tilføje tabellerne (measurement)
@@ -54,7 +49,6 @@ public class Room {
     public Room(int roomID, String roomName , ArrayList<QuestionGroup> questionGroups) {
         this.roomID = roomID;
         this.roomName = roomName;
-        this.questionGroups = questionGroups;
     }
 
     public Room() {
@@ -82,7 +76,6 @@ public class Room {
                 ", inspected=" + inspected +
                 ", roomID=" + roomID +
                 ", roomName='" + roomName + '\'' +
-                ", questionGroups=" + questionGroups +
                 '}';
     }
 }

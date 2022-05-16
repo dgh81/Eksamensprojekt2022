@@ -8,7 +8,7 @@ public class QuestionGroup {
     String title = "";
 
     //måske vi ikke får brug for denne:
-    ArrayList<Question> questions;
+    ArrayList<Question> questions = new ArrayList<>();
 
     public QuestionGroup(int questionGroupID, String title) {
         this.questionGroupID = questionGroupID;
@@ -40,5 +40,15 @@ public class QuestionGroup {
 
     public void setQuestions(ArrayList<Question> questions) {
         this.questions = questions;
+    }
+
+
+    @Override
+    public String toString() {
+        return "QuestionGroup{" +
+                "questionGroupID=" + questionGroupID +
+                ", title='" + title + '\'' +
+                ", questions=" + questions +
+                '}';
     }
 }

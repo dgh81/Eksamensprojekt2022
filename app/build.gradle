@@ -37,9 +37,9 @@ dependencies {
     implementation group: 'mysql', name: 'mysql-connector-java', version: '5.1.49'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation files('libs\\commons-net-3.8.0.jar')
-    implementation files('libs\\commons-net-3.8.0-sources.jar')
-    implementation files('libs\\commons-net-examples-3.8.0.jar')
+    implementation files('libs/commons-net-3.8.0.jar')
+    implementation files('libs/commons-net-3.8.0-sources.jar')
+    implementation files('libs/commons-net-examples-3.8.0.jar')
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

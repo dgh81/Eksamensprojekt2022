@@ -1,7 +1,18 @@
 package com.example.eksamensprojekt2022;
 
+import com.example.eksamensprojekt2022.Objeckts.Answer;
+import com.example.eksamensprojekt2022.Objeckts.Inspection;
+import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
+import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
+import com.example.eksamensprojekt2022.Objeckts.Question;
+import com.example.eksamensprojekt2022.Objeckts.QuestionGroup;
+import com.example.eksamensprojekt2022.Objeckts.Room;
+import com.example.eksamensprojekt2022.Objeckts.User;
+
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MySQL implements Runnable {
 
@@ -235,7 +246,6 @@ public class MySQL implements Runnable {
                         rs.getString("inspectorName"),
                         rs.getDate("inspectionDate"),
                         rs.getInt("fk_projectID")
-
                 );
                 System.out.println("oprettet");
                 return info;
@@ -264,6 +274,33 @@ public class MySQL implements Runnable {
         }
         return list;
     }
+
+    public ArrayList<Question> getQuestionsFromQuestionGroup(QuestionGroup questionGroup) {
+        ArrayList<Question> questions = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Question WHERE fk_questionGroup = '" + questionGroup.getQuestionGroupID() + "';");
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                Question q = new  Question(
+                        questionGroup.getQuestionGroupID(),
+                        rs.getInt("ID"),
+                        rs.getString("question")
+                );
+                questions.add(q);
+            }
+            return questions;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("questions not added");
+        }
+        return questions;
+
+    }
+
+
 
 
 
@@ -307,22 +344,22 @@ public class MySQL implements Runnable {
         }
     }
 
-    public ArrayList<Room> getRoomsIDAndNameFromProjectID(int projectID) {
+    public ArrayList<Room> getRoomsFromProjectID(int projectID) {
         ArrayList<Room> rooms = new ArrayList<>();
 
         try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Room WHERE fk_projectID  ='" + projectID + "'");
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Room WHERE fk_projectID = '"+ projectID + "'");
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
 
-                Room r = new Room();
-                r.setRoomID(rs.getInt("ID"));
-                r.setRoomName(rs.getString("roomName"));
-
+                Room r = new Room(
+                        rs.getInt("ID"),
+                        rs.getString("roomName"),
+                        rs.getInt("inspected"),
+                        projectID
+                );
                 rooms.add(r);
-
             }
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -334,6 +371,90 @@ public class MySQL implements Runnable {
 
 
     }
+
+
+
+    public void createInspectionInformation( InspectionInformation inspectionInformation  ) {
+
+
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("INSERT INTO InspectionInformation (inspectorName, inspectionDate , fk_projectID , fk_roomID) VALUES ('"
+                                + inspectionInformation.getInspectorName() +"','"
+                                + LocalDate.now() + "','"
+                                + inspectionInformation.getFk_projectID()  + "','"
+                                + inspectionInformation.getRoomID() + "' )" );
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public InspectionInformation getInspectionInformationDB(int roomID) {
+
+        try {
+
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Room INNER JOIN InspectionInformation ON Room.Id = InspectionInformation.fk_roomID WHERE Room.Id = '" + roomID + "'");
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                return new InspectionInformation(
+
+                        rs.getInt("ID"),
+                        User.getInstance().getName(),
+                        new Date(),
+                        rs.getInt("fk_projectID"),
+                        roomID,
+                        rs.getString("roomName")
+                );
+            }
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  null;
+
+    }
+
+
+
+
+    public ArrayList<Answer> getAllAnswersFromInspectionInformationID(int inspectionInformationID) {
+        ArrayList<Answer> answers  = new ArrayList<>();
+    try {
+
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM QuestionGroup INNER JOIN (Question INNER JOIN Inspection ON Question.Id = Inspection.fk_questionID) ON QuestionGroup.Id = Question.fk_questionGroup WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
+        ResultSet rs = statement.executeQuery();
+
+        while (rs.next()) {
+
+            Answer a = new Answer(
+                    rs.getInt("fk_answerID"),
+                    rs.getInt("fk_questionGroup"),
+                    rs.getInt("question.id")
+            );
+            answers.add(a);
+        }
+
+    }catch (Exception e) {
+        e.printStackTrace();
+    }
+        return answers;
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

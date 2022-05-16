@@ -1,5 +1,7 @@
 package com.example.eksamensprojekt2022.Objeckts;
 
+import java.util.ArrayList;
+
 public class Inspection {
 
     int inspectionID = 0;
@@ -7,6 +9,23 @@ public class Inspection {
     int fk_answerID = 0;
     int fk_roomID = 0;
     int fk_inspectionInformationID = 0;
+
+    ArrayList<QuestionGroup> questionGroups;
+
+
+    public Inspection(int inspectionID, ArrayList<QuestionGroup> questionGroups) {
+        this.inspectionID = inspectionID;
+        this.questionGroups = questionGroups;
+    }
+
+    public void setQuestionGroups(ArrayList<QuestionGroup> questionGroups) {
+        this.questionGroups = questionGroups;
+    }
+
+    public ArrayList<QuestionGroup> getQuestionGroups() {
+        return questionGroups;
+    }
+
 
     public Inspection(int inspectionID, int fk_questionID, int fk_answerID, int fk_roomID, int fk_inspectionInformationID) {
         this.inspectionID = inspectionID;

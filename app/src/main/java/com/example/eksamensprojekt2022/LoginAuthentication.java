@@ -1,5 +1,6 @@
 package com.example.eksamensprojekt2022;
 
+import com.example.eksamensprojekt2022.Objeckts.User;
 import com.example.eksamensprojekt2022.ui.Login.LoginSaveData;
 
 import java.sql.SQLException;
@@ -27,11 +28,32 @@ public class LoginAuthentication  {
 
        MySQL mySQL = new MySQL();
 
-       return  (  mySQL.logUserIn(username , password) != null );
+       User user = mySQL.logUserIn( username , password );
+
+
+
+
+       if ( user != null ) {
+
+           User.getInstance().setUserID(user.getUserID());
+           User.getInstance().setName(user.getName());
+           User.getInstance().setPassword(user.getPassword());
+
+           return  true;
+       }
+
+       return  false;
+
 
     }
 
     public static void logOut() {
+
+        User.setInstance(new User() );
+
+        LoginSaveData.getInstance().saveLoginData("" , "");
+
+        System.out.println(User.getInstance());
 
 
 

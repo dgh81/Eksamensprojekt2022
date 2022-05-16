@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.eksamensprojekt2022.MySQL;
+import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
 import com.example.eksamensprojekt2022.Objeckts.Room;
 import com.example.eksamensprojekt2022.R;
@@ -57,9 +59,7 @@ public class ProjectFragment extends Fragment {
         ListView listView = view.findViewById(R.id.documentListView);
 
 
-        ArrayList<Room> rooms =  UserCase.getRoomsForAProjectInformation(projectInformation).getRooms();
-
-        textList.clear();
+        ArrayList<Room> rooms =  UserCase.getRoomsFromProjectInformationID(projectInformation.getProjectInformationID());
 
         for (Room r: rooms ) {
             textList.add(r.getRoomName());
@@ -73,10 +73,12 @@ public class ProjectFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
 
-                System.out.println(rooms.get(pos).getRoomID());
 
+                InspectionInformation inspectionInformation =  UserCase.getInspectionInformationFromDB( rooms.get(pos).getRoomID() , projectInformation.getProjectInformationID() );
 
+                inspectionInformation.setQuestionGroups(UserCase.getAllQuestionGroupsWithAnswers(inspectionInformation));
 
+                System.out.println(inspectionInformation);
 
 
             }

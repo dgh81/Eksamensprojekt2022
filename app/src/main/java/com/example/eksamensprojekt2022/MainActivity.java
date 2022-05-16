@@ -23,7 +23,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.eksamensprojekt2022.Objeckts.Question;
+import com.example.eksamensprojekt2022.Objeckts.User;
+import com.example.eksamensprojekt2022.ui.Document.SelectDocumentAndRoomActivityActivity;
+import com.example.eksamensprojekt2022.ui.Login.LoginActivity;
+import com.example.eksamensprojekt2022.ui.Login.LoginSaveData;
+import com.example.eksamensprojekt2022.ui.QuestionPage.DocumentActivity;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -125,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent( MainActivity.this,  LoginActivity.class);
             startActivity(intent);
         } else {
-
 
             Intent intent = new Intent( MainActivity.this,  SelectDocumentAndRoomActivityActivity.class);
             startActivity(intent);

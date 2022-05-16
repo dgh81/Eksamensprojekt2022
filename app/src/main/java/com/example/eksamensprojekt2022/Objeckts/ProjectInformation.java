@@ -12,20 +12,30 @@ public class ProjectInformation {
     String installationIdentification = "";
     String installationName = "";
     int fk_userID = 0;
-    int fk_roomID = 0;
     int fk_questionGroup = 0;
 
-    ArrayList<Room> rooms = new ArrayList<>();
 
-    public ArrayList<Room> getRooms() {
-        return rooms;
+
+
+
+
+
+
+
+
+
+
+    ArrayList<InspectionInformation> inspectionInformations = new ArrayList<>();
+
+    public ArrayList<InspectionInformation> getInspectionInformations() {
+        return inspectionInformations;
     }
 
-    public void setRooms(ArrayList<Room> rooms) {
-        this.rooms = rooms;
+    public void setInspectionInformation(ArrayList<InspectionInformation> inspectionInformations) {
+        this.inspectionInformations = inspectionInformations;
     }
 
-    public ProjectInformation(int projectInformationID, String customerName, String customerAddress, String customerPostalCode, String customerCity, String installationIdentification, String installationName, int fk_userID, int fk_roomID, int fk_questionGroup) {
+    public ProjectInformation(int projectInformationID, String customerName, String customerAddress, String customerPostalCode, String customerCity, String installationIdentification, String installationName, int fk_userID, int fk_questionGroup) {
         this.projectInformationID = projectInformationID;
         this.customerName = customerName;
         this.customerAddress = customerAddress;
@@ -34,7 +44,6 @@ public class ProjectInformation {
         this.installationIdentification = installationIdentification;
         this.installationName = installationName;
         this.fk_userID = fk_userID;
-        this.fk_roomID = fk_roomID;
         this.fk_questionGroup = fk_questionGroup;
     }
 
@@ -134,13 +143,7 @@ public class ProjectInformation {
         this.fk_userID = fk_userID;
     }
 
-    public int getFk_roomID() {
-        return fk_roomID;
-    }
 
-    public void setFk_roomID(int fk_roomID) {
-        this.fk_roomID = fk_roomID;
-    }
 
     public int getFk_questionGroup() {
         return fk_questionGroup;
@@ -162,7 +165,6 @@ public class ProjectInformation {
                 ", installationIdentification='" + installationIdentification + '\'' +
                 ", installationName='" + installationName + '\'' +
                 ", fk_userID=" + fk_userID +
-                ", fk_roomID=" + fk_roomID +
                 ", fk_questionGroup=" + fk_questionGroup +
                 '}';
     }
