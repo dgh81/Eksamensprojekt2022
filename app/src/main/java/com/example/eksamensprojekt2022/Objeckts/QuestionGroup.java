@@ -10,10 +10,9 @@ public class QuestionGroup {
     //måske vi ikke får brug for denne:
     ArrayList<Question> questions;
 
-    public QuestionGroup(int questionGroupID, String title, ArrayList<Question> questions) {
+    public QuestionGroup(int questionGroupID, String title) {
         this.questionGroupID = questionGroupID;
         this.title = title;
-        this.questions = questions;
     }
 
     public QuestionGroup() {

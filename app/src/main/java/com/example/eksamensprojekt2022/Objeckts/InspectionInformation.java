@@ -1,15 +1,16 @@
 package com.example.eksamensprojekt2022.Objeckts;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public class  InspectionInformation {
 
     int inspectorInformationID = 0;
     String inspectorName = "";
-    LocalDate inspectionDate = null;
+    Date inspectionDate = null;
     int fk_projectID = 0;
 
-    public InspectionInformation(int inspectorInformationID, String inspectorName, LocalDate inspectionDate, int fk_projectID) {
+    public InspectionInformation(int inspectorInformationID, String inspectorName, Date inspectionDate, int fk_projectID) {
         this.inspectorInformationID = inspectorInformationID;
         this.inspectorName = inspectorName;
         this.inspectionDate = inspectionDate;
@@ -35,11 +36,11 @@ public class  InspectionInformation {
         this.inspectorName = inspectorName;
     }
 
-    public LocalDate getInspectionDate() {
+    public Date getInspectionDate() {
         return inspectionDate;
     }
 
-    public void setInspectionDate(LocalDate inspectionDate) {
+    public void setInspectionDate(Date inspectionDate) {
         this.inspectionDate = inspectionDate;
     }
 

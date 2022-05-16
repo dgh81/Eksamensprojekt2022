@@ -4,9 +4,7 @@ import java.util.ArrayList;
 
 public class ProjectInformation {
 
-    // Database table id's  starts on 1 and not on 0
-
-    int projectInformationID = 1;
+    int projectInformationID = 0;
     String customerName = "";
     String customerAddress = "";
     String customerPostalCode = "";
@@ -38,6 +36,24 @@ public class ProjectInformation {
         this.fk_userID = fk_userID;
         this.fk_roomID = fk_roomID;
         this.fk_questionGroup = fk_questionGroup;
+    }
+
+    public ProjectInformation(int projectInformationID, String customerName, String customerAddress, String customerPostalCode, String customerCity, String installationIdentification, String installationName) {
+        this.projectInformationID = projectInformationID;
+        this.customerName = customerName;
+        this.customerAddress = customerAddress;
+        this.customerPostalCode = customerPostalCode;
+        this.customerCity = customerCity;
+        this.installationIdentification = installationIdentification;
+        this.installationName = installationName;
+    }
+
+    public ProjectInformation(int projectInformationID, String customerName, String customerAddress, String customerPostalCode, String customerCity) {
+        this.projectInformationID = projectInformationID;
+        this.customerName = customerName;
+        this.customerAddress = customerAddress;
+        this.customerPostalCode = customerPostalCode;
+        this.customerCity = customerCity;
     }
 
     public ProjectInformation(String customerName, String customerAddress, String customerPostalCode, String customerCity, String installationIdentification, String installationName) {
