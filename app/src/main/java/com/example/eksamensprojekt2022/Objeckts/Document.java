@@ -1,4 +1,4 @@
-package com.example.eksamensprojekt2022;
+package com.example.eksamensprojekt2022.Objeckts;
 
 import java.util.ArrayList;
 
@@ -8,7 +8,7 @@ public class Document {
     private ArrayList<Inspection> inspections;
     private ArrayList<Room> rooms;
 
-    //
+
 
 
 

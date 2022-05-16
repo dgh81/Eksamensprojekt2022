@@ -1,9 +1,6 @@
-package com.example.eksamensprojekt2022;
+package com.example.eksamensprojekt2022.ui.QuestionPage;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +10,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
+import com.example.eksamensprojekt2022.Objeckts.QuestionGroup;
+import com.example.eksamensprojekt2022.R;
 
 import java.util.ArrayList;
 
@@ -44,6 +43,16 @@ public class SliderAdapter extends PagerAdapter {
             "this is test question 3",
             "This is a long text to  simulate a long text to see how it will handle a long text and if there should be a limit to how long the text can be i guess this is long enough for all? Or the text should just get smaller as the question gets larger it does good"
     };
+
+    public String[] titles = {
+            "Generalt",
+            "Generalt",
+            "Generalt",
+            "Generalt",
+    };
+
+
+
 
 
 

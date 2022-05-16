@@ -1,10 +1,13 @@
-package com.example.eksamensprojekt2022;
+package com.example.eksamensprojekt2022.Objeckts;
+
+import com.example.eksamensprojekt2022.Objeckts.Answer;
 
 public class Question {
 
     int questionID = 0;
     int fk_questionGroup = 0;
     String question = "";
+    Answer answer;
 
     public Question(int fk_questionGroup, int questionID, String question) {
         this.fk_questionGroup = fk_questionGroup;

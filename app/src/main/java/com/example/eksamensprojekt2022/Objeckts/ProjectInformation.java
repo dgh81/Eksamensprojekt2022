@@ -1,8 +1,12 @@
-package com.example.eksamensprojekt2022;
+package com.example.eksamensprojekt2022.Objeckts;
+
+import java.util.ArrayList;
 
 public class ProjectInformation {
 
-    int projectInformationID = 0;
+    // Database table id's  starts on 1 and not on 0
+
+    int projectInformationID = 1;
     String customerName = "";
     String customerAddress = "";
     String customerPostalCode = "";
@@ -12,6 +16,16 @@ public class ProjectInformation {
     int fk_userID = 0;
     int fk_roomID = 0;
     int fk_questionGroup = 0;
+
+    ArrayList<Room> rooms = new ArrayList<>();
+
+    public ArrayList<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(ArrayList<Room> rooms) {
+        this.rooms = rooms;
+    }
 
     public ProjectInformation(int projectInformationID, String customerName, String customerAddress, String customerPostalCode, String customerCity, String installationIdentification, String installationName, int fk_userID, int fk_roomID, int fk_questionGroup) {
         this.projectInformationID = projectInformationID;
@@ -24,6 +38,20 @@ public class ProjectInformation {
         this.fk_userID = fk_userID;
         this.fk_roomID = fk_roomID;
         this.fk_questionGroup = fk_questionGroup;
+    }
+
+    public ProjectInformation(String customerName, String customerAddress, String customerPostalCode, String customerCity, String installationIdentification, String installationName) {
+        this.customerName = customerName;
+        this.customerAddress = customerAddress;
+        this.customerPostalCode = customerPostalCode;
+        this.customerCity = customerCity;
+        this.installationIdentification = installationIdentification;
+        this.installationName = installationName;
+
+    }
+
+    public ProjectInformation() {
+
     }
 
     public int getProjectInformationID() {
@@ -104,5 +132,22 @@ public class ProjectInformation {
 
     public void setFk_questionGroup(int fk_questionGroup) {
         this.fk_questionGroup = fk_questionGroup;
+    }
+
+
+    @Override
+    public String toString() {
+        return "ProjectInformation{" +
+                "projectInformationID=" + projectInformationID +
+                ", customerName='" + customerName + '\'' +
+                ", customerAddress='" + customerAddress + '\'' +
+                ", customerPostalCode='" + customerPostalCode + '\'' +
+                ", customerCity='" + customerCity + '\'' +
+                ", installationIdentification='" + installationIdentification + '\'' +
+                ", installationName='" + installationName + '\'' +
+                ", fk_userID=" + fk_userID +
+                ", fk_roomID=" + fk_roomID +
+                ", fk_questionGroup=" + fk_questionGroup +
+                '}';
     }
 }

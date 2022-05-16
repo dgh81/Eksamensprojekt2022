@@ -1,5 +1,10 @@
 package com.example.eksamensprojekt2022;
 
+import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
+import com.example.eksamensprojekt2022.Objeckts.Question;
+import com.example.eksamensprojekt2022.Objeckts.Room;
+import com.example.eksamensprojekt2022.Objeckts.User;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -9,9 +14,52 @@ public class MySQL implements Runnable {
 
     public static Connection connection;
 
-/*    public Connection getConnection() {
-        return connection;
-    }*/
+
+
+    public void createProjectInformation(ProjectInformation projectInformation) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO ProjectInformation (customerName, customerAddress, customerPostalCode, customerCity, installationIdentification, installationName) VALUES ('"
+                    + projectInformation.getCustomerName() + "', '"
+                    + projectInformation.getCustomerAddress() + "', '"
+                    + projectInformation.getCustomerPostalCode() + "', '"
+                    + projectInformation.getCustomerCity() + "', '"
+                    + projectInformation.getInstallationIdentification() + "', '"
+                    + projectInformation.getInstallationName() +"');");
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<ProjectInformation> getProjectInformation() {
+        ArrayList<ProjectInformation> projectInformationList = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM ProjectInformation");
+
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+
+                ProjectInformation projectInformation = new ProjectInformation();
+
+                //System.out.print(rs.getString("answerText" + " - "));
+                projectInformation.setProjectInformationID(rs.getInt("ID"));
+                projectInformation.setCustomerName(rs.getString("customerName"));
+                projectInformation.setCustomerAddress(rs.getString("customerAddress"));
+                projectInformation.setCustomerPostalCode(rs.getString("customerPostalCode"));
+                projectInformation.setInstallationIdentification(rs.getString("installationIdentification"));
+                projectInformation.setInstallationName(rs.getString("installationName"));
+                projectInformation.setCustomerCity(rs.getString("customerCity"));
+                projectInformationList.add(projectInformation);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return projectInformationList;
+    }
+
+
 
     @Override
     public void run() {
@@ -33,6 +81,9 @@ public class MySQL implements Runnable {
         User loggedInUser = new User();
         boolean userCreated = false;
         try {
+
+            System.out.println(connection + " From login page");
+
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM User " +
                     "WHERE username = '" + username + "'" +
                     " AND password = '" + password + "'");
@@ -117,6 +168,78 @@ public class MySQL implements Runnable {
             e.printStackTrace();
         }
     }
+
+
+
+    public void createRoom(String name , int projectID) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO Room (roomName, fk_projectID) VALUES ('"
+                    + name + "', '" +  projectID +"');");
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+    public void deleteRoom(Room room) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM Room WHERE roomName='" + room.getRoomName() + "'");
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void deleteRoom(int roomID) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM Room WHERE ID='" + roomID + "'");
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //TODO Skift fra newRoomName til ID?
+    public void editRoom(Room room, String newRoomName) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("UPDATE Room SET roomName ='" + newRoomName + "' WHERE roomName='" + room.getRoomName() + "'");
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<Room> getRoomsIDAndNameFromProjectID(int projectID) {
+        ArrayList<Room> rooms = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Room WHERE fk_projectID  ='" + projectID + "'");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+
+                Room r = new Room();
+                r.setRoomID(rs.getInt("ID"));
+                r.setRoomName(rs.getString("roomName"));
+
+                rooms.add(r);
+
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rooms;
+
+
+
+
+
+    }
+
+
 }
 
 

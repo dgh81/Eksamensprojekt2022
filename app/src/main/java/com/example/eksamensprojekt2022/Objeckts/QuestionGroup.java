@@ -1,4 +1,4 @@
-package com.example.eksamensprojekt2022;
+package com.example.eksamensprojekt2022.Objeckts;
 
 import java.util.ArrayList;
 

@@ -1,8 +1,8 @@
-package com.example.eksamensprojekt2022;
+package com.example.eksamensprojekt2022.Objeckts;
 
 import java.time.LocalDate;
 
-public class InspectionInformation {
+public class  InspectionInformation {
 
     int inspectorInformationID = 0;
     String inspectorName = "";
