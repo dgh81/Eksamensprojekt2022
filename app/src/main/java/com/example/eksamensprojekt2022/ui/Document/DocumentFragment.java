@@ -39,6 +39,8 @@ public class DocumentFragment extends Fragment {
 
         ListView listView = view.findViewById(R.id.documentListView);
 
+         getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
+
 
         ArrayList<ProjectInformation> projectInformation =  UserCase.getAllProjectInformation();
 

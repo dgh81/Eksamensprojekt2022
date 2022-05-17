@@ -58,8 +58,11 @@ public class ProjectFragment extends Fragment {
 
         ListView listView = view.findViewById(R.id.documentListView);
 
+        getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
 
         ArrayList<Room> rooms =  UserCase.getRoomsFromProjectInformationID(projectInformation.getProjectInformationID());
+
+        textList.clear();
 
         for (Room r: rooms ) {
             textList.add(r.getRoomName());
@@ -79,6 +82,8 @@ public class ProjectFragment extends Fragment {
                 inspectionInformation.setQuestionGroups(UserCase.getAllQuestionGroupsWithAnswers(inspectionInformation));
 
                 System.out.println(inspectionInformation);
+
+                ((SelectDocumentAndRoomActivityActivity)getActivity()).goToQuestionListPage(inspectionInformation);
 
 
             }

@@ -11,7 +11,15 @@ public class Question {
     int questionID = 0;
     int fk_questionGroup = 0;
     String question = "";
-    int answerID = 1;
+    int answerID = 4;
+
+    public int getAnswerID() {
+        return answerID;
+    }
+
+    public boolean isAnswered() {
+        return answerID != 1;
+    }
 
 
     public Question(int fk_questionGroup, int questionID, String question) {

@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.example.eksamensprojekt2022.LoginAuthentication;
+import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
 import com.example.eksamensprojekt2022.R;
 import com.example.eksamensprojekt2022.UserCase;
@@ -99,9 +100,7 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
 
-
                             boolean allFieldsFilledCorrectly;
-
 
                             allFieldsFilledCorrectly = checkIfTextIsEmpty(fields);
 
@@ -280,6 +279,29 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
 
 
     }
+
+
+
+    public void goToQuestionListPage(InspectionInformation inspectionInformation) {
+
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.enter_right_to_left , R.anim.exit_right_to_left ,
+                R.anim.enter_left_to_right , R.anim.exit_left_to_right );
+        fragmentTransaction.replace(R.id.frameLayout , new QuestionList(inspectionInformation) );
+
+
+        fragmentTransaction.addToBackStack(null);
+
+        fragmentTransaction.commit();
+
+
+    }
+
+
 }
 
 

@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
         btOpen = findViewById(R.id.btnCamera);
         idBtnGeneratePDF = findViewById(R.id.idBtnGeneratePDF);
 
+        /*
+
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             {
                 ActivityCompat.requestPermissions(MainActivity.this,
@@ -78,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
                         100);
             }
         }
+
+         */
         idBtnGeneratePDF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, 100);
+
             }
         });
         //Test FTP
@@ -104,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // TEST Login to database
+
 
 
         MySQL mysql = new MySQL();
@@ -129,6 +134,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
         if (!LoginAuthentication.attemptLoginWithSavedLoginData() ) {
             Intent intent = new Intent( MainActivity.this,  LoginActivity.class);
             startActivity(intent);
@@ -138,6 +145,9 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
 
         }
+
+
+
 
         Toolbar myToolbar =  findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -153,6 +163,8 @@ public class MainActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowTitleEnabled(true);
         ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.yellow))  );
+
+
 
 
 

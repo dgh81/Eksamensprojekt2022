@@ -15,6 +15,21 @@ public class QuestionGroup {
         this.title = title;
     }
 
+    public int getTotalAnsweredQuestions() {
+
+        int totalAnsweredQuestions = 0;
+
+        for (Question q : questions ) {
+            if (q.getAnswerID() != 1)
+                totalAnsweredQuestions++;
+        }
+        return totalAnsweredQuestions;
+    }
+
+
+
+
+
     public QuestionGroup() {
     }
 
