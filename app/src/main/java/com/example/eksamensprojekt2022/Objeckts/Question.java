@@ -3,10 +3,10 @@ package com.example.eksamensprojekt2022.Objeckts;
 public class Question {
 
     //forklaring af int her:
-    //1 = ikke svaret
-    //2 = ja
-    //3 = nej
-    //4 = ikke relevant
+    //1 = ikke ja
+    //2 = nej
+    //3 = ikke relavant
+    //4 = ikke svaret
 
     int questionID = 0;
     int fk_questionGroup = 0;

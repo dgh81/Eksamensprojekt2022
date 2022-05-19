@@ -7,35 +7,46 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-import com.example.eksamensprojekt2022.Objeckts.Inspection;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.R;
 
 public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private InspectionInformation inspection;
 
 
-    public ExpandableListViewAdapter(Context context, InspectionInformation inspection) {
+    public ExpandableListViewAdapter(Context context ) {
         this.context = context;
-        this.inspection = inspection;
     }
 
 
     @Override
     public int getGroupCount() {
-        return inspection.getQuestionGroups().size();
+        return InspectionInformation.getInstance().getQuestionGroups().size() + 1 ;
     }
 
     @Override
     public int getChildrenCount(int i) {
-        return inspection.getQuestionGroups().get(i).getQuestions().size();
+
+        if (i > InspectionInformation.getInstance().getQuestionGroups().size() - 1 ) {
+            return 0;
+        } else {
+            int size = InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().size() + 1;
+
+            System.out.println(size + " size");
+
+            return  size ;
+        }
+
+
     }
 
     @Override
     public Object getGroup(int i) {
-        return inspection.getQuestionGroups().get(i);
+
+        System.out.println(i);
+
+        return InspectionInformation.getInstance().getQuestionGroups().get(i);
     }
 
     @Override
@@ -43,7 +54,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
         System.out.println("????");
 
-        return inspection.getQuestionGroups().get(i).getQuestions().get(i1);
+        return InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(i1);
     }
 
     @Override
@@ -63,34 +74,61 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        String groupTitle = inspection.getQuestionGroups().get(i).getTitle();
 
-        if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.question_group_list , null);
+        if (i > InspectionInformation.getInstance().getQuestionGroups().size() - 1  ) {
+
+
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.question_list_add, null);
+
+        } else {
+            String groupTitle = InspectionInformation.getInstance().getQuestionGroups().get(i).getTitle();
+
+
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.question_group_list, null);
+
+
+            TextView text = view.findViewById(R.id.question_group);
+
+            text.setText(groupTitle);
         }
-
-        TextView text = view.findViewById(R.id.question_group);
-
-        text.setText(groupTitle);
-
         return view;
-
     }
 
     @Override
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
-        String groupTitle = inspection.getQuestionGroups().get(i).getQuestions().get(i1).getQuestion();
 
-        if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.question_list , null);
+        // i = group
+        // i1 = groupIndex
+
+        System.out.println(i + " i");
+
+        System.out.println(i1 + " i1 ");
+
+        System.out.println(InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().size() - 1 + " size of questinos");
+
+        if (i1 > InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().size() - 1  ) {
+
+
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.question_list_add, null);
+
+
+
+        } else {
+
+            String groupTitle = InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(i1).getQuestion();
+
+
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.question_list, null);
+
+
+            TextView text = view.findViewById(R.id.questionText);
+
+            text.setText(groupTitle);
         }
-
-        TextView text = view.findViewById(R.id.questionText);
-
-        text.setText(groupTitle);
-
         return view;
     }
 
@@ -98,7 +136,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int i, int i1) {
 
 
-      //  System.out.println(inspection.getQuestionGroups().get(i).getTitle() + " + " + inspection.getQuestionGroups().get(i).getQuestions().get(i1).getQuestion() );
+
 
 
 

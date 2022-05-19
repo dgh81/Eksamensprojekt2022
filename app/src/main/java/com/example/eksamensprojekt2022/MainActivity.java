@@ -4,17 +4,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.view.Menu;
@@ -28,13 +22,9 @@ import com.example.eksamensprojekt2022.Objeckts.User;
 import com.example.eksamensprojekt2022.ui.Document.SelectDocumentAndRoomActivityActivity;
 import com.example.eksamensprojekt2022.ui.Login.LoginActivity;
 import com.example.eksamensprojekt2022.ui.Login.LoginSaveData;
-import com.example.eksamensprojekt2022.ui.QuestionPage.DocumentActivity;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -337,8 +327,5 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void goToDocument(View view) {
-        Intent intent = new Intent(this,  DocumentActivity.class);
-        startActivity(intent);
-    }
+
 }

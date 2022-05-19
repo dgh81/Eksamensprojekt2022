@@ -60,10 +60,6 @@ public class DocumentFragment extends Fragment {
 
                 ((SelectDocumentAndRoomActivityActivity)getActivity()).goToDocumentPage(projectInformation.get(pos));
 
-
-
-
-
             }
         });
 
@@ -74,17 +70,9 @@ public class DocumentFragment extends Fragment {
 
                 editDocuments(projectInformation.get(pos));
 
-
-
-
                 return true;
             }
         });
-
-
-
-
-
 
         return view;
     }

@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.example.eksamensprojekt2022.LoginAuthentication;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
@@ -24,7 +23,6 @@ import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
 import com.example.eksamensprojekt2022.R;
 import com.example.eksamensprojekt2022.UserCase;
 import com.example.eksamensprojekt2022.ui.Login.LoginActivity;
-import com.example.eksamensprojekt2022.ui.QuestionPage.DocumentActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -53,12 +51,16 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
         assert ab != null;
         ab.setTitle("\t Zealand");
 
+
         ab.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
         if (getParentActivityIntent() != null)
             ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowTitleEnabled(true);
         ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.yellow)));
+
+
+
 
         FloatingActionButton floatingActionButton = findViewById(R.id.fab);
 
@@ -282,24 +284,41 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
 
 
 
-    public void goToQuestionListPage(InspectionInformation inspectionInformation) {
-
+    public void goToQuestionListPage() {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.enter_right_to_left , R.anim.exit_right_to_left ,
                 R.anim.enter_left_to_right , R.anim.exit_left_to_right );
-        fragmentTransaction.replace(R.id.frameLayout , new QuestionList(inspectionInformation) );
+        fragmentTransaction.replace(R.id.frameLayout , new QuestionList() );
 
 
         fragmentTransaction.addToBackStack(null);
 
         fragmentTransaction.commit();
 
+    }
+
+
+    public void goToQuestionPage(int group , int question) {
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.enter_bottom_to_top , R.anim.exit_bottom_to_top ,
+                R.anim.enter_top_to_bottom , R.anim.exit_top_to_bottom );
+        fragmentTransaction.replace(R.id.frameLayout , new Question(group , question ) );
+
+        fragmentTransaction.addToBackStack(null);
+
+        fragmentTransaction.commit();
+
+
 
     }
+
 
 
 }

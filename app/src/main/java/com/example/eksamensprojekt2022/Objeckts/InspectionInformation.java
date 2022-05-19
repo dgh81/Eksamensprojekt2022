@@ -13,6 +13,22 @@ public class InspectionInformation {
     int fk_roomID;
     String roomName;
     ArrayList<QuestionGroup> questionGroups;
+
+    public static InspectionInformation instance;
+
+    public static InspectionInformation getInstance() {
+
+        if (instance == null) {
+            instance = new InspectionInformation();
+        }
+        return instance;
+    }
+
+    public static void setInstance(InspectionInformation inspectionInformation) {
+        instance = inspectionInformation;
+    }
+
+
     
     public int getFk_roomID() {
         return fk_roomID;
@@ -117,4 +133,57 @@ public class InspectionInformation {
                 ", questionGroups=" + questionGroups +
                 '}';
     }
+
+    public int getQuestionGroupIndexByQuestionID(int i) {
+
+
+        for (int j = 0; j < questionGroups.size(); j++) {
+            if (i - questionGroups.get(j) .getQuestions().size() + 1  > 0 ) {
+                i -= questionGroups.get(j).getQuestions().size();
+            } else {
+                return j;
+            }
+        }
+        return 0;
+    }
+
+
+    public int getQuestionIndexLeftOverAfterGetQuestionGroupIndexByQuestionID(int i) {
+
+        for (int j = 0; j < questionGroups.size(); j++) {
+            if (i - questionGroups.get(j) .getQuestions().size() + 1 > 0 ) {
+                i -= questionGroups.get(j).getQuestions().size();
+            } else {
+                return i ;
+            }
+        }
+        return 0;
+    }
+
+    public int getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(int group , int question) {
+        int index = 0;
+
+        for (int i = 0; i < group; i++) {
+
+            index += questionGroups.get(i).getQuestions().size();
+
+        }
+
+        index += question;
+
+        return index;
+    }
+
+    public boolean isTotalIndexInsideQuestionGroup(int index, int group) {
+
+        return  (getQuestionGroupIndexByQuestionID(index) == group);
+
+    }
+
+
+
+
+
+
+
 }

@@ -16,7 +16,6 @@ import com.example.eksamensprojekt2022.R;
 
 public class QuestionList extends Fragment {
 
-    InspectionInformation inspectionInformation;
     View view;
 
     ExpandableListViewAdapter listViewAdapter;
@@ -26,8 +25,8 @@ public class QuestionList extends Fragment {
 
 
 
-    public QuestionList(InspectionInformation inspectionInformation) {
-        this.inspectionInformation = inspectionInformation;
+    public QuestionList() {
+
     }
 
 
@@ -43,13 +42,44 @@ public class QuestionList extends Fragment {
 
         System.out.println( view.findViewById(R.id.expanded_list) + " find me ");
 
-        listViewAdapter = new ExpandableListViewAdapter(getActivity(), inspectionInformation);
-
-
+        listViewAdapter = new ExpandableListViewAdapter(getActivity());
 
         listView.setAdapter(listViewAdapter);
 
 
+        listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
+
+                if ( i1 > InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().size() - 1 ) {
+                    //TODO add a question
+
+                    System.out.println("you want to add a question?");
+
+                } else {
+                    System.out.println(InspectionInformation.getInstance().getQuestionGroups().get(i).getTitle() + " + " + InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(i1).getQuestion());
+
+                    ((SelectDocumentAndRoomActivityActivity)getActivity()).goToQuestionPage(i , i1);
+
+                }
+                return true;
+            }
+        });
+
+        listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+
+                if (groupPosition > InspectionInformation.getInstance().getQuestionGroups().size() - 1 ) {
+                    System.out.println("so you want to add a question group?");
+                    return true;
+                }
+                return false;
+
+
+
+            }
+        });
 
 
 

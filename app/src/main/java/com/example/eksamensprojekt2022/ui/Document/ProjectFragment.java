@@ -69,6 +69,8 @@ public class ProjectFragment extends Fragment {
         }
 
 
+        System.out.println(listView + " help me find");
+
         arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_expandable_list_item_1, textList);
 
         listView.setAdapter(arrayAdapter);
@@ -77,13 +79,13 @@ public class ProjectFragment extends Fragment {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
 
 
-                InspectionInformation inspectionInformation =  UserCase.getInspectionInformationFromDB( rooms.get(pos).getRoomID() , projectInformation.getProjectInformationID() );
+                InspectionInformation.setInstance(UserCase.getInspectionInformationFromDB( rooms.get(pos).getRoomID() , projectInformation.getProjectInformationID())   );
 
-                inspectionInformation.setQuestionGroups(UserCase.getAllQuestionGroupsWithAnswers(inspectionInformation));
+                InspectionInformation.getInstance().setQuestionGroups(UserCase.getAllQuestionGroupsWithAnswers(InspectionInformation.getInstance()));
 
-                System.out.println(inspectionInformation);
+                System.out.println(InspectionInformation.getInstance());
 
-                ((SelectDocumentAndRoomActivityActivity)getActivity()).goToQuestionListPage(inspectionInformation);
+                ((SelectDocumentAndRoomActivityActivity)getActivity()).goToQuestionListPage();
 
 
             }

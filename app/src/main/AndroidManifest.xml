@@ -20,10 +20,6 @@
 
             android:exported="false" />
         <activity
-            android:name=".ui.QuestionPage.DocumentActivity"
-            android:exported="false"
-            android:parentActivityName=".MainActivity" />
-        <activity
             android:name=".ui.Login.LoginActivity"
             android:exported="false" />
         <activity
