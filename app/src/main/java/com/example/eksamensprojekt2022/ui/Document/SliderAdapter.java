@@ -105,7 +105,7 @@ public class SliderAdapter extends PagerAdapter {
 
                 InspectionInformation.getInstance().getQuestionGroups().get( InspectionInformation.instance.getQuestionGroupIndexByQuestionID(position)
                 ).getQuestions().get(InspectionInformation.getInstance().getQuestionIndexLeftOverAfterGetQuestionGroupIndexByQuestionID(position)
-                ).setAnswerID();
+                ).setAnswerID(1);
 
 
 
