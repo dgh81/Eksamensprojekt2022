@@ -1,4 +1,6 @@
-package com.example.eksamensprojekt2022;
+package com.example.eksamensprojekt2022.Objeckts;
+
+import java.util.ArrayList;
 
 public class ProjectInformation {
 
@@ -10,10 +12,30 @@ public class ProjectInformation {
     String installationIdentification = "";
     String installationName = "";
     int fk_userID = 0;
-    int fk_roomID = 0;
     int fk_questionGroup = 0;
 
-    public ProjectInformation(int projectInformationID, String customerName, String customerAddress, String customerPostalCode, String customerCity, String installationIdentification, String installationName, int fk_userID, int fk_roomID, int fk_questionGroup) {
+
+
+
+
+
+
+
+
+
+
+
+    ArrayList<InspectionInformation> inspectionInformations = new ArrayList<>();
+
+    public ArrayList<InspectionInformation> getInspectionInformations() {
+        return inspectionInformations;
+    }
+
+    public void setInspectionInformation(ArrayList<InspectionInformation> inspectionInformations) {
+        this.inspectionInformations = inspectionInformations;
+    }
+
+    public ProjectInformation(int projectInformationID, String customerName, String customerAddress, String customerPostalCode, String customerCity, String installationIdentification, String installationName, int fk_userID, int fk_questionGroup) {
         this.projectInformationID = projectInformationID;
         this.customerName = customerName;
         this.customerAddress = customerAddress;
@@ -22,7 +44,6 @@ public class ProjectInformation {
         this.installationIdentification = installationIdentification;
         this.installationName = installationName;
         this.fk_userID = fk_userID;
-        this.fk_roomID = fk_roomID;
         this.fk_questionGroup = fk_questionGroup;
     }
 
@@ -42,6 +63,20 @@ public class ProjectInformation {
         this.customerAddress = customerAddress;
         this.customerPostalCode = customerPostalCode;
         this.customerCity = customerCity;
+    }
+
+    public ProjectInformation(String customerName, String customerAddress, String customerPostalCode, String customerCity, String installationIdentification, String installationName) {
+        this.customerName = customerName;
+        this.customerAddress = customerAddress;
+        this.customerPostalCode = customerPostalCode;
+        this.customerCity = customerCity;
+        this.installationIdentification = installationIdentification;
+        this.installationName = installationName;
+
+    }
+
+    public ProjectInformation() {
+
     }
 
     public int getProjectInformationID() {
@@ -108,13 +143,7 @@ public class ProjectInformation {
         this.fk_userID = fk_userID;
     }
 
-    public int getFk_roomID() {
-        return fk_roomID;
-    }
 
-    public void setFk_roomID(int fk_roomID) {
-        this.fk_roomID = fk_roomID;
-    }
 
     public int getFk_questionGroup() {
         return fk_questionGroup;
@@ -122,5 +151,21 @@ public class ProjectInformation {
 
     public void setFk_questionGroup(int fk_questionGroup) {
         this.fk_questionGroup = fk_questionGroup;
+    }
+
+
+    @Override
+    public String toString() {
+        return "ProjectInformation{" +
+                "projectInformationID=" + projectInformationID +
+                ", customerName='" + customerName + '\'' +
+                ", customerAddress='" + customerAddress + '\'' +
+                ", customerPostalCode='" + customerPostalCode + '\'' +
+                ", customerCity='" + customerCity + '\'' +
+                ", installationIdentification='" + installationIdentification + '\'' +
+                ", installationName='" + installationName + '\'' +
+                ", fk_userID=" + fk_userID +
+                ", fk_questionGroup=" + fk_questionGroup +
+                '}';
     }
 }

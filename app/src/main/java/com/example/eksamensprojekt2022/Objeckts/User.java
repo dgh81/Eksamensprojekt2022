@@ -1,10 +1,30 @@
-package com.example.eksamensprojekt2022;
+package com.example.eksamensprojekt2022.Objeckts;
 
 public class User {
+
+    private static User userInstance = null;
+
+    public static User getInstance() {
+        if (userInstance == null)
+            userInstance = new User();
+
+        return userInstance;
+    }
+
+
+    public static void setInstance(User user ) {
+        userInstance = user;
+
+    }
+
+
+
     int userID = 0;
 
     String name = "";
     String password = "";
+
+
 
     public User(int userID, String name, String password) {
         this.userID = userID;
@@ -37,5 +57,15 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userID=" + userID +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

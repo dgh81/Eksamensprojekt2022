@@ -1,9 +1,6 @@
-package com.example.eksamensprojekt2022;
+package com.example.eksamensprojekt2022.ui.Document;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +10,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
+import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
+import com.example.eksamensprojekt2022.Objeckts.QuestionGroup;
+import com.example.eksamensprojekt2022.R;
 
 import java.util.ArrayList;
 
@@ -27,16 +27,19 @@ public class SliderAdapter extends PagerAdapter {
 
     private ViewPager sliderAdapter;
 
-
-    public ArrayList<QuestionGroup> questionGroups;
-
+    private InspectionInformation inspectionInformation;
 
 
 
-    public SliderAdapter (Context context , ViewPager slideVeiwPager) {
+    public SliderAdapter (Context context , ViewPager slideVeiwPager , InspectionInformation inspectionInformation) {
         this.context = context;
         this.sliderAdapter = slideVeiwPager;
+        this.inspectionInformation = inspectionInformation;
     }
+
+
+
+
 
     public String[] testQuestion = {
             "this is test question 1",
@@ -45,6 +48,16 @@ public class SliderAdapter extends PagerAdapter {
             "This is a long text to  simulate a long text to see how it will handle a long text and if there should be a limit to how long the text can be i guess this is long enough for all? Or the text should just get smaller as the question gets larger it does good"
     };
 
+    public String[] titles = {
+            "Generalt",
+            "Generalt",
+            "Generalt",
+            "Generalt",
+    };
+
+
+
+
 
 
 
@@ -52,7 +65,14 @@ public class SliderAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return testQuestion.length;
+
+        int size = 0;
+
+        for (QuestionGroup group: inspectionInformation.getQuestionGroups() ) {
+            size += group.getQuestions().size();
+        }
+        return size;
+
     }
 
     @Override
@@ -63,27 +83,31 @@ public class SliderAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
 
+        String questionText = inspectionInformation.getQuestionGroups().get(inspectionInformation.getQuestionGroupIndexByQuestionID(position)).getQuestions().get(inspectionInformation.getQuestionIndexLeftOverAfterGetQuestionGroupIndexByQuestionID(position)).getQuestion();
 
 
 
         layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-        View veiw = layoutInflater.inflate(R.layout.slide_layout , container , false);
+        View view = layoutInflater.inflate(R.layout.slide_layout , container , false);
 
-        TextView text = (TextView) veiw.findViewById(R.id.questionText);
-        Button yesButton = (Button) veiw.findViewById(R.id.yesButton);
-
-
-
-
+        TextView text = (TextView) view.findViewById(R.id.questionText);
+        Button yesButton = (Button) view.findViewById(R.id.yesButton);
 
 
         yesButton.setOnClickListener(new View.OnClickListener() {
 
 
-
             @Override
             public void onClick(View view) {
                 yesButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.green));
+
+                System.out.println(position);
+
+                InspectionInformation.getInstance().getQuestionGroups().get( InspectionInformation.instance.getQuestionGroupIndexByQuestionID(position)
+                ).getQuestions().get(InspectionInformation.getInstance().getQuestionIndexLeftOverAfterGetQuestionGroupIndexByQuestionID(position)
+                ).setAnswerID(1);
+
+
 
                 sliderAdapter.setCurrentItem(sliderAdapter.getCurrentItem() + 1 , true);
 
@@ -91,7 +115,7 @@ public class SliderAdapter extends PagerAdapter {
         });
 
 
-        text.setText(testQuestion[position]);
+        text.setText(questionText);
 
 
 
@@ -99,9 +123,9 @@ public class SliderAdapter extends PagerAdapter {
 
 
 
-        container.addView(veiw);
+        container.addView(view);
 
-        return veiw;
+        return view;
 
     }
 
@@ -112,11 +136,13 @@ public class SliderAdapter extends PagerAdapter {
 
         container.removeView((RelativeLayout) object);
 
-
-
-
-
     }
+
+
+
+
+
+
 }
 
 

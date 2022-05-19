@@ -1,32 +1,30 @@
 package com.example.eksamensprojekt2022;
 
-import static android.content.ContentValues.TAG;
-
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.Toolbar;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.os.Build;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import java.io.File;
+import com.example.eksamensprojekt2022.Objeckts.Question;
+import com.example.eksamensprojekt2022.Objeckts.User;
+import com.example.eksamensprojekt2022.ui.Document.SelectDocumentAndRoomActivityActivity;
+import com.example.eksamensprojekt2022.ui.Login.LoginActivity;
+import com.example.eksamensprojekt2022.ui.Login.LoginSaveData;
+
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -51,10 +49,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         julieTest();
 
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        LoginSaveData.getInstance().context = this;
+
         //Test Camera
         imageView = findViewById(R.id.imageView);
         btOpen = findViewById(R.id.btnCamera);
         idBtnGeneratePDF = findViewById(R.id.idBtnGeneratePDF);
+
+        /*
 
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             {
@@ -65,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
                         100);
             }
         }
+
+         */
         idBtnGeneratePDF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,11 +90,90 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, 100);
+
             }
         });
         //Test FTP
         //ftpclient = new MyFTPClientFunctions();
+
+
+        // TEST Login to database
+
+
+
+        MySQL mysql = new MySQL();
+        Thread mysqlConnection = new Thread(mysql);
+        mysqlConnection.run();
+        try {
+            mysqlConnection.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
+        if (mysql.connection == null ) {
+
+            System.out.println("Start connection is null");
+
+            //TODO: Show that there is no connection to the server
+            // TODO: Go to login page, insert login info into the text fields and disable the login button, and add a refresh button
+        }
+
+
+
+
+
+        if (!LoginAuthentication.attemptLoginWithSavedLoginData() ) {
+            Intent intent = new Intent( MainActivity.this,  LoginActivity.class);
+            startActivity(intent);
+        } else {
+
+            Intent intent = new Intent( MainActivity.this,  SelectDocumentAndRoomActivityActivity.class);
+            startActivity(intent);
+
+        }
+
+
+
+
+        Toolbar myToolbar =  findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
+        ActionBar ab = getSupportActionBar();
+
+        assert ab != null;
+        ab.setTitle("\t Zealand");
+
+        ab.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+
+         if (getParentActivityIntent() != null)
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setDisplayShowTitleEnabled(true);
+        ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.yellow))  );
+
+
+
+
+
+
+
+
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.app_bar_menu ,menu );
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)  {
+
+        return true;
     }
 
     public void julieTest() {
@@ -241,8 +327,5 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void goToDocument(View view) {
-        Intent intent = new Intent(this, documentActivity.class);
-        startActivity(intent);
-    }
+
 }

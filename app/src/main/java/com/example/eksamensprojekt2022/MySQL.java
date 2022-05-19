@@ -1,7 +1,18 @@
 package com.example.eksamensprojekt2022;
 
+import com.example.eksamensprojekt2022.Objeckts.Answer;
+import com.example.eksamensprojekt2022.Objeckts.Inspection;
+import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
+import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
+import com.example.eksamensprojekt2022.Objeckts.Question;
+import com.example.eksamensprojekt2022.Objeckts.QuestionGroup;
+import com.example.eksamensprojekt2022.Objeckts.Room;
+import com.example.eksamensprojekt2022.Objeckts.User;
+
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MySQL implements Runnable {
 
@@ -9,9 +20,52 @@ public class MySQL implements Runnable {
 
     public static Connection connection;
 
-/*    public Connection getConnection() {
-        return connection;
-    }*/
+
+
+    public void createProjectInformation(ProjectInformation projectInformation) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO ProjectInformation (customerName, customerAddress, customerPostalCode, customerCity, installationIdentification, installationName) VALUES ('"
+                    + projectInformation.getCustomerName() + "', '"
+                    + projectInformation.getCustomerAddress() + "', '"
+                    + projectInformation.getCustomerPostalCode() + "', '"
+                    + projectInformation.getCustomerCity() + "', '"
+                    + projectInformation.getInstallationIdentification() + "', '"
+                    + projectInformation.getInstallationName() +"');");
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<ProjectInformation> getProjectInformation() {
+        ArrayList<ProjectInformation> projectInformationList = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM ProjectInformation");
+
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+
+                ProjectInformation projectInformation = new ProjectInformation();
+
+                //System.out.print(rs.getString("answerText" + " - "));
+                projectInformation.setProjectInformationID(rs.getInt("ID"));
+                projectInformation.setCustomerName(rs.getString("customerName"));
+                projectInformation.setCustomerAddress(rs.getString("customerAddress"));
+                projectInformation.setCustomerPostalCode(rs.getString("customerPostalCode"));
+                projectInformation.setInstallationIdentification(rs.getString("installationIdentification"));
+                projectInformation.setInstallationName(rs.getString("installationName"));
+                projectInformation.setCustomerCity(rs.getString("customerCity"));
+                projectInformationList.add(projectInformation);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return projectInformationList;
+    }
+
+
 
     @Override
     public void run() {
@@ -33,6 +87,9 @@ public class MySQL implements Runnable {
         User loggedInUser = new User();
         boolean userCreated = false;
         try {
+
+            System.out.println(connection + " From login page");
+
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM User " +
                     "WHERE username = '" + username + "'" +
                     " AND password = '" + password + "'");
@@ -189,7 +246,6 @@ public class MySQL implements Runnable {
                         rs.getString("inspectorName"),
                         rs.getDate("inspectionDate"),
                         rs.getInt("fk_projectID")
-
                 );
                 System.out.println("oprettet");
                 return info;
@@ -218,6 +274,189 @@ public class MySQL implements Runnable {
         }
         return list;
     }
+
+    public ArrayList<Question> getQuestionsFromQuestionGroup(QuestionGroup questionGroup) {
+        ArrayList<Question> questions = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Question WHERE fk_questionGroup = '" + questionGroup.getQuestionGroupID() + "';");
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                Question q = new  Question(
+                        questionGroup.getQuestionGroupID(),
+                        rs.getInt("ID"),
+                        rs.getString("question")
+                );
+                questions.add(q);
+            }
+            return questions;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("questions not added");
+        }
+        return questions;
+
+    }
+
+
+
+
+
+    public void createRoom(String name , int projectID) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO Room (roomName, fk_projectID) VALUES ('"
+                    + name + "', '" +  projectID +"');");
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+    public void deleteRoom(Room room) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM Room WHERE roomName='" + room.getRoomName() + "'");
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void deleteRoom(int roomID) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM Room WHERE ID='" + roomID + "'");
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //TODO Skift fra newRoomName til ID?
+    public void editRoom(Room room, String newRoomName) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("UPDATE Room SET roomName ='" + newRoomName + "' WHERE roomName='" + room.getRoomName() + "'");
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<Room> getRoomsFromProjectID(int projectID) {
+        ArrayList<Room> rooms = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Room WHERE fk_projectID = '"+ projectID + "'");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+
+                Room r = new Room(
+                        rs.getInt("ID"),
+                        rs.getString("roomName"),
+                        rs.getInt("inspected"),
+                        projectID
+                );
+                rooms.add(r);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rooms;
+
+
+
+
+
+    }
+
+
+
+    public void createInspectionInformation( InspectionInformation inspectionInformation  ) {
+
+
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("INSERT INTO InspectionInformation (inspectorName, inspectionDate , fk_projectID , fk_roomID) VALUES ('"
+                                + inspectionInformation.getInspectorName() +"','"
+                                + LocalDate.now() + "','"
+                                + inspectionInformation.getFk_projectID()  + "','"
+                                + inspectionInformation.getRoomID() + "' )" );
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public InspectionInformation getInspectionInformationDB(int roomID) {
+
+        try {
+
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Room INNER JOIN InspectionInformation ON Room.Id = InspectionInformation.fk_roomID WHERE Room.Id = '" + roomID + "'");
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                return new InspectionInformation(
+
+                        rs.getInt("ID"),
+                        User.getInstance().getName(),
+                        new Date(),
+                        rs.getInt("fk_projectID"),
+                        roomID,
+                        rs.getString("roomName")
+                );
+            }
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  null;
+
+    }
+
+
+
+
+    public ArrayList<Answer> getAllAnswersFromInspectionInformationID(int inspectionInformationID) {
+        ArrayList<Answer> answers  = new ArrayList<>();
+    try {
+
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM QuestionGroup INNER JOIN (Question INNER JOIN Inspection ON Question.Id = Inspection.fk_questionID) ON QuestionGroup.Id = Question.fk_questionGroup WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
+        ResultSet rs = statement.executeQuery();
+
+        while (rs.next()) {
+
+            Answer a = new Answer(
+                    rs.getInt("fk_answerID"),
+                    rs.getInt("fk_questionGroup"),
+                    rs.getInt("question.id")
+            );
+            answers.add(a);
+        }
+
+    }catch (Exception e) {
+        e.printStackTrace();
+    }
+        return answers;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 

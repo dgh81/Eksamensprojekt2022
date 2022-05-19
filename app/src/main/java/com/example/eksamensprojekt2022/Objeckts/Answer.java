@@ -1,4 +1,4 @@
-package com.example.eksamensprojekt2022;
+package com.example.eksamensprojekt2022.Objeckts;
 
 public class Answer {
 
@@ -10,10 +10,18 @@ public class Answer {
 
     int answerID = 0;
     String answerText = "";
+    int questionGroupID = 0;
+    int questionID = 0;
 
     public Answer(int answerID, String answerText) {
         this.answerID = answerID;
         this.answerText = answerText;
+    }
+
+    public Answer(int answerID, int questionGroupID, int questionID) {
+        this.answerID = answerID;
+        this.questionGroupID = questionGroupID;
+        this.questionID = questionID;
     }
 
     public Answer() {
@@ -33,5 +41,13 @@ public class Answer {
 
     public void setAnswerText(String answerText) {
         this.answerText = answerText;
+    }
+
+    public int getQuestionGroupID() {
+        return questionGroupID;
+    }
+
+    public int getQuestionID() {
+        return questionID;
     }
 }

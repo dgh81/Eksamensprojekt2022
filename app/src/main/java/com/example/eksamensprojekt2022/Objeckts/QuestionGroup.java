@@ -1,4 +1,4 @@
-package com.example.eksamensprojekt2022;
+package com.example.eksamensprojekt2022.Objeckts;
 
 import java.util.ArrayList;
 
@@ -8,12 +8,27 @@ public class QuestionGroup {
     String title = "";
 
     //måske vi ikke får brug for denne:
-    ArrayList<Question> questions;
+    ArrayList<Question> questions = new ArrayList<>();
 
     public QuestionGroup(int questionGroupID, String title) {
         this.questionGroupID = questionGroupID;
         this.title = title;
     }
+
+    public int getTotalAnsweredQuestions() {
+
+        int totalAnsweredQuestions = 0;
+
+        for (Question q : questions ) {
+            if (q.getAnswerID() != 1)
+                totalAnsweredQuestions++;
+        }
+        return totalAnsweredQuestions;
+    }
+
+
+
+
 
     public QuestionGroup() {
     }
@@ -40,5 +55,15 @@ public class QuestionGroup {
 
     public void setQuestions(ArrayList<Question> questions) {
         this.questions = questions;
+    }
+
+
+    @Override
+    public String toString() {
+        return "QuestionGroup{" +
+                "questionGroupID=" + questionGroupID +
+                ", title='" + title + '\'' +
+                ", questions=" + questions +
+                '}';
     }
 }
