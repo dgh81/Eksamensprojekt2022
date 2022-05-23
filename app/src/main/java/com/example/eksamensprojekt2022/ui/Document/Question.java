@@ -56,10 +56,6 @@ public class Question extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_question, container, false);
 
-
-
-
-
         slideVeiwPager = view.findViewById(R.id.contentBox);
         dotLayout = view.findViewById(R.id.dots);
 
@@ -74,10 +70,6 @@ public class Question extends Fragment {
         updateDots(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex));
 
         slideVeiwPager.setCurrentItem(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex)  );
-
-
-
-
 
         return view;
     }
@@ -103,14 +95,10 @@ public class Question extends Fragment {
 
             }
             if ( InspectionInformation.getInstance().getQuestionIndexLeftOverAfterGetQuestionGroupIndexByQuestionID(position) ==   InspectionInformation.getInstance().getQuestionGroups().get(groupIndex).getQuestions().size() ) {
-                System.out.println("update the dots");
             }
             if (dots != null)
                 updateDots(position);
 
-
-
-            System.out.println("works?");
         }
 
         @Override

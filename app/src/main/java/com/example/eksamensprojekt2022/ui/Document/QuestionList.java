@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ListAdapter;
 
 import android.view.LayoutInflater;
@@ -30,31 +32,32 @@ public class QuestionList extends Fragment {
 
     ExpandableListViewAdapter listViewAdapter;
 
+    int startPoint;
 
-
-
-
-
-    public QuestionList() {
-
+    public QuestionList(int startPoint) {
+        this.startPoint = startPoint;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        UserCase.appendAllQuestionsWithAnswersToInspectionInformation();
+
         view =  inflater.inflate(R.layout.fragment_question_list, container, false);
 
         getActivity().findViewById(R.id.fab).setVisibility(View.GONE);
 
         ExpandableListView listView = view.findViewById(R.id.expanded_list);
 
-        System.out.println( view.findViewById(R.id.expanded_list) + " find me ");
-
         listViewAdapter = new ExpandableListViewAdapter(getActivity());
 
         listView.setAdapter(listViewAdapter);
+
+        if (startPoint >= 0) {
+            listView.expandGroup(startPoint);
+        }
 
 
         listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -84,9 +87,23 @@ public class QuestionList extends Fragment {
                                 editText.setError("Skal udfyldes");
 
                             } else {
-                                UserCase.createNewQuestionInsideQuestionGroup(i , editText.getText().toString());
+
+                                System.out.println("????");
+
+                                UserCase.createNewQuestionInsideQuestionGroup(InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestionGroupID()  , editText.getText().toString() , InspectionInformation.instance.getInspectorInformationID());
 
                                 alert.dismiss();
+
+
+
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.frameLayout , new QuestionList(i) );
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentManager.popBackStack();
+                                fragmentTransaction.commit();
+
+
                             }
                         }
                     });
@@ -129,6 +146,8 @@ public class QuestionList extends Fragment {
 
                             ((AddQuestionGroupListViewAdapter)  listView1.getAdapter()).addItem();
 
+
+
                         }
                     });
 
@@ -165,9 +184,18 @@ public class QuestionList extends Fragment {
                                 }
 
                             if (canCreate) {
-                                UserCase.addQuestionGroupWithQuestions(questionHeader.getEditText().getText().toString(), arrayList);
+                                UserCase.addQuestionGroupWithQuestions(questionHeader.getEditText().getText().toString(), InspectionInformation.getInstance().getInspectorInformationID(),  arrayList);
 
                                 alert.dismiss();
+
+
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.frameLayout , new QuestionList(-1) );
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentManager.popBackStack();
+                                fragmentTransaction.commit();
+
                             }
                         }
                     });

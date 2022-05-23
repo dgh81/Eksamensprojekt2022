@@ -127,10 +127,11 @@ public class MySQL implements Runnable {
         return questionGroups;
     }
 
-    public ArrayList<QuestionGroup> getQuestionGroupTitle() {
+    public ArrayList<QuestionGroup> getQuestionGroupTitles( int inspectionInformationID ) {
         ArrayList<QuestionGroup> questionGroups = new ArrayList<>();
         try {
-            PreparedStatement userType = connection.prepareStatement("SELECT * FROM QuestionGroup");
+            PreparedStatement userType = connection.prepareStatement("SELECT * FROM QuestionGroup WHERE fk_inspectionInformationID = 0 OR fk_inspectionInformationID = " +
+                    "' " + inspectionInformationID + "'" ) ;
             ResultSet rs = userType.executeQuery();
             while (rs.next()) {
                 QuestionGroup group = new QuestionGroup(
@@ -143,6 +144,30 @@ public class MySQL implements Runnable {
         }
         return questionGroups;
     }
+
+
+    public QuestionGroup getQuestionGroupFromTitle(String title ) {
+
+        try {
+            PreparedStatement userType = connection.prepareStatement("SELECT * FROM QuestionGroup WHERE title = '" + title + "'");
+            ResultSet rs = userType.executeQuery();
+            if (rs.next()) {
+                QuestionGroup group = new QuestionGroup(
+                        rs.getInt("ID"),
+                        rs.getString("title"));
+
+                return group;
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+
+
 
     public ArrayList<Question> getQuestionsFromGroupTitle(String title) {
         ArrayList<Question> questions = new ArrayList<>();
@@ -275,11 +300,16 @@ public class MySQL implements Runnable {
         return list;
     }
 
-    public ArrayList<Question> getQuestionsFromQuestionGroup(QuestionGroup questionGroup) {
+    public ArrayList<Question> getQuestionsFromQuestionGroup(QuestionGroup questionGroup , int inspectionInformationID) {
         ArrayList<Question> questions = new ArrayList<>();
 
+        System.out.println(questionGroup);
+
+
         try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Question WHERE fk_questionGroup = '" + questionGroup.getQuestionGroupID() + "';");
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Question WHERE fk_questionGroup = '" + questionGroup.getQuestionGroupID() + " '   AND " +
+                    "  fk_inspectionInformationID = '" +  inspectionInformationID + "' OR fk_questionGroup = '" + questionGroup.getQuestionGroupID() + "' AND " +
+                    " fk_inspectionInformationID = 0;"  );
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
@@ -427,7 +457,9 @@ public class MySQL implements Runnable {
         ArrayList<Answer> answers  = new ArrayList<>();
     try {
 
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM QuestionGroup INNER JOIN (Question INNER JOIN Inspection ON Question.Id = Inspection.fk_questionID) ON QuestionGroup.Id = Question.fk_questionGroup WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM QuestionGroup INNER JOIN (Question INNER" +
+                " JOIN Inspection ON Question.Id = Inspection.fk_questionID) ON QuestionGroup.Id " +
+                "= Question.fk_questionGroup WHERE Inspection.fk_inspectionInformationID = '" + inspectionInformationID + "'");
         ResultSet rs = statement.executeQuery();
 
         while (rs.next()) {
@@ -501,6 +533,39 @@ public class MySQL implements Runnable {
 
 
 
+
+    public void createQuestionGroup(String questionGroupTitle, int fk_inspectionInformationID) {
+
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("INSERT INTO QuestionGroup (title, fk_inspectionInformationID) VALUES ('"
+                        + questionGroupTitle + "','"
+                        + fk_inspectionInformationID
+                        + "' )" );
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void createQuestion(int questionGroupID, String questionText , int inspectionInformationID) {
+
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("INSERT INTO Question (fk_questionGroup, question, fk_inspectionInformationID) VALUES ('"
+                        + questionGroupID + "','"
+                        + questionText + "','"
+                        + InspectionInformation.getInstance().getInspectorInformationID() + "' )" );
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 
