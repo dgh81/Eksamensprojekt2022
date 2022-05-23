@@ -15,7 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.eksamensprojekt2022.Objeckts.Inspection;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
+import com.example.eksamensprojekt2022.Objeckts.Question;
 import com.example.eksamensprojekt2022.Objeckts.QuestionGroup;
+import com.example.eksamensprojekt2022.Objeckts.Room;
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -30,6 +32,7 @@ import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.geom.Rectangle;
 
 import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.PdfWriter;
 
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
@@ -61,6 +64,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
@@ -68,30 +72,25 @@ import java.util.Random;
 public class CreatePDF extends AppCompatActivity {
     ArrayList<Integer> answers;
     int index = 0;
-    int questionGroupIndex = 0;
     Context context;
     MySQL mysql = new MySQL();
     int orderID;
     PdfFont freeSansFont;
+    ArrayList<InspectionInformation> inspectionInfo;
 
 
 
     public void createPdf(Context context) throws IOException {
         this.context = context;
-        answers = answersInList();
-        InspectionInformation inspectionInfo = InspectionInformation.getInstance();
-        orderID = inspectionInfo.getFk_projectID();
+        orderID = 28;
+        inspectionInfo = GetAllInspectionInformation(orderID);
         ProjectInformation projectInfo = mysql.projectInfo(orderID);
-        ArrayList<Inspection> inspections = mysql.getAllInspections(orderID);
 
         AssetManager am = context.getAssets();
         try (InputStream inStream = am.open("freesans.ttf")) {
             byte[] fontData = IOUtils.toByteArray(inStream);
             freeSansFont = PdfFontFactory.createFont(fontData, PdfEncodings.IDENTITY_H);
         }
-
-        Table personalInfo = createTablePersonalInfo(projectInfo, inspectionInfo);
-        Table questions = createTableQuestions();
 
         String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
         File file = new File(pdfPath, "sagsnummer_" + projectInfo.getProjectInformationID() + ".pdf");
@@ -108,45 +107,54 @@ public class CreatePDF extends AppCompatActivity {
         float topMargin = 30 + handler.getTableHeight();
         document.setMargins(topMargin, 36, 36, 36);
 
+        //Laver dokumentet for hvert område
+        for (int i = 0; i < inspectionInfo.size(); i++) {
+            if (i != 0) {
+                document.add(new AreaBreak());
+            }
 
-        for (int i = 0; i < inspections.size(); i++) {
-            System.out.println(inspections.get(i));
+            Table tablePersonalInfo = createTablePersonalInfo(projectInfo, inspectionInfo.get(i));
+            Table tableQuestions = createTableQuestions();
+
+            document.add(new Paragraph("Elinstallation - Vertifikation af mindre elinstallation").setFontSize(18f));
+            document.add(tablePersonalInfo);
+
+            for (int j = 0; j < inspectionInfo.get(i).getQuestionGroups().size(); j++) {
+                System.out.println(inspectionInfo.get(i).getQuestionGroups().get(j));
+            }
+
+            answerOptions(tableQuestions);
+
+            for (int j = 0; j < inspectionInfo.get(i).getQuestionGroups().size(); j++) {
+                ArrayList<Question> list = new ArrayList<>();
+                ArrayList<Integer> answers = new ArrayList<>();
+                for (int k = 0; k < inspectionInfo.get(i).getQuestionGroups().get(j).getQuestions().size(); k++) {
+                    list.add(inspectionInfo.get(i).getQuestionGroups().get(j).getQuestions().get(k));
+                    answers.add(inspectionInfo.get(i).getQuestionGroups().get(j).getQuestions().get(k).getAnswerID());
+                }
+                System.out.println("LISTE NUMMER " + j + " " + list);
+                createQuestions(tableQuestions, inspectionInfo.get(i).getQuestionGroups().get(j).getTitle(), list, answers);
+
+            }
+
+            document.add(tableQuestions);
+
+            document.add(new AreaBreak());
+            document.add(new Paragraph("Måleresultater").setFontSize(18f).setPaddingTop(5f));
+
+            //TODO lav tabeller dynamiske
+            document.add(createTableKredsdetaljer(5));
+            document.add(createTableAfprovning(5));
+            document.add(createTableKortslutning(5));
+            document.add(createTableBemaerkninger());
+
         }
-        document.add(new Paragraph("Elinstallation - Vertifikation af mindre elinstallation").setFontSize(18f));
-        document.add(personalInfo);
 
-        ArrayList<String> questionsGenerelt = mysql.getQuestionsFromGroup(1);
-        ArrayList<String> questionsTavlen = mysql.getQuestionsFromGroup(2);
-        ArrayList<String> questionsInstallation = mysql.getQuestionsFromGroup(3);
-        ArrayList<String> questionsIndbygningsarmaturer = mysql.getQuestionsFromGroup(4);
-        ArrayList<String> questionsBeskyttelsesledere = mysql.getQuestionsFromGroup(5);
-        ArrayList<String> questionsFejlbeskyttelse = mysql.getQuestionsFromGroup(6);
-        ArrayList<QuestionGroup> questionGroupTitle = mysql.getQuestionGroupTitles(InspectionInformation.instance.getInspectorInformationID());
-
-        answerOptions(questions);
-
-        createQuestions(questions, questionGroupTitle, questionsGenerelt);
-        createQuestions(questions, questionGroupTitle, questionsTavlen);
-        createQuestions(questions, questionGroupTitle, questionsInstallation);
-        createQuestions(questions, questionGroupTitle, questionsIndbygningsarmaturer);
-        createQuestions(questions, questionGroupTitle, questionsBeskyttelsesledere);
-        createQuestions(questions, questionGroupTitle, questionsFejlbeskyttelse);
-
-        document.add(questions);
-
-        document.add(new AreaBreak());
-        document.add(new Paragraph("Måleresultater").setFontSize(18f).setPaddingTop(5f));
-
-        document.add(createTableKredsdetaljer(5));
-        document.add(createTableAfprovning(5));
-        document.add(createTableKortslutning(5));
-        document.add(createTableBemaerkninger());
-        document.add(new AreaBreak());
-
+        //TODO skriv bilag ind i pdf
 
         document.close();
         Toast.makeText(context, "Pdf Created", Toast.LENGTH_LONG).show();
-        
+
     }
 
     private class TableHeaderEventHandler implements IEventHandler {
@@ -228,58 +236,40 @@ public class CreatePDF extends AppCompatActivity {
         }
     }
 
-    public String getQuestionGroupTitle(ArrayList<QuestionGroup> group) {
-        String result = group.get(questionGroupIndex).getQuestionGroupID() + ". " + group.get(questionGroupIndex).getTitle() + ":";
-        questionGroupIndex++;
-        return result;
-    }
 
     public void answerOptions(Table table) {
         table.addCell(new Cell(2, 1).add(new Paragraph("")).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
         table.addCell(new Cell(2, 1).add(new Paragraph("Ja")).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
         table.addCell(new Cell(2, 1).add(new Paragraph("Nej")).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
         table.addCell(new Cell(2, 1).add(new Paragraph("Ikke relevant")).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
-
     }
 
-    public void createQuestions(Table table, ArrayList<QuestionGroup> groupTitle, ArrayList<String> questions) {
-        table.addCell(new Cell(1, 4).add(new Paragraph(getQuestionGroupTitle(groupTitle)).setBold()).setBorder(Border.NO_BORDER));
+    public void createQuestions(Table table, String groupTitle, ArrayList<Question> questions, ArrayList<Integer> answers) {
 
+        if (questions.size() < 1) {
+            return;
 
-        for (int i = 0; i < questions.size(); i++) {
-            table.addCell(new Cell().add(new Paragraph(questions.get(i))).setBorder(Border.NO_BORDER));
-            createCheckbox(answers.get(index), table);
+        } else {
+            table.addCell(new Cell(1, 4).add(new Paragraph(groupTitle).setBold()).setBorder(Border.NO_BORDER));
+
+            for (int i = 0; i < questions.size(); i++) {
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(questions.get(i).getQuestion()))).setBorder(Border.NO_BORDER));
+                createCheckbox(answers.get(i), table);
+                if (!(questions.get(i).getComment().equals(""))) {
+                    createComment(table, questions.get(i));
+                }
+            }
+            table.addCell(new Cell(1, 4).setBorder(Border.NO_BORDER));
         }
-        table.addCell(new Cell(1, 4).setBorder(Border.NO_BORDER));
+
     }
 
-    public Table createHeader(int page) {
-        Drawable drawable = context.getDrawable(R.drawable.zealand);
-        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] bitmapData = stream.toByteArray();
+    public void createComment(Table table, Question question) {
+        table.addCell(new Cell(1, 1).add(new Paragraph("- " + question.getComment()).setItalic().setPaddingLeft(20).setPaddingLeft(30)).setBorder(Border.NO_BORDER));
+        table.addCell(new Cell(1, 1).setBorder(Border.NO_BORDER));
+        table.addCell(new Cell(1, 1).setBorder(Border.NO_BORDER));
+        table.addCell(new Cell(1, 1).setBorder(Border.NO_BORDER));
 
-        ImageData imageData = ImageDataFactory.create(bitmapData);
-        Image logo = new Image(imageData);
-        logo.setHorizontalAlignment(HorizontalAlignment.CENTER);
-        logo.setHeight(54f);
-
-
-        float[] columnWidth = {2000f, 2000f, 2000f};
-        Table header = new Table(columnWidth);
-        header.setHorizontalAlignment(HorizontalAlignment.CENTER);
-        header.setTextAlignment(TextAlignment.CENTER);
-        header.setPadding(0);
-
-        header.addCell(new Cell(4,1).add(logo).setHorizontalAlignment(HorizontalAlignment.CENTER).setVerticalAlignment(VerticalAlignment.MIDDLE));
-        header.addCell(new Cell(4,1).add(new Paragraph("Tjekliste").setFontSize(36f).setFontColor(ColorConstants.ORANGE).setHorizontalAlignment(HorizontalAlignment.CENTER).setVerticalAlignment(VerticalAlignment.BOTTOM)));
-        header.addCell(new Cell().add(new Paragraph("").setHeight(14f)));
-        header.addCell(new Cell().add(new Paragraph("").setHeight(14f)));
-        header.addCell(new Cell().add(new Paragraph("Side " + page + " af 3")));
-        header.addCell(new Cell().add(new Paragraph("Elinstallation")));
-
-        return header;
     }
 
     public Cell createCheckboxOn() {
@@ -296,22 +286,6 @@ public class CreatePDF extends AppCompatActivity {
         checkboxOff.addCell(new Cell());
 
         return new Cell().add(checkboxOff.setVerticalAlignment(VerticalAlignment.MIDDLE).setHorizontalAlignment(HorizontalAlignment.CENTER)).setBorder(Border.NO_BORDER);
-    }
-
-    public Image createTick() {
-        Drawable tickDrawable = context.getDrawable(R.drawable.tick);
-        Bitmap tickBitmap = ((BitmapDrawable)tickDrawable).getBitmap();
-        ByteArrayOutputStream tickStream = new ByteArrayOutputStream();
-        tickBitmap.compress(Bitmap.CompressFormat.PNG, 100, tickStream);
-        byte[] tickBitmapData = tickStream.toByteArray();
-
-        ImageData tickImageData = ImageDataFactory.create(tickBitmapData);
-        Image tick = new Image(tickImageData);
-        tick.setHeight(8f);
-        tick.setWidth(8f);
-        tick.setHorizontalAlignment(HorizontalAlignment.CENTER);
-
-        return tick;
     }
 
     public void createCheckbox(int answer, Table table) {
@@ -335,20 +309,20 @@ public class CreatePDF extends AppCompatActivity {
         index++;
     }
 
-    public ArrayList<Integer> answersInList() {
-        ArrayList<Integer> answers = new ArrayList<>();
-        for (int i = 0; i < 80; i++) {
-            answers.add(randomNumber());
-            System.out.println(randomNumber());
-        }
-        return answers;
-    }
+    public Image createTick() {
+        Drawable tickDrawable = context.getDrawable(R.drawable.tick);
+        Bitmap tickBitmap = ((BitmapDrawable)tickDrawable).getBitmap();
+        ByteArrayOutputStream tickStream = new ByteArrayOutputStream();
+        tickBitmap.compress(Bitmap.CompressFormat.PNG, 100, tickStream);
+        byte[] tickBitmapData = tickStream.toByteArray();
 
-    public int randomNumber() {
-        int max = 3;
-        int min = 1;
-        Random random = new Random();
-        return random.nextInt(max - min + 1) + min;
+        ImageData tickImageData = ImageDataFactory.create(tickBitmapData);
+        Image tick = new Image(tickImageData);
+        tick.setHeight(8f);
+        tick.setWidth(8f);
+        tick.setHorizontalAlignment(HorizontalAlignment.CENTER);
+
+        return tick;
     }
 
     private Table createTablePersonalInfo(ProjectInformation projectInfo, InspectionInformation inspectionInfo) {
@@ -514,5 +488,26 @@ public class CreatePDF extends AppCompatActivity {
         return table;
     }
 
+    public ArrayList<InspectionInformation> GetAllInspectionInformation (int projectID) {
+
+        ArrayList<InspectionInformation> inspectionInformations = new ArrayList<>();
+
+        ArrayList<Room> roomsIDs = UserCase.getRoomsFromProjectInformationID(projectID);
+
+        for (int i = 0; i < roomsIDs.size(); i++) {
+
+            UserCase.setInspectionInformationFromDB(roomsIDs.get(i).getRoomID() , projectID);
+
+            UserCase.appendAllQuestionsWithAnswersToInspectionInformation();
+
+            InspectionInformation.getInstance().removeAllUnansweredQuestions();
+
+            inspectionInformations.add(InspectionInformation.getInstance());
+
+        }
+
+        return inspectionInformations;
+
+    }
 }
 
