@@ -287,12 +287,9 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
 
                 value = false;
             }
-
         }
-
         return value;
     }
-
 
     public void goToDocumentPage(ProjectInformation projectInformation) {
 
@@ -315,14 +312,14 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
 
 
 
-    public void goToQuestionListPage() {
+    public void goToQuestionListPage(int startPage ) {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.enter_right_to_left , R.anim.exit_right_to_left ,
                 R.anim.enter_left_to_right , R.anim.exit_left_to_right );
-        fragmentTransaction.replace(R.id.frameLayout , new QuestionList() );
+        fragmentTransaction.replace(R.id.frameLayout , new QuestionList(startPage) );
 
 
         fragmentTransaction.addToBackStack(null);
@@ -406,9 +403,6 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
 
 
         }
-
-
-
 
     }
 

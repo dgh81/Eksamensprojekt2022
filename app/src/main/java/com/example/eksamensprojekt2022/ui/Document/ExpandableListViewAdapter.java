@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
@@ -18,6 +19,8 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
     public ExpandableListViewAdapter(Context context ) {
         this.context = context;
     }
+
+
 
 
     @Override

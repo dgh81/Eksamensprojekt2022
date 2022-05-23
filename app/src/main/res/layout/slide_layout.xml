@@ -10,7 +10,7 @@
 
         android:layout_height="275dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="75dp"
+        android:layout_marginTop="50dp"
         android:autoSizeMaxTextSize="30dp"
         android:autoSizeTextType="uniform"
         android:fontFamily="sans-serif-light"
