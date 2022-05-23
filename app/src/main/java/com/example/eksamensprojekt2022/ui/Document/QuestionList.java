@@ -2,16 +2,26 @@ package com.example.eksamensprojekt2022.ui.Document;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ListAdapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
 
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
+import com.example.eksamensprojekt2022.Objeckts.User;
 import com.example.eksamensprojekt2022.R;
+import com.example.eksamensprojekt2022.UserCase;
+
+import java.util.ArrayList;
 
 
 public class QuestionList extends Fragment {
@@ -54,10 +64,35 @@ public class QuestionList extends Fragment {
                 if ( i1 > InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().size() - 1 ) {
                     //TODO add a question
 
-                    System.out.println("you want to add a question?");
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                    final View popUp = getLayoutInflater().inflate(R.layout.add_questionto_qestion_group, null);
+
+                    EditText editText =  popUp.findViewById(R.id.questionText);
+
+                    Button button = popUp.findViewById(R.id.createQuestion);
+
+                    builder.setView(popUp);
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (editText.getText().toString().equals("")) {
+
+                                editText.setError("Skal udfyldes");
+
+                            } else {
+                                UserCase.createNewQuestionInsideQuestionGroup(i , editText.getText().toString());
+
+                                alert.dismiss();
+                            }
+                        }
+                    });
+
 
                 } else {
-                    System.out.println(InspectionInformation.getInstance().getQuestionGroups().get(i).getTitle() + " + " + InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(i1).getQuestion());
 
                     ((SelectDocumentAndRoomActivityActivity)getActivity()).goToQuestionPage(i , i1);
 
@@ -71,27 +106,78 @@ public class QuestionList extends Fragment {
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 
                 if (groupPosition > InspectionInformation.getInstance().getQuestionGroups().size() - 1 ) {
-                    System.out.println("so you want to add a question group?");
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                    final View popUp = getLayoutInflater().inflate(R.layout.pop_up_create_qestion_group, null);
+
+                    ListView listView1 =  popUp.findViewById(R.id.questionList);
+
+                    listView1.setAdapter( new AddQuestionGroupListViewAdapter( getActivity() , R.layout.question_text_to_list) );
+
+                    com.google.android.material.textfield.TextInputLayout questionHeader = popUp.findViewById(R.id.questionToList);
+
+                    com.google.android.material.button.MaterialButton button = popUp.findViewById(R.id.outlinedButton);
+
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            questionHeader.getEditText().requestFocus();
+
+                            questionHeader.getEditText().clearFocus();
+
+                            ((AddQuestionGroupListViewAdapter)  listView1.getAdapter()).addItem();
+
+                        }
+                    });
+
+                    Button createButton = popUp.findViewById(R.id.createQuestionGroup);
+
+                    builder.setView(popUp);
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                    createButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            questionHeader.getEditText().requestFocus();
+
+                            questionHeader.getEditText().clearFocus();
+
+                            ((AddQuestionGroupListViewAdapter)  listView1.getAdapter()).notifyDataSetChanged() ;
+
+                            boolean canCreate = true;
+
+                            System.out.println(questionHeader.getEditText().getText().toString().length());
+
+                            if (questionHeader.getEditText().getText().toString().length() <= 0 ) {
+                                canCreate = false;
+                                questionHeader.setError("Skal udfyldes");
+                            }
+                            ArrayList<String> arrayList = ((AddQuestionGroupListViewAdapter)  listView1.getAdapter()).getQuestions();
+
+                                for (int i = 0; i < arrayList.size(); i++) {
+                                    if (arrayList.get(i).equals("")) {
+                                        arrayList.remove(i);
+                                    }
+                                }
+
+                            if (canCreate) {
+                                UserCase.addQuestionGroupWithQuestions(questionHeader.getEditText().getText().toString(), arrayList);
+
+                                alert.dismiss();
+                            }
+                        }
+                    });
                     return true;
                 }
                 return false;
-
-
-
             }
         });
-
-
-
-
-
         return view;
     }
-
-
-
-
-
 }
 
 

@@ -286,7 +286,8 @@ public class MySQL implements Runnable {
                 Question q = new  Question(
                         questionGroup.getQuestionGroupID(),
                         rs.getInt("ID"),
-                        rs.getString("question")
+                        rs.getString("question"),
+                        ""
                 );
                 questions.add(q);
             }
@@ -403,7 +404,7 @@ public class MySQL implements Runnable {
             if (rs.next()) {
                 return new InspectionInformation(
 
-                        rs.getInt("ID"),
+                        rs.getInt("InspectionInformation.ID"),
                         User.getInstance().getName(),
                         new Date(),
                         rs.getInt("fk_projectID"),
@@ -434,7 +435,8 @@ public class MySQL implements Runnable {
             Answer a = new Answer(
                     rs.getInt("fk_answerID"),
                     rs.getInt("fk_questionGroup"),
-                    rs.getInt("question.id")
+                    rs.getInt("question.id"),
+                    rs.getString("comment")
             );
             answers.add(a);
         }
@@ -444,6 +446,61 @@ public class MySQL implements Runnable {
     }
         return answers;
     }
+
+
+
+
+    public void clearInspectionWithQuestionInspectionInformationID() {
+
+        System.out.println(InspectionInformation.getInstance().getInspectorInformationID());
+
+                //TODO call insert into sql: fk_questionID, fk_answerID, fk_inspectionInformationID
+                try {
+                    PreparedStatement statement = null;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        statement = connection.prepareStatement( "DELETE FROM Inspection WHERE fk_inspectionInformationID = '" + InspectionInformation.getInstance().getInspectorInformationID()
+                                + "'");
+                    }
+                    statement.execute();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+         }
+
+
+    public void createInspection() {
+
+
+        for (int i = 0; i < InspectionInformation.getInstance().getQuestionGroups().size(); i++) {
+
+            for (int j = 0; j < InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().size(); j++) {
+
+                Question q = InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(j);
+                System.out.println(q.getAnswerID());
+
+                //TODO call insert into sql: fk_questionID, fk_answerID, fk_inspectionInformationID
+
+
+                try {
+                    PreparedStatement statement = null;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        statement = connection.prepareStatement("INSERT INTO Inspection (fk_questionID, fk_answerID, fk_inspectionInformationID , comment) VALUES ('"
+                                + q.getQuestionID() +"','"
+                                + q.getAnswerID() + "','"
+                                + InspectionInformation.getInstance().getInspectorInformationID() + "','"
+                                + q.getComment() + "')" );
+                    }
+                    statement.execute();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+
+
 
 
 

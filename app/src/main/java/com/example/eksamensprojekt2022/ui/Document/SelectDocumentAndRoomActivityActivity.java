@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -16,10 +17,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.example.eksamensprojekt2022.LoginAuthentication;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
+import com.example.eksamensprojekt2022.PostCode.PostNumberToCity;
 import com.example.eksamensprojekt2022.R;
 import com.example.eksamensprojekt2022.UserCase;
 import com.example.eksamensprojekt2022.ui.Login.LoginActivity;
@@ -62,6 +65,9 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
 
 
 
+
+
+
         FloatingActionButton floatingActionButton = findViewById(R.id.fab);
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +87,17 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
                     EditText customerCity = popUp.findViewById(R.id.customerCity);
                     EditText installationIdentification = popUp.findViewById(R.id.InstallationIdentification);
                     EditText installationName = popUp.findViewById(R.id.InstallationName);
+
+                    customerPostCode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View view, boolean hasFocus) {
+                            if (!hasFocus) {
+                               String city =  PostNumberToCity.getCityFromPostCode( Integer.parseInt( customerPostCode.getText().toString()) );
+                                customerCity.setText(city);
+                            }
+                        }
+                    });
+                    
 
                     ArrayList<EditText> fields = new ArrayList<>();
 
@@ -156,8 +173,6 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
                             editTexts.add(roomName);
 
                             if (checkIfTextIsEmpty(editTexts)) {
-                                createRoom(roomName);
-
 
                                 ProjectFragment projectFragment =  (ProjectFragment) getSupportFragmentManager().findFragmentById(R.id.frameLayout);
 
@@ -174,6 +189,8 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
                                 fragmentTransaction.addToBackStack(null);
 
                                 fragmentTransaction.commit();
+
+                                createRoom(roomName , projectInformation );
 
                                 alert.hide();
 
@@ -211,13 +228,27 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
 
 
 
-    private void createRoom(EditText text) {
+    private void createRoom(EditText text, ProjectInformation projectInformation ) {
 
         ProjectFragment projectFragment =  (ProjectFragment) getSupportFragmentManager().findFragmentById(R.id.frameLayout);
 
         int id =  projectFragment.getProjectInformation().getProjectInformationID();
 
         UserCase.createRoomFromName(text.getText().toString() , id );
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        fragmentTransaction.replace(R.id.frameLayout , new ProjectFragment(projectInformation)  );
+
+        fragmentTransaction.addToBackStack(null);
+
+        fragmentTransaction.commit();
+
+        fragmentManager.popBackStack();
+
+        fragmentManager.popBackStack();
 
     }
 
@@ -318,6 +349,69 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public void onBackPressed() {
+
+        System.out.println("back pressed");
+
+        if (InspectionInformation.getInstance().getQuestionGroups() == null || InspectionInformation.getInstance().getQuestionGroups().size() == 0 ||
+                getSupportFragmentManager().findFragmentById(R.id.frameLayout).toString().equals("Question")  ) {
+
+            System.out.println("we go back");
+
+            super.onBackPressed();
+
+        } else {
+
+           // AlertDialog.Builder builder = new AlertDialog.Builder(SelectDocumentAndRoomActivityActivity.this);
+            //final View popUp = getLayoutInflater().inflate(R.layout.pop_up_save_changes, null);
+
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+
+            builder.setPositiveButton("Gem", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            UserCase.createInspectionInDataBase();
+
+                            onBackPressed();
+
+                        }
+                    });
+
+            builder.setNegativeButton("Gem ikke", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    InspectionInformation.getInstance().getQuestionGroups().clear();
+                    onBackPressed();
+                }
+            });
+
+            builder.setNeutralButton("Annuller", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+
+            builder.setTitle("Vil du gemme ænderingerne");
+
+            AlertDialog dialog = builder.create();
+
+            dialog.show();
+
+            //TODO Prompt to save or discard changes or to cancel  the go back action
+
+            System.out.println("you sure?");
+
+
+        }
+
+
+
+
+    }
+
 
 
 

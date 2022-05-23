@@ -4,18 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.QuestionPage.DocumentActivity">
+    tools:context=".ui.Document.SelectDocumentAndRoomActivityActivity"
+    >
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:gravity="center"
-        app:titleTextColor="@color/black" />
+   <TextView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:gravity="center"
+       android:id="@+id/headline"
+       android:text="Placeholder"
+       android:textSize="30sp"/>
 
 
     <androidx.viewpager.widget.ViewPager
@@ -31,7 +29,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="5dp"
+
+
 
 
         android:orientation="horizontal"/>
