@@ -23,6 +23,8 @@ public class UserCase {
 
 
     public static void createProjectInformationInDataBase(ProjectInformation projectInformation) {
+
+
         mySQL.createProjectInformation(projectInformation);
     }
 
@@ -55,7 +57,7 @@ public class UserCase {
             );
 
             mySQL.createInspectionInformation(inspectionInformation);
-            return inspectionInformation;
+            return mySQL.getInspectionInformationDB(roomID);
 
         } else {
             return i;
@@ -81,6 +83,7 @@ public class UserCase {
 
                         if (question.getQuestionID() == a.getQuestionID()) {
                             question.setAnswerID(a.getAnswerID());
+                            question.setComment(a.getComment());
                         }
                     }
                 }
@@ -90,5 +93,38 @@ public class UserCase {
         return questionGroups;
 
     }
+
+    public static void createInspectionInDataBase() {
+
+        InspectionInformation.getInstance().removeAllUnansweredQuestions();
+
+        mySQL.clearInspectionWithQuestionInspectionInformationID();
+
+        mySQL.createInspection();
+
+        InspectionInformation.getInstance().getQuestionGroups().clear();
+
+    }
+
+    public static void createNewQuestionInsideQuestionGroup(int questionGroupID , String question ) {
+
+
+
+    }
+
+    public static void addQuestionGroupWithQuestions( String questionGroup, ArrayList<String> questions ) {
+
+        System.out.println(questionGroup);
+
+        for (String q : questions ) {
+            System.out.println(q);
+        }
+
+
+
+
+    }
+
+
 
 }

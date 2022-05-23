@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/yellow"
+        android:gravity="center"
+        android:text="Opret spørgsmåls gruppe"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/questionToList"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:hint="Spørgsmål gruppe"
+        android:layout_marginTop="20dp"
+
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        
+
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:textSize="20sp"
+            android:layout_marginBottom="15dp"
+            android:overScrollMode="always"
+            android:scrollbarStyle="insideInset"
+
+            android:scrollHorizontally="false" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+
+
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/questionList"/>
+
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:id="@+id/outlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:backgroundTint="@color/green"
+        android:layout_marginTop="0dp"
+        android:text="Tilføj spørgsmål"
+        app:iconGravity="textStart"
+        app:iconPadding="10dp"
+
+        app:icon="@drawable/ic_round_plus"
+        />
+
+    <Button
+        android:id="@+id/createQuestionGroup"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Opret"
+        android:textSize="20dp"
+        android:backgroundTint="#DFB97A"
+        android:textColor="@color/black"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="0dp" />
+
+
+
+
+
+</LinearLayout>

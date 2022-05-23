@@ -2,10 +2,12 @@ package com.example.eksamensprojekt2022.ui.Document;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import android.text.Html;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.R;
 
+import java.util.Objects;
 
 
 public class Question extends Fragment {
@@ -53,6 +56,10 @@ public class Question extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_question, container, false);
 
+
+
+
+
         slideVeiwPager = view.findViewById(R.id.contentBox);
         dotLayout = view.findViewById(R.id.dots);
 
@@ -62,11 +69,13 @@ public class Question extends Fragment {
 
         slideVeiwPager.addOnPageChangeListener(listener);
 
-        slideVeiwPager.setCurrentItem(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex)  );
-
         addDots();
 
         updateDots(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex));
+
+        slideVeiwPager.setCurrentItem(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex)  );
+
+
 
 
 
@@ -84,6 +93,15 @@ public class Question extends Fragment {
         @Override
         public void onPageSelected(int position) {
 
+            com.google.android.material.textfield.TextInputLayout s =  slideVeiwPager.findViewById(R.id.notes);
+
+          //  s.clearFocus();
+
+            if (s != null) {
+
+                s.getEditText().clearFocus();
+
+            }
             if ( InspectionInformation.getInstance().getQuestionIndexLeftOverAfterGetQuestionGroupIndexByQuestionID(position) ==   InspectionInformation.getInstance().getQuestionGroups().get(groupIndex).getQuestions().size() ) {
                 System.out.println("update the dots");
             }
@@ -127,6 +145,14 @@ public class Question extends Fragment {
             dots[i].setTextSize(35);
             dotLayout.addView(dots[i]);
         }
+
+        TextView header = view.findViewById(R.id.headline);
+
+        header.setText(InspectionInformation.getInstance().getQuestionGroups().get(groupIndex).getTitle());
+
+
+
+
     }
 
 
@@ -159,5 +185,8 @@ public class Question extends Fragment {
     }
 
 
-
+    @Override
+    public String toString() {
+        return "Question";
+    }
 }

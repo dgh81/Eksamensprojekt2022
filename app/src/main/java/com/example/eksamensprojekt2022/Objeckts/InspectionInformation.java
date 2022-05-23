@@ -1,6 +1,6 @@
 package com.example.eksamensprojekt2022.Objeckts;
 
-import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -181,7 +181,37 @@ public class InspectionInformation {
     }
 
 
+    public void removeAllUnansweredQuestions() {
 
+
+        for (int i = 0; i < questionGroups.size(); i++) {
+
+            for (int j = 0; j < questionGroups.get(i).getQuestions().size(); j++) {
+
+                if (  questionGroups.get(i).getQuestions().get(j).getAnswerID() == 4 && questionGroups.get(i).getQuestions().get(j).getComment().equals("")  ) {
+
+                    questionGroups.get(i).getQuestions().remove(j);
+
+                    j --;
+
+
+
+            }
+
+        }
+
+
+        }
+
+
+
+
+
+
+
+
+
+    }
 
 
 

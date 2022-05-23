@@ -12,6 +12,15 @@ public class Question {
     int fk_questionGroup = 0;
     String question = "";
     int answerID = 4;
+    String comment;
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
     public int getAnswerID() {
         return answerID;
@@ -22,10 +31,11 @@ public class Question {
     }
 
 
-    public Question(int fk_questionGroup, int questionID, String question) {
+    public Question(int fk_questionGroup, int questionID, String question, String comment) {
         this.fk_questionGroup = fk_questionGroup;
         this.questionID = questionID;
         this.question = question;
+        this.comment = comment;
     }
 
     public Question(int questionID, int fk_questionGroup, String question, int answer) {
@@ -67,13 +77,5 @@ public class Question {
     }
 
 
-    @Override
-    public String toString() {
-        return "Question{" +
-                "questionID=" + questionID +
-                ", fk_questionGroup=" + fk_questionGroup +
-                ", question='" + question + '\'' +
-                ", answerID=" + answerID +
-                '}';
-    }
+
 }

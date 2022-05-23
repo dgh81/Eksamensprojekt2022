@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
 import com.example.eksamensprojekt2022.R;
@@ -89,6 +90,8 @@ public class DocumentFragment extends Fragment {
         EditText customerCity = popUp.findViewById(R.id.customerCity);
         EditText installationIdentification = popUp.findViewById(R.id.InstallationIdentification);
         EditText installationName = popUp.findViewById(R.id.InstallationName);
+
+
 
         ArrayList<EditText> fields = new ArrayList<>();
 
