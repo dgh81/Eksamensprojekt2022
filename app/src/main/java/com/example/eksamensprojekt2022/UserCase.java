@@ -43,7 +43,7 @@ public class UserCase {
         mySQL.createRoom(name, ID );
     }
 
-    public static InspectionInformation getInspectionInformationFromDB(int roomID , int projectID) {
+    public static void setInspectionInformationFromDB(int roomID , int projectID) {
 
         InspectionInformation i = mySQL.getInspectionInformationDB(roomID);
 
@@ -57,22 +57,19 @@ public class UserCase {
             );
 
             mySQL.createInspectionInformation(inspectionInformation);
-            return mySQL.getInspectionInformationDB(roomID);
 
-        } else {
-            return i;
         }
-
+        InspectionInformation.setInstance( mySQL.getInspectionInformationDB(roomID));
     }
 
-    public static ArrayList<QuestionGroup> getAllQuestionGroupsWithAnswers(InspectionInformation inspectionInformation) {
+    public static void appendAllQuestionsWithAnswersToInspectionInformation() {
 
-        ArrayList<QuestionGroup> questionGroups = mySQL.getQuestionGroupTitle();
+        ArrayList<QuestionGroup> questionGroups = mySQL.getQuestionGroupTitles(InspectionInformation.instance.getInspectorInformationID());
 
-        ArrayList<Answer> answers = mySQL.getAllAnswersFromInspectionInformationID(inspectionInformation.getInspectorInformationID());
+        ArrayList<Answer> answers = mySQL.getAllAnswersFromInspectionInformationID(InspectionInformation.getInstance().getInspectorInformationID());
 
         for (QuestionGroup group : questionGroups ) {
-            ArrayList<Question> questions =  mySQL.getQuestionsFromQuestionGroup(group);
+            ArrayList<Question> questions =  mySQL.getQuestionsFromQuestionGroup(group , InspectionInformation.getInstance().getInspectorInformationID() );
 
             for (Question question: questions ) {
                 group.getQuestions().add(question);
@@ -90,7 +87,7 @@ public class UserCase {
             }
         }
 
-        return questionGroups;
+        InspectionInformation.getInstance().setQuestionGroups(questionGroups);
 
     }
 
@@ -106,19 +103,31 @@ public class UserCase {
 
     }
 
-    public static void createNewQuestionInsideQuestionGroup(int questionGroupID , String question ) {
+    public static void createNewQuestionInsideQuestionGroup(int questionGroupID , String question , int InspectionInformationID) {
+
+        System.out.println(questionGroupID + " " + question + " help me fint it");
+
+        mySQL.createQuestion(questionGroupID , question , InspectionInformationID);
 
 
 
     }
 
-    public static void addQuestionGroupWithQuestions( String questionGroup, ArrayList<String> questions ) {
+    public static void addQuestionGroupWithQuestions(String questionGroup, int fk_InspectionInformationID ,  ArrayList<String> questions ) {
 
-        System.out.println(questionGroup);
 
-        for (String q : questions ) {
-            System.out.println(q);
+        mySQL.createQuestionGroup(questionGroup , fk_InspectionInformationID);
+
+        QuestionGroup questionG =  mySQL.getQuestionGroupFromTitle(questionGroup);
+
+        for (int i = 0; i < questions.size(); i++) {
+
+            createNewQuestionInsideQuestionGroup(questionG.getQuestionGroupID() , questions.get(i), fk_InspectionInformationID);
+
+
         }
+
+
 
 
 

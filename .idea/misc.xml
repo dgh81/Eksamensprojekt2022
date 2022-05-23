@@ -12,6 +12,20 @@
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/activity_document.xml" value="0.25" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/activity_main.xml" value="0.22760416666666666" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/fragment_questions.xml" value="0.21041666666666667" />
+
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/pop_up_create_qestion_group.xml" value="0.33" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/pop_up_edit_project.xml" value="0.1" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/pop_up_room.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/pop_up_save_changes.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/project_fragment.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/project_pop_up.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/question_group_list.xml" value="0.25" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/question_list.xml" value="0.13917525773195877" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/question_list_add.xml" value="0.2" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/question_text_to_list.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/select_document_and_room_activity.xml" value="0.25" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/slide_header_layout.xml" value="0.36666666666666664" />
+
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/slide_layout.xml" value="0.33" />
       </map>
     </option>

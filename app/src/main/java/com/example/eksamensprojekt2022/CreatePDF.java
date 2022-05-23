@@ -19,6 +19,7 @@ import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.ColorConstants;
+
 import com.itextpdf.kernel.events.Event;
 import com.itextpdf.kernel.events.IEventHandler;
 import com.itextpdf.kernel.events.PdfDocumentEvent;
@@ -26,12 +27,14 @@ import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.geom.Rectangle;
+
 import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.PdfWriter;
+
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.kernel.pdf.xobject.PdfFormXObject;
 import com.itextpdf.layout.Canvas;
+
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.AreaBreak;
@@ -121,7 +124,7 @@ public class CreatePDF extends AppCompatActivity {
         ArrayList<String> questionsIndbygningsarmaturer = mysql.getQuestionsFromGroup(4);
         ArrayList<String> questionsBeskyttelsesledere = mysql.getQuestionsFromGroup(5);
         ArrayList<String> questionsFejlbeskyttelse = mysql.getQuestionsFromGroup(6);
-        ArrayList<QuestionGroup> questionGroupTitle = mysql.getQuestionGroupTitle();
+        ArrayList<QuestionGroup> questionGroupTitle = mysql.getQuestionGroupTitles(InspectionInformation.instance.getInspectorInformationID());
 
         answerOptions(questions);
 
