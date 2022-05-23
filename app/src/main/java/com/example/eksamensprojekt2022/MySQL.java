@@ -508,7 +508,10 @@ public class MySQL implements Runnable {
             for (int j = 0; j < InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().size(); j++) {
 
                 Question q = InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(j);
-                System.out.println(q.getAnswerID());
+
+                System.out.println(q.getAnswerID() + "fint it now!");
+
+                System.out.println(q.getQuestion());
 
                 //TODO call insert into sql: fk_questionID, fk_answerID, fk_inspectionInformationID
 
