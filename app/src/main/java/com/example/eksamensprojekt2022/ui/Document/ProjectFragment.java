@@ -80,6 +80,8 @@ public class ProjectFragment extends Fragment {
 
                 UserCase.setInspectionInformationFromDB( rooms.get(pos).getRoomID() , projectInformation.getProjectInformationID());
 
+                UserCase.appendAllQuestionsWithAnswersToInspectionInformation();
+
                 System.out.println(InspectionInformation.getInstance().getInspectorInformationID() + " FROM Trans");
 
                 System.out.println(InspectionInformation.getInstance());

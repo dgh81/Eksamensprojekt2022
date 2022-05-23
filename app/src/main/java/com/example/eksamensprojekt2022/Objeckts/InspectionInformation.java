@@ -188,6 +188,11 @@ public class InspectionInformation {
 
             for (int j = 0; j < questionGroups.get(i).getQuestions().size(); j++) {
 
+                if (questionGroups.get(i).getQuestions().get(j).getAnswerID() != 4) {
+                    System.out.println(questionGroups.get(i).getQuestions().get(j).getQuestion() + "it is inside instance");
+                }
+
+
                 if (  questionGroups.get(i).getQuestions().get(j).getAnswerID() == 4 && questionGroups.get(i).getQuestions().get(j).getComment().equals("")  ) {
 
                     questionGroups.get(i).getQuestions().remove(j);
@@ -197,6 +202,9 @@ public class InspectionInformation {
 
 
             }
+
+
+
 
         }
 
