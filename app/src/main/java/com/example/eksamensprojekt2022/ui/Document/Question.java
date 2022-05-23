@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.text.Html;
@@ -25,6 +26,7 @@ public class Question extends Fragment {
     View view;
 
     private ViewPager slideVeiwPager;
+    private ViewPager headlineBox;
     private LinearLayout dotLayout;
 
     private TextView[] dots;
@@ -57,9 +59,16 @@ public class Question extends Fragment {
         view = inflater.inflate(R.layout.fragment_question, container, false);
 
         slideVeiwPager = view.findViewById(R.id.contentBox);
+
+        headlineBox = view.findViewById(R.id.headlineBox);
+
         dotLayout = view.findViewById(R.id.dots);
 
         sliderAdapter = new SliderAdapter(getActivity() , slideVeiwPager , InspectionInformation.getInstance());
+
+        PagerAdapter headerSlideAdapter = new HeaderSlideAdapter(getActivity() , headlineBox );
+
+        headlineBox.setAdapter(headerSlideAdapter);
 
         slideVeiwPager.setAdapter(sliderAdapter);
 

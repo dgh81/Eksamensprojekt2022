@@ -43,7 +43,7 @@ public class QuestionList extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        UserCase.appendAllQuestionsWithAnswersToInspectionInformation();
+
 
         view =  inflater.inflate(R.layout.fragment_question_list, container, false);
 
