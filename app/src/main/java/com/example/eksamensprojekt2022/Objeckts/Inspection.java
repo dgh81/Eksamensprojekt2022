@@ -9,6 +9,7 @@ public class Inspection {
     int fk_answerID = 0;
     int fk_roomID = 0;
     int fk_inspectionInformationID = 0;
+    String comment = "";
 
     ArrayList<QuestionGroup> questionGroups;
 
@@ -27,12 +28,12 @@ public class Inspection {
     }
 
 
-    public Inspection(int inspectionID, int fk_questionID, int fk_answerID, int fk_roomID, int fk_inspectionInformationID) {
+    public Inspection(int inspectionID, int fk_questionID, int fk_answerID, int fk_inspectionInformationID, String comment) {
         this.inspectionID = inspectionID;
         this.fk_questionID = fk_questionID;
         this.fk_answerID = fk_answerID;
-        this.fk_roomID = fk_roomID;
         this.fk_inspectionInformationID = fk_inspectionInformationID;
+        this.comment = comment;
     }
 
     public Inspection() {

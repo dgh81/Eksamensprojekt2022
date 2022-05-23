@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.eksamensprojekt2022.Objeckts.Inspection;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
 import com.example.eksamensprojekt2022.Objeckts.QuestionGroup;
@@ -69,23 +70,16 @@ public class CreatePDF extends AppCompatActivity {
     MySQL mysql = new MySQL();
     int orderID;
     PdfFont freeSansFont;
-    PdfFont dejavuSansFont;
-    protected PdfFormXObject template;
+
 
 
     public void createPdf(Context context) throws IOException {
         this.context = context;
-        orderID = 27;
         answers = answersInList();
-        ProjectInformation projectInfo = mysql.projectInfo(orderID);
         InspectionInformation inspectionInfo = InspectionInformation.getInstance();
-        inspectionInfo.setInspectionDate(new Date(2022, 5, 19));
-        inspectionInfo.setInspectorName("Julie");
-        inspectionInfo.setInspectorInformationID(29);
-        inspectionInfo.setFk_projectID(1);
-        inspectionInfo.setFk_roomID(5);
-        inspectionInfo.setRoomName("Loftet");
-
+        orderID = inspectionInfo.getFk_projectID();
+        ProjectInformation projectInfo = mysql.projectInfo(orderID);
+        ArrayList<Inspection> inspections = mysql.getAllInspections(orderID);
 
         AssetManager am = context.getAssets();
         try (InputStream inStream = am.open("freesans.ttf")) {
@@ -112,6 +106,9 @@ public class CreatePDF extends AppCompatActivity {
         document.setMargins(topMargin, 36, 36, 36);
 
 
+        for (int i = 0; i < inspections.size(); i++) {
+            System.out.println(inspections.get(i));
+        }
         document.add(new Paragraph("Elinstallation - Vertifikation af mindre elinstallation").setFontSize(18f));
         document.add(personalInfo);
 
@@ -141,6 +138,7 @@ public class CreatePDF extends AppCompatActivity {
         document.add(createTableAfprovning(5));
         document.add(createTableKortslutning(5));
         document.add(createTableBemaerkninger());
+        document.add(new AreaBreak());
 
 
         document.close();
@@ -243,6 +241,8 @@ public class CreatePDF extends AppCompatActivity {
 
     public void createQuestions(Table table, ArrayList<QuestionGroup> groupTitle, ArrayList<String> questions) {
         table.addCell(new Cell(1, 4).add(new Paragraph(getQuestionGroupTitle(groupTitle)).setBold()).setBorder(Border.NO_BORDER));
+
+
         for (int i = 0; i < questions.size(); i++) {
             table.addCell(new Cell().add(new Paragraph(questions.get(i))).setBorder(Border.NO_BORDER));
             createCheckbox(answers.get(index), table);
@@ -334,7 +334,7 @@ public class CreatePDF extends AppCompatActivity {
 
     public ArrayList<Integer> answersInList() {
         ArrayList<Integer> answers = new ArrayList<>();
-        for (int i = 0; i < 39; i++) {
+        for (int i = 0; i < 80; i++) {
             answers.add(randomNumber());
             System.out.println(randomNumber());
         }
