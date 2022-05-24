@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,7 +11,6 @@
 
         android:layout_height="275dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
         android:autoSizeMaxTextSize="30dp"
         android:autoSizeTextType="uniform"
         android:fontFamily="sans-serif-light"
@@ -22,15 +22,12 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/questionText"
             android:id="@+id/notes"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:hint="Kommentar"
 
-
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-
             >
 
 
@@ -62,11 +59,12 @@
 
 
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/notes"
-        android:layout_centerHorizontal="true"
+        android:weightSum="2"
+        android:orientation="horizontal"
         android:layout_marginTop="50dp"
         android:id="@+id/yesAndNo">
 
@@ -74,11 +72,17 @@
         <Button
             android:id="@+id/yesButton"
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="100dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_marginEnd="75dp"
             android:onClick="yesButtonClick"
             android:text="Ja"
+            android:layout_gravity="center"
+            android:layout_marginStart="50dp"
+
+
+
             android:textStyle="bold"
 
 
@@ -87,15 +91,16 @@
 
         <Button
             android:id="@+id/noButton"
+            android:layout_width="0dp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="100dp"
+            android:layout_weight="1"
             android:layout_height="60dp"
-            android:layout_toRightOf="@+id/yesButton"
+            android:layout_marginEnd="50dp"
             android:text="Nej"
             app:strokeColor="#988C8C"
             app:strokeWidth="2dp" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 
     <Button
@@ -107,6 +112,7 @@
         app:strokeColor="#988C8C"
         app:strokeWidth="2dp"
         android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
         android:layout_below="@+id/yesAndNo"
         android:layout_marginTop="15dp"
         />
@@ -119,4 +125,4 @@
 
 
 
-</RelativeLayout>
+</LinearLayout>

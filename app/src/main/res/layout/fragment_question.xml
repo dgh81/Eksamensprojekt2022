@@ -7,13 +7,7 @@
     tools:context=".ui.Document.SelectDocumentAndRoomActivityActivity"
     >
 
-   <TextView
-       android:layout_width="match_parent"
-       android:layout_height="50dp"
-       android:gravity="center"
-       android:id="@+id/headline"
-       android:text="Placeholder"
-       android:textSize="30sp"/>
+
 
 
     <androidx.viewpager.widget.ViewPager
@@ -22,11 +16,11 @@
         android:layout_height="50dp" />
 
 
-
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/contentBox"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/headlineBox"/>
 
 
 

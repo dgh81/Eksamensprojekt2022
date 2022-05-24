@@ -90,10 +90,6 @@ public class AddQuestionGroupListViewAdapter extends ArrayAdapter {
         }
 
 
-
-
-
-
         return convertView;
     }
 
