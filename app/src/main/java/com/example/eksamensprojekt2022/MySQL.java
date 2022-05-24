@@ -2,6 +2,7 @@ package com.example.eksamensprojekt2022;
 
 import com.example.eksamensprojekt2022.Objeckts.AfproevningAfRCD;
 import com.example.eksamensprojekt2022.Objeckts.Answer;
+import com.example.eksamensprojekt2022.Objeckts.Inspection;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.Objeckts.Kortslutningsstrom;
 import com.example.eksamensprojekt2022.Objeckts.Kredsdetaljer;
@@ -696,6 +697,7 @@ public class MySQL implements Runnable {
                         rs.getString("karakteristik"),
                         rs.getString("tvaersnit"),
                         rs.getString("MaksOB"),
+                        rs.getBoolean("RZboolean"),
                         rs.getString("zsRa"),
                         rs.getString("isolation"),
                         rs.getInt("fk_inspectionInformationID")
@@ -724,6 +726,19 @@ public class MySQL implements Runnable {
         return overgangsmodstand;
     }
 
+    public ArrayList<String> getPDFComments(int inspectionInformationID) {
+        ArrayList<String> pdfComments = new ArrayList<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM PDFComment WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                pdfComments.add(rs.getString("pdfComment"));
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pdfComments;
+    }
 
 
 

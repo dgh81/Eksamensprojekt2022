@@ -97,6 +97,7 @@ public class UserCase {
         InspectionInformation.getInstance().setKredsdetaljer(mySQL.getKredsdetaljer(fk_inspectionInformationID));
         InspectionInformation.getInstance().setKortslutningsstroms(mySQL.getKortslutningsstromme(fk_inspectionInformationID));
         InspectionInformation.getInstance().setOvergangsmodstandR(mySQL.getOvergangsmodstand(fk_inspectionInformationID));
+        InspectionInformation.getInstance().setPDFComment(mySQL.getPDFComments(fk_inspectionInformationID));
 
     }
 

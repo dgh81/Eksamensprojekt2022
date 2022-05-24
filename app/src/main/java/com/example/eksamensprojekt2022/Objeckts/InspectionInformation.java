@@ -24,6 +24,8 @@ public class InspectionInformation {
 
     ArrayList<Kortslutningsstrom> kortslutningsstroms = new ArrayList<>();
 
+    ArrayList<String> PDFComment;
+
 
     public static InspectionInformation instance;
 
@@ -113,6 +115,10 @@ public class InspectionInformation {
 
     public ArrayList<Kortslutningsstrom> getKortslutningsstroms() {
         return kortslutningsstroms;
+    }
+
+    public ArrayList<String> getPDFComment() {
+        return PDFComment;
     }
 
     public InspectionInformation() {
@@ -295,30 +301,22 @@ public class InspectionInformation {
 
         for (int i = 0; i < questionGroups.size(); i++) {
 
-            for (int j = 0; j < questionGroups.get(i).getQuestions().size(); j++) {
+                for (int j = 0; j < questionGroups.get(i).getQuestions().size(); j++) {
 
-                if (questionGroups.get(i).getQuestions().get(j).getAnswerID() != 4) {
-                    System.out.println(questionGroups.get(i).getQuestions().get(j).getQuestion() + "it is inside instance");
+                    if (questionGroups.get(i).getQuestions().get(j).getAnswerID() != 4) {
+                        System.out.println(questionGroups.get(i).getQuestions().get(j).getQuestion() + "it is inside instance");
+                    }
+
+
+                    if (  questionGroups.get(i).getQuestions().get(j).getAnswerID() == 4 && questionGroups.get(i).getQuestions().get(j).getComment().equals("")  ) {
+
+                        questionGroups.get(i).getQuestions().remove(j);
+
+                        j --;
+
                 }
-
-
-                if (  questionGroups.get(i).getQuestions().get(j).getAnswerID() == 4 && questionGroups.get(i).getQuestions().get(j).getComment().equals("")  ) {
-
-                    questionGroups.get(i).getQuestions().remove(j);
-
-                    j --;
-
-
             }
-
-
         }
-
-
-        }
-
-
-
     }
 
 
@@ -336,5 +334,9 @@ public class InspectionInformation {
 
     public void setKortslutningsstroms(ArrayList<Kortslutningsstrom> kortslutningsstroms) {
         this.kortslutningsstroms = kortslutningsstroms;
+    }
+
+    public void setPDFComment(ArrayList<String> PDFComment) {
+        this.PDFComment = PDFComment;
     }
 }

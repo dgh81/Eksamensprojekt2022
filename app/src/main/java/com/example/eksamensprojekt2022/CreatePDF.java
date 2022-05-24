@@ -1,22 +1,18 @@
 package com.example.eksamensprojekt2022;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Environment;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.eksamensprojekt2022.Objeckts.Inspection;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
 import com.example.eksamensprojekt2022.Objeckts.Question;
-import com.example.eksamensprojekt2022.Objeckts.QuestionGroup;
 import com.example.eksamensprojekt2022.Objeckts.Room;
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.image.ImageData;
@@ -36,7 +32,6 @@ import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.PdfWriter;
 
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
-import com.itextpdf.kernel.pdf.xobject.PdfFormXObject;
 import com.itextpdf.layout.Canvas;
 
 import com.itextpdf.layout.Document;
@@ -64,10 +59,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Random;
 
 public class CreatePDF extends AppCompatActivity {
     ArrayList<Integer> answers;
@@ -119,11 +111,9 @@ public class CreatePDF extends AppCompatActivity {
             document.add(new Paragraph("Elinstallation - Vertifikation af mindre elinstallation").setFontSize(18f));
             document.add(tablePersonalInfo);
 
-            for (int j = 0; j < inspectionInfo.get(i).getQuestionGroups().size(); j++) {
-                System.out.println(inspectionInfo.get(i).getQuestionGroups().get(j));
+            if (inspectionInfo.get(i).getQuestionGroups().size() > 0) {
+                answerOptions(tableQuestions);
             }
-
-            answerOptions(tableQuestions);
 
             for (int j = 0; j < inspectionInfo.get(i).getQuestionGroups().size(); j++) {
                 ArrayList<Question> list = new ArrayList<>();
@@ -132,21 +122,25 @@ public class CreatePDF extends AppCompatActivity {
                     list.add(inspectionInfo.get(i).getQuestionGroups().get(j).getQuestions().get(k));
                     answers.add(inspectionInfo.get(i).getQuestionGroups().get(j).getQuestions().get(k).getAnswerID());
                 }
-                System.out.println("LISTE NUMMER " + j + " " + list);
                 createQuestions(tableQuestions, inspectionInfo.get(i).getQuestionGroups().get(j).getTitle(), list, answers);
 
             }
 
             document.add(tableQuestions);
 
-            document.add(new AreaBreak());
+            if (inspectionInfo.get(i).getQuestionGroups().size() > 0) {
+                document.add(new AreaBreak());
+            }
+
             document.add(new Paragraph("Måleresultater").setFontSize(18f).setPaddingTop(5f));
 
-            //TODO lav tabeller dynamiske
-            document.add(createTableKredsdetaljer(5));
-            document.add(createTableAfprovning(5));
-            document.add(createTableKortslutning(5));
-            document.add(createTableBemaerkninger());
+            
+            document.add(createTableKredsdetaljer(inspectionInfo.get(i)));
+            document.add(createTableAfprovning(inspectionInfo.get(i)));
+            document.add(createTableKortslutning(inspectionInfo.get(i)));
+            if(inspectionInfo.get(i).getPDFComment().size() > 0) {
+                document.add(createTableBemaerkninger(inspectionInfo.get(i)));
+            }
 
         }
 
@@ -363,7 +357,7 @@ public class CreatePDF extends AppCompatActivity {
         return questions;
     }
 
-    public Table createTableKredsdetaljer(int rows) {
+    public Table createTableKredsdetaljer(InspectionInformation information) {
         float[] columnWidth = {150, 150, 150, 150, 150, 75, 75, 150};
         Table table = new Table(columnWidth);
         table.setTextAlignment(TextAlignment.CENTER);
@@ -380,28 +374,28 @@ public class CreatePDF extends AppCompatActivity {
         table.addCell(new Cell().add(new Paragraph().add(new Text("R")).add(new Text("A").setFontSize(6))));
         table.addCell(new Cell().add(new Paragraph("Isolation")));
 
-        if (rows > 0) {
-            for (int i = 0; i < rows; i++) {
-                table.addCell(new Cell().add(new Paragraph("Lala").setTextAlignment(TextAlignment.LEFT)));
-                table.addCell(new Cell().add(new Paragraph("12" + " A").setTextAlignment(TextAlignment.RIGHT)));
-                table.addCell(new Cell().add(new Paragraph("Boom boom").setTextAlignment(TextAlignment.LEFT)));
-                table.addCell(new Cell().add(new Paragraph("54" + " mm\u00B2").setTextAlignment(TextAlignment.RIGHT)));
-                table.addCell(new Cell().add(new Paragraph("6" + " A").setTextAlignment(TextAlignment.RIGHT)));
-                table.addCell(new Cell(1, 2).add(new Paragraph("9" + " \u2126").setFont(freeSansFont).setTextAlignment(TextAlignment.RIGHT)));
-                table.addCell(new Cell().add(new Paragraph("25" + " M\u2126").setFont(freeSansFont).setTextAlignment(TextAlignment.RIGHT)));
-            }
+
+        for (int i = 0; i < information.getKredsdetaljer().size(); i++) {
+            table.addCell(new Cell().add(new Paragraph(information.getKredsdetaljer().get(i).getGroup()).setTextAlignment(TextAlignment.LEFT)));
+            table.addCell(new Cell().add(new Paragraph(information.getKredsdetaljer().get(i).getoB() + " A").setTextAlignment(TextAlignment.RIGHT)));
+            table.addCell(new Cell().add(new Paragraph(information.getKredsdetaljer().get(i).getKarakteristik()).setTextAlignment(TextAlignment.LEFT)));
+            table.addCell(new Cell().add(new Paragraph(information.getKredsdetaljer().get(i).getTvaersnit() + " mm\u00B2").setTextAlignment(TextAlignment.RIGHT)));
+            table.addCell(new Cell().add(new Paragraph(information.getKredsdetaljer().get(i).getMaksOB() + " A").setTextAlignment(TextAlignment.RIGHT)));
+            table.addCell(new Cell(1, 2).add(new Paragraph(information.getKredsdetaljer().get(i).getZsRaValue() + " \u2126").setFont(freeSansFont).setTextAlignment(TextAlignment.RIGHT)));
+            table.addCell(new Cell().add(new Paragraph(information.getKredsdetaljer().get(i).getIsolation() + " M\u2126").setFont(freeSansFont).setTextAlignment(TextAlignment.RIGHT)));
         }
+
 
         table.addCell(new Cell(1, 8).setBorder(Border.NO_BORDER).setHeight(10f));
         table.addCell(new Cell(1, 5).add(new Paragraph("Overgangsmodstand for jordingsleder og jordelektrode R:").setTextAlignment(TextAlignment.LEFT)).setBorderRight(Border.NO_BORDER));
-        table.addCell(new Cell(1, 3).add(new Paragraph("8954" + " \u2126").setFont(freeSansFont).setTextAlignment(TextAlignment.RIGHT)).setBorderLeft(Border.NO_BORDER));
+        table.addCell(new Cell(1, 3).add(new Paragraph(information.getOvergangsmodstandR() + " \u2126").setFont(freeSansFont).setTextAlignment(TextAlignment.RIGHT)).setBorderLeft(Border.NO_BORDER));
         table.addCell(new Cell(1, 8).setBorder(Border.NO_BORDER).setHeight(10f));
 
 
         return table;
     }
 
-    public Table createTableAfprovning(int rows) {
+    public Table createTableAfprovning(InspectionInformation information) {
         float[] columnWidth = {150, 150, 150, 150, 150, 150, 150, 150};
         Table table = new Table(columnWidth);
         table.setTextAlignment(TextAlignment.CENTER);
@@ -415,7 +409,6 @@ public class CreatePDF extends AppCompatActivity {
         table.addCell(new Cell(2, 2).add(new Paragraph("Pulserende overlejret \npå 6 mA d.c. (Type-A)")));
         table.addCell(new Cell(2, 1).add(new Paragraph("Prøve\u0002knap")));
 
-        //Trekant virker ikke
         table.addCell(new Cell().add(new Paragraph("RCD")));
         table.addCell(new Cell().add(new Paragraph().add(new Text("0º 1xI")).add(new Text("\u0394n").setFontSize(6))));
         table.addCell(new Cell().add(new Paragraph().add(new Text("180º 1xI")).add(new Text("\u0394n").setFontSize(6))));
@@ -425,24 +418,24 @@ public class CreatePDF extends AppCompatActivity {
         table.addCell(new Cell().add(new Paragraph().add(new Text("180º 1xI")).add(new Text("\u0394n").setFontSize(6))));
         table.addCell(new Cell().add(new Paragraph("OK")));
 
-        if (rows > 0) {
-            for (int i = 0; i < rows; i++) {
-                table.addCell(new Cell().add(new Paragraph("Lala").setTextAlignment(TextAlignment.LEFT)));
-                table.addCell(new Cell().add(new Paragraph("12").setTextAlignment(TextAlignment.RIGHT)));
-                table.addCell(new Cell().add(new Paragraph("Boom boom").setTextAlignment(TextAlignment.LEFT)));
-                table.addCell(new Cell().add(new Paragraph("54").setTextAlignment(TextAlignment.RIGHT)));
-                table.addCell(new Cell().add(new Paragraph("6").setTextAlignment(TextAlignment.RIGHT)));
-                table.addCell(new Cell().add(new Paragraph("9").setTextAlignment(TextAlignment.RIGHT)));
-                table.addCell(new Cell().add(new Paragraph("25").setTextAlignment(TextAlignment.RIGHT)));
-                table.addCell(new Cell().add(new Paragraph("AV!").setTextAlignment(TextAlignment.LEFT)));
-            }
+
+        for (int i = 0; i < information.getAfprøvningAfRCD().size(); i++) {
+            table.addCell(new Cell().add(new Paragraph(information.getAfprøvningAfRCD().get(i).getRCD()).setTextAlignment(TextAlignment.LEFT)));
+            table.addCell(new Cell().add(new Paragraph(information.getAfprøvningAfRCD().get(i).getField1()).setTextAlignment(TextAlignment.RIGHT)));
+            table.addCell(new Cell().add(new Paragraph(information.getAfprøvningAfRCD().get(i).getField2()).setTextAlignment(TextAlignment.LEFT)));
+            table.addCell(new Cell().add(new Paragraph(information.getAfprøvningAfRCD().get(i).getField3()).setTextAlignment(TextAlignment.RIGHT)));
+            table.addCell(new Cell().add(new Paragraph(information.getAfprøvningAfRCD().get(i).getField4()).setTextAlignment(TextAlignment.RIGHT)));
+            table.addCell(new Cell().add(new Paragraph(information.getAfprøvningAfRCD().get(i).getField5()).setTextAlignment(TextAlignment.RIGHT)));
+            table.addCell(new Cell().add(new Paragraph(information.getAfprøvningAfRCD().get(i).getField6()).setTextAlignment(TextAlignment.RIGHT)));
+            table.addCell(new Cell().add(new Paragraph(information.getAfprøvningAfRCD().get(i).getOK()).setTextAlignment(TextAlignment.LEFT)));
         }
+
         table.addCell(new Cell(1, 8).setBorder(Border.NO_BORDER).setHeight(10f));
 
         return table;
     }
 
-    public Table createTableKortslutning(int rows) {
+    public Table createTableKortslutning(InspectionInformation information) {
         float[] columnWidth = {150, 150, 150, 150, 150, 150, 150, 150};
         Table table = new Table(columnWidth);
         table.setTextAlignment(TextAlignment.CENTER);
@@ -459,31 +452,30 @@ public class CreatePDF extends AppCompatActivity {
         table.addCell(new Cell().add(new Paragraph().add(new Text("Δ").setFontSize(6).setFont(freeSansFont)).add(new Text("U"))));
         table.addCell(new Cell(1, 2).add(new Paragraph("Målt i punkt")));
 
-        if (rows > 0) {
-            for (int i = 0; i < rows; i++) {
-                table.addCell(new Cell().add(new Paragraph("Lala").setTextAlignment(TextAlignment.LEFT)));
-                table.addCell(new Cell().add(new Paragraph("12" + " kA").setTextAlignment(TextAlignment.RIGHT)));
-                table.addCell(new Cell(1, 2).add(new Paragraph("54").setTextAlignment(TextAlignment.RIGHT)));
-                table.addCell(new Cell().add(new Paragraph("Boooom").setTextAlignment(TextAlignment.LEFT)));
-                table.addCell(new Cell().add(new Paragraph("6" + " %").setTextAlignment(TextAlignment.RIGHT)));
-                table.addCell(new Cell(1, 2).add(new Paragraph("AV!").setTextAlignment(TextAlignment.LEFT)));
-            }
+
+        for (int i = 0; i < information.getKortslutningsstroms().size(); i++) {
+            table.addCell(new Cell().add(new Paragraph(information.getKortslutningsstroms().get(i).getK_gruppe()).setTextAlignment(TextAlignment.LEFT)));
+            table.addCell(new Cell().add(new Paragraph(information.getKortslutningsstroms().get(i).getK_KiK() + " kA").setTextAlignment(TextAlignment.RIGHT)));
+            table.addCell(new Cell(1, 2).add(new Paragraph(information.getKortslutningsstroms().get(i).getK_maaltIPunkt()).setTextAlignment(TextAlignment.RIGHT)));
+            table.addCell(new Cell().add(new Paragraph(information.getKortslutningsstroms().get(i).getS_gruppe()).setTextAlignment(TextAlignment.LEFT)));
+            table.addCell(new Cell().add(new Paragraph(information.getKortslutningsstroms().get(i).getS_U()).setTextAlignment(TextAlignment.RIGHT)));
+            table.addCell(new Cell(1, 2).add(new Paragraph(information.getKortslutningsstroms().get(i).getS_maaltIPunkt()).setTextAlignment(TextAlignment.LEFT)));
         }
+
         table.addCell(new Cell(1, 8).setBorder(Border.NO_BORDER).setHeight(10f));
 
         return table;
     }
 
-    public Table createTableBemaerkninger() {
+    public Table createTableBemaerkninger(InspectionInformation information) {
+
         float[] columnWidth = {1000};
         Table table = new Table(columnWidth);
         table.setPadding(0);
 
 
         table.addCell(new Cell().add(new Paragraph("Bemærkning:")).setBackgroundColor(ColorConstants.GRAY));
-        table.addCell(new Cell().add(new Paragraph("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales ante ex, ac egestas libero pellentesque nec. " +
-                "Vestibulum mattis imperdiet facilisis. Pellentesque aliquam magna quis luctus tristique. " +
-                "Proin ac interdum leo. Curabitur eget ultrices sapien, pretium ullamcorper ligula. Ut quis risus luctus, ").setMultipliedLeading(1.0f)));
+        table.addCell(new Cell().add(new Paragraph(information.getPDFComment().get(0)).setMultipliedLeading(1.0f).setItalic()));
 
         return table;
     }
@@ -499,6 +491,8 @@ public class CreatePDF extends AppCompatActivity {
             UserCase.setInspectionInformationFromDB(roomsIDs.get(i).getRoomID() , projectID);
 
             UserCase.appendAllQuestionsWithAnswersToInspectionInformation();
+
+            UserCase.appendAllMeasurements(InspectionInformation.getInstance().getInspectionInformationID());
 
             InspectionInformation.getInstance().removeAllUnansweredQuestions();
 
