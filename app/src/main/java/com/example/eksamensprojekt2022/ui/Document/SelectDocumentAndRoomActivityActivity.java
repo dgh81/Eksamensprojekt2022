@@ -82,6 +82,7 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
                     EditText installationIdentification = popUp.findViewById(R.id.InstallationIdentification);
                     EditText installationName = popUp.findViewById(R.id.InstallationName);
 
+
                     ArrayList<EditText> fields = new ArrayList<>();
 
                     fields.add(installationName);

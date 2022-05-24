@@ -1,7 +1,6 @@
 package com.example.eksamensprojekt2022;
 
 import com.example.eksamensprojekt2022.Objeckts.Answer;
-import com.example.eksamensprojekt2022.Objeckts.Inspection;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
 import com.example.eksamensprojekt2022.Objeckts.Question;
@@ -366,12 +365,70 @@ public class MySQL implements Runnable {
         }
         return rooms;
 
-
-
-
-
     }
 
+    public void createQuestion(int questionGroupID, String questionText) {
+
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("INSERT INTO Question (fk_questionGroup, question, fk_projectID) VALUES ('"
+                        + questionGroupID + "','"
+                        + questionText + "','"
+                        + InspectionInformation.getInstance().getInspectorInformationID() + "','"
+                        + "' )" );
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createQuestionGroup(String questionGroupTitle, int fk_inspectionInformationID) {
+
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("INSERT INTO QuestionGroup (title, fk_inspectionInformation) VALUES ('"
+                        + questionGroupTitle + "','"
+                        + fk_inspectionInformationID
+                        + "' )" );
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void createInspection(InspectionInformation inspectionInformation) {
+
+        inspectionInformation = InspectionInformation.getInstance();
+
+        for (int i = 0; i < inspectionInformation.getQuestionGroups().size(); i++) {
+
+            for (int j = 0; j < inspectionInformation.getQuestionGroups().get(i).getQuestions().size(); j++) {
+
+                Question q = inspectionInformation.getQuestionGroups().get(i).getQuestions().get(j);
+                System.out.println(q.getAnswerID());
+
+                //TODO call insert into sql: fk_questionID, fk_answerID, fk_inspectionInformationID
+                try {
+                    PreparedStatement statement = null;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        statement = connection.prepareStatement("INSERT INTO Inspection (fk_questionID, fk_answerID, fk_inspectionInformationID) VALUES ('"
+                                + q.getQuestionID() +"','"
+                                + q.getAnswerID() + "','"
+                                + inspectionInformation.getInspectorInformationID() + "' )" );
+                    }
+                    statement.execute();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
 
 
     public void createInspectionInformation( InspectionInformation inspectionInformation  ) {
@@ -445,13 +502,233 @@ public class MySQL implements Runnable {
         return answers;
     }
 
+/*
+    public String getOvergangsmodstand(int inspectionInformationID) {
+        String overgangsmodstand;
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Overgangsmodstand WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                overgangsmodstand = rs.getString("overgangsmodstand");
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return overgangsmodstand;
+    }
+
+    public void createOvergangsmodstand(String overgangsmodstand, int inspectionInformationID) {
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("INSERT INTO Overgangsmodstand (overgangsmodstand, fk_inspectionInformationID) VALUES ('"
+                        + overgangsmodstand + "', '"
+                        + inspectionInformationID() + "' )" );
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<AfproevningAfRCD> getAfproevningAfRCDer(int inspectionInformationID) {
+        ArrayList<AfproevningAfRCD> AfproevningAfRCDer  = new ArrayList<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM AfproevningAfRCD WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+
+                AfproevningAfRCD a = new AfproevningAfRCD(
+                        rs.getInt("ID"),
+                        rs.getString("RCD"),
+                        rs.getString("field1"),
+                        rs.getString("field2"),
+                        rs.getString("field3"),
+                        rs.getString("field4"),
+                        rs.getString("field5"),
+                        rs.getString("field6"),
+                        rs.getString("OK"),
+                        rs.getInt("fk_inspectionInformationID")
+                );
+                AfproevningAfRCDer.add(a);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return AfproevningAfRCDer;
+    }
+
+    public ArrayList<Kortslutningsstrom> getKortslutningsstromme(int inspectionInformationID) {
+        ArrayList<Kortslutningsstrom> Kortslutningsstromme  = new ArrayList<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Kortslutningsstrom WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Kortslutningsstrom a = new Kortslutningsstrom(
+                        rs.getInt("ID"),
+                        rs.getString("k_gruppe"),
+                        rs.getString("k_KiK"),
+                        rs.getString("k_maaltIPunkt"),
+                        rs.getString("s_gruppe"),
+                        rs.getString("s_U"),
+                        rs.getString("s_maaltIPunkt"),
+                        rs.getInt("fk_inspectionInformationID")
+                );
+                Kortslutningsstromme.add(a);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Kortslutningsstromme;
+    }
+
+    public ArrayList<Kredsdetaljer> getKredsdetaljer(int inspectionInformationID) {
+        ArrayList<Kredsdetaljer> kredsdetaljer  = new ArrayList<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Kredsdetaljer WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Kredsdetaljer a = new Kredsdetaljer(
+                        rs.getInt("ID"),
+                        rs.getString("gruppe"),
+                        rs.getString("oB"),
+                        rs.getString("karakteristik"),
+                        rs.getString("tvaersnit"),
+                        rs.getString("MaksOB"),
+                        rs.getString("RZBoolean"),
+                        rs.getString("zsRa"),
+                        rs.getString("isolation"),
+                        rs.getInt("fk_inspectionInformationID")
+                );
+                kredsdetaljer.add(a);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return kredsdetaljer;
+    }
+
+    public void createAfproevningAfRCD(AfproevningAfRCD afproevningAfRCD) {
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("INSERT INTO AfproevningAfRCD (RCD, field1 , field2, field3, field4, field5, field6, OK, fk_inspectionInformationID) VALUES ('"
+                        + afproevningAfRCD.getRCD() +"','"
+                        + afproevningAfRCD.getField1()  + "','"
+                        + afproevningAfRCD.getField2()  + "','"
+                        + afproevningAfRCD.getField3()  + "','"
+                        + afproevningAfRCD.getField4()  + "','"
+                        + afproevningAfRCD.getField5()  + "','"
+                        + afproevningAfRCD.getField6()  + "','"
+                        + afproevningAfRCD.getOK()  + "','"
+                        + afproevningAfRCD.getFk_inspectionInformationID() + "' )" );
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createKortslutningsstrom(Kortslutningsstrom kortslutningsstrom) {
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("INSERT INTO AfproevningAfRCD (RCD, field1 , field2, field3, field4, field5, field6, OK, fk_inspectionInformationID) VALUES ('"
+                        + kortslutningsstrom.getK_gruppe() +"','"
+                        + kortslutningsstrom.getK_KiK()  + "','"
+                        + kortslutningsstrom.getK_maaltIPunkt()  + "','"
+                        + kortslutningsstrom.getS_gruppe()  + "','"
+                        + kortslutningsstrom.getS_U()  + "','"
+                        + kortslutningsstrom.getS_maaltIPunkt()  + "','"
+                        + kortslutningsstrom.getFk_inspectionInformationID() + "' )" );
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createKredsdetaljer(Kredsdetaljer kredsdetaljer) {
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("INSERT INTO Kredsdetaljer (gruppe, oB , karakteristik, tvaersnit, maksOB, RZBoolean, zsRa, isolation, fk_inspectionInformationID) VALUES ('"
+                        + kredsdetaljer.getGruppe() +"','"
+                        + kredsdetaljer.getOB()  + "','"
+                        + kredsdetaljer.getKarakteristik()  + "','"
+                        + kredsdetaljer.getTvaersnit()  + "','"
+                        + kredsdetaljer.getMaksOB()  + "','"
+                        + kredsdetaljer.getRZBoolean()  + "','"
+                        + kredsdetaljer.getZsRa()  + "','"
+                        + kredsdetaljer.getIsolation()  + "','"
+                        + kredsdetaljer.getFk_inspectionInformationID() + "' )" );
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }*/
 
 
+    //TODO Omdøb til deletePicture etc. og opret klasse:
+    public void deleteBitmapString(int inspectionInformationID) {
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("DELETE FROM Picture WHERE fk_inspectionInformationID ='" + inspectionInformationID + "'");
+            }
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
+    public void createBitmapString(String bitmapString, int inspectionInformationID, String pictureText) {
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("INSERT INTO Picture (base64, fk_inspectionInformationID, pictureText) VALUES ('"
+                        + bitmapString +"','"
+                        + inspectionInformationID +"','"
+                        + pictureText + "' )" );
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<String> getBitmapString(int inspectionInformationID) {
+        ArrayList<String> base64Strings = new ArrayList<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Picture WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                base64Strings.add(rs.getString("base64"));
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return base64Strings;
+    }
 
 
-
+    public ArrayList<String> getPDFComments(int inspectionInformationID) {
+        ArrayList<String> pdfComments = new ArrayList<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM PDFComment WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                pdfComments.add(rs.getString("pdfComment"));
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pdfComments;
+    }
 
 
 
