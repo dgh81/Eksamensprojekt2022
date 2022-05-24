@@ -76,6 +76,14 @@ public class Question {
         this.answerID = answerID;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "Question{" +
+                "questionID=" + questionID +
+                ", fk_questionGroup=" + fk_questionGroup +
+                ", question='" + question + '\'' +
+                ", answerID=" + answerID +
+                ", comment='" + comment + '\'' +
+                '}';
+    }
 }

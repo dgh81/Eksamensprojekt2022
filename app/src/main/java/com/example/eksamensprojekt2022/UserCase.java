@@ -64,12 +64,12 @@ public class UserCase {
 
     public static void appendAllQuestionsWithAnswersToInspectionInformation() {
 
-        ArrayList<QuestionGroup> questionGroups = mySQL.getQuestionGroupTitles(InspectionInformation.instance.getInspectorInformationID());
+        ArrayList<QuestionGroup> questionGroups = mySQL.getQuestionGroupTitles(InspectionInformation.instance.getInspectionInformationID());
 
-        ArrayList<Answer> answers = mySQL.getAllAnswersFromInspectionInformationID(InspectionInformation.getInstance().getInspectorInformationID());
+        ArrayList<Answer> answers = mySQL.getAllAnswersFromInspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID());
 
         for (QuestionGroup group : questionGroups ) {
-            ArrayList<Question> questions =  mySQL.getQuestionsFromQuestionGroup(group , InspectionInformation.getInstance().getInspectorInformationID() );
+            ArrayList<Question> questions =  mySQL.getQuestionsFromQuestionGroup(group , InspectionInformation.getInstance().getInspectionInformationID() );
 
             for (Question question: questions ) {
                 group.getQuestions().add(question);
@@ -90,6 +90,17 @@ public class UserCase {
         InspectionInformation.getInstance().setQuestionGroups(questionGroups);
 
     }
+
+    public static void appendAllMeasurements(int fk_inspectionInformationID) {
+
+        InspectionInformation.getInstance().setAfprøvningAfRCD(mySQL.getAfproevningAfRCDer(fk_inspectionInformationID));
+        InspectionInformation.getInstance().setKredsdetaljer(mySQL.getKredsdetaljer(fk_inspectionInformationID));
+        InspectionInformation.getInstance().setKortslutningsstroms(mySQL.getKortslutningsstromme(fk_inspectionInformationID));
+        InspectionInformation.getInstance().setOvergangsmodstandR(mySQL.getOvergangsmodstand(fk_inspectionInformationID));
+
+    }
+
+
 
     public static void createInspectionInDataBase() {
 

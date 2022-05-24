@@ -43,8 +43,7 @@ public class Question extends Fragment {
         this.groupIndex = groupIndex;
         this.questionIndex = questionIndex;
 
-        System.out.println(groupIndex);
-        System.out.println(questionIndex);
+
 
     }
 
@@ -64,7 +63,7 @@ public class Question extends Fragment {
 
         dotLayout = view.findViewById(R.id.dots);
 
-        sliderAdapter = new SliderAdapter(getActivity() , slideVeiwPager , InspectionInformation.getInstance());
+        sliderAdapter = new SliderAdapter(getActivity() , slideVeiwPager );
 
         PagerAdapter headerSlideAdapter = new HeaderSlideAdapter(getActivity() , headlineBox );
 
@@ -78,10 +77,15 @@ public class Question extends Fragment {
 
         updateDots(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex));
 
+        System.out.println(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex)  + " current item");
+
         slideVeiwPager.setCurrentItem(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex)  );
+
 
         return view;
     }
+
+
 
     ViewPager.OnPageChangeListener listener = new ViewPager.OnPageChangeListener() {
 
@@ -103,8 +107,8 @@ public class Question extends Fragment {
                 s.getEditText().clearFocus();
 
             }
-            if ( InspectionInformation.getInstance().getQuestionIndexLeftOverAfterGetQuestionGroupIndexByQuestionID(position) ==   InspectionInformation.getInstance().getQuestionGroups().get(groupIndex).getQuestions().size() ) {
-            }
+
+
             if (dots != null)
                 updateDots(position);
 
@@ -126,11 +130,24 @@ public class Question extends Fragment {
 
     public void addDots() {
 
-        System.out.println(InspectionInformation.getInstance().getQuestionGroups().get(groupIndex).getQuestions().size() + " size");
+        int dotsSize = 0;
 
-        System.out.println(groupIndex + " groupIndex");
+        if (groupIndex < InspectionInformation.getInstance().getQuestionGroups().size() ) {
+            dotsSize = InspectionInformation.getInstance().getQuestionGroups().get(groupIndex).getQuestions().size();
+        } else if (groupIndex == InspectionInformation.getInstance().getQuestionGroups().size()  + 1 ) {
+            dotsSize = InspectionInformation.getInstance().getKredsdetaljer().size();
+        } else if (groupIndex == InspectionInformation.getInstance().getQuestionGroups().size() + 2){
+            dotsSize = 1;
+        } else if (groupIndex == InspectionInformation.getInstance().getQuestionGroups().size() + 3) {
+            dotsSize = InspectionInformation.getInstance().getAfprøvningAfRCD().size();
+        } else {
+            dotsSize = InspectionInformation.getInstance().getKortslutningsstroms().size();
+        }
 
-        dots = new TextView[InspectionInformation.getInstance().getQuestionGroups().get(groupIndex).getQuestions().size()];
+        System.out.println(InspectionInformation.getInstance().getQuestionGroups().size());
+        System.out.println(dotsSize + " dotsize" + groupIndex + " groupIndex");
+
+        dots = new TextView[dotsSize];
         dotLayout.removeAllViews();
 
         System.out.println(dots.length + " length");
@@ -142,14 +159,6 @@ public class Question extends Fragment {
             dots[i].setTextSize(35);
             dotLayout.addView(dots[i]);
         }
-
-        TextView header = view.findViewById(R.id.headline);
-
-        header.setText(InspectionInformation.getInstance().getQuestionGroups().get(groupIndex).getTitle());
-
-
-
-
     }
 
 
@@ -158,6 +167,9 @@ public class Question extends Fragment {
     public void updateDots(int pos) {
 
         if (!InspectionInformation.getInstance().isTotalIndexInsideQuestionGroup(pos , groupIndex)) {
+
+            System.out.println("false");
+
             updateGroup(pos);
         }
 
@@ -176,7 +188,6 @@ public class Question extends Fragment {
         groupIndex = InspectionInformation.getInstance().getQuestionGroupIndexByQuestionID(id);
 
         addDots();
-
 
 
     }
