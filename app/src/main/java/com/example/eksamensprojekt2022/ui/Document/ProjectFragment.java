@@ -77,12 +77,13 @@ public class ProjectFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
 
-
                 UserCase.setInspectionInformationFromDB( rooms.get(pos).getRoomID() , projectInformation.getProjectInformationID());
 
                 UserCase.appendAllQuestionsWithAnswersToInspectionInformation();
 
-                System.out.println(InspectionInformation.getInstance().getInspectorInformationID() + " FROM Trans");
+                UserCase.appendAllMeasurements(InspectionInformation.getInstance().getInspectionInformationID());
+
+                System.out.println(InspectionInformation.getInstance().getInspectionInformationID() + " FROM Trans");
 
                 System.out.println(InspectionInformation.getInstance());
 

@@ -94,7 +94,7 @@ public class CreatePDF extends AppCompatActivity {
         ArrayList<String> questionsIndbygningsarmaturer = mysql.getQuestionsFromGroup(4);
         ArrayList<String> questionsBeskyttelsesledere = mysql.getQuestionsFromGroup(5);
         ArrayList<String> questionsFejlbeskyttelse = mysql.getQuestionsFromGroup(6);
-        ArrayList<QuestionGroup> questionGroupTitle = mysql.getQuestionGroupTitles(InspectionInformation.instance.getInspectorInformationID());
+        ArrayList<QuestionGroup> questionGroupTitle = mysql.getQuestionGroupTitles(InspectionInformation.instance.getInspectionInformationID());
 
         answerOptions(questions);
 
