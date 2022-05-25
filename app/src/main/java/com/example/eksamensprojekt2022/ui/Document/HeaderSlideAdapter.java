@@ -15,6 +15,8 @@ import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.R;
 import com.google.android.material.resources.TextAppearanceFontCallback;
 
+import java.util.ArrayList;
+
 public class HeaderSlideAdapter extends PagerAdapter {
 
 
@@ -34,7 +36,18 @@ public class HeaderSlideAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return InspectionInformation.getInstance().getQuestionGroups().size();
+
+        int size = InspectionInformation.getInstance().getQuestionGroups().size();
+
+        if (InspectionInformation.getInstance().getKredsdetaljer().size() > 0 ) { size ++; }
+        if (InspectionInformation.getInstance().getAfprøvningAfRCD().size() > 0) {size ++;}
+        if (InspectionInformation.getInstance().getKortslutningsstroms().size() > 0) {size ++;}
+
+        // there is always a Overgangsmodstand for jordingsleder og jordelektrode R
+        size ++;
+
+        return  size;
+
     }
 
     @Override
@@ -50,13 +63,35 @@ public class HeaderSlideAdapter extends PagerAdapter {
 
         TextView headlineText = view.findViewById(R.id.header_title);
 
-        headlineText.setText(InspectionInformation.getInstance().getQuestionGroups().get(position).getTitle());
+        ArrayList<String> titles = new ArrayList<>();
+
+        titles.add("Kredsdetaljer");
+        titles.add("Overgangsmodstand for jordingsleder og jordelektrode R: ");
+        titles.add("Afprøvning af RCD’er");
+        titles.add("Kortslutningsstrøm");
+
+      //  if (position == InspectionInformation.getInstance().getQuestionGroups().size() ) {position --;}
+
+
+        if (position < InspectionInformation.getInstance().getQuestionGroups().size() ) {
+
+            headlineText.setText(InspectionInformation.getInstance().getQuestionGroups().get(position).getTitle());
+
+        } else if (position == InspectionInformation.getInstance().getQuestionGroups().size()    ) {
+            headlineText.setText(titles.get(0));
+        } else if (position == InspectionInformation.getInstance().getQuestionGroups().size() + 1 ) {
+            headlineText.setText(titles.get(1));
+        } else if (position == InspectionInformation.getInstance().getQuestionGroups().size() + 2 ) {
+            headlineText.setText(titles.get(2));
+        } else if (position == InspectionInformation.getInstance().getQuestionGroups().size() + 3 ) {
+            headlineText.setText(titles.get(3));
+        }
 
         headlineText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                System.out.println(position  + " title clicked");
+
 
             }
         });

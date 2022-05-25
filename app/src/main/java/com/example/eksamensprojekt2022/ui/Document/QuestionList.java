@@ -56,6 +56,7 @@ public class QuestionList extends Fragment {
             listView.expandGroup(startPoint);
         }
 
+        //TODO: gør at min side får en notifyDataSetChanged() når man trykker tilbage enten når popUp åbner eller tilabge fra question siden1½½½½½½½½½½½½½½jh
 
         listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
@@ -121,6 +122,7 @@ public class QuestionList extends Fragment {
                         }
                         InspectionInformation.getInstance().getKredsdetaljer().add(new Kredsdetaljer());
                         listViewAdapter.notifyDataSetChanged();
+
 
                     } else {
 

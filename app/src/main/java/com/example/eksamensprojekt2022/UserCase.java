@@ -1,7 +1,10 @@
 package com.example.eksamensprojekt2022;
 
+import com.example.eksamensprojekt2022.Objeckts.AfproevningAfRCD;
 import com.example.eksamensprojekt2022.Objeckts.Answer;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
+import com.example.eksamensprojekt2022.Objeckts.Kortslutningsstrom;
+import com.example.eksamensprojekt2022.Objeckts.Kredsdetaljer;
 import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
 import com.example.eksamensprojekt2022.Objeckts.Question;
 import com.example.eksamensprojekt2022.Objeckts.QuestionGroup;
@@ -112,6 +115,7 @@ public class UserCase {
 
         InspectionInformation.getInstance().getQuestionGroups().clear();
 
+
     }
 
     public static void createNewQuestionInsideQuestionGroup(int questionGroupID , String question , int InspectionInformationID) {
@@ -146,5 +150,36 @@ public class UserCase {
     }
 
 
+    public static void createMeasurementsInDataBase() {
 
+        for (Kredsdetaljer kredsdetaljer: InspectionInformation.getInstance().getKredsdetaljer()) {
+            kredsdetaljer.setFk_inspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID());
+            mySQL.createKredsdetaljer(kredsdetaljer);
+        }
+
+
+
+        for (AfproevningAfRCD afproevningAfRCD: InspectionInformation.getInstance().getAfprøvningAfRCD() ) {
+            afproevningAfRCD.setFk_inspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID());
+            mySQL.createAfproevningAfRCD(afproevningAfRCD);
+        }
+
+
+
+
+        for (Kortslutningsstrom kortslutningsstrom: InspectionInformation.getInstance().getKortslutningsstroms() ) {
+            kortslutningsstrom.setFk_inspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID());
+            mySQL.createKortslutningsstrom(kortslutningsstrom);
+        }
+
+
+        mySQL.createOvergangsmodstand( InspectionInformation.getInstance().getOvergangsmodstandR() , InspectionInformation.getInstance().getInspectionInformationID() );
+
+        InspectionInformation.getInstance().getKredsdetaljer().clear();
+        InspectionInformation.getInstance().getAfprøvningAfRCD().clear();
+        InspectionInformation.getInstance().getKortslutningsstroms().clear();
+        InspectionInformation.getInstance().setOvergangsmodstandR("");
+
+
+    }
 }

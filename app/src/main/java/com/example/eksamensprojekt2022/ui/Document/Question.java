@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.R;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 
@@ -28,6 +29,7 @@ public class Question extends Fragment {
     private ViewPager slideVeiwPager;
     private ViewPager headlineBox;
     private LinearLayout dotLayout;
+    private PagerAdapter headerSlideAdapter;
 
     private TextView[] dots;
 
@@ -65,7 +67,7 @@ public class Question extends Fragment {
 
         sliderAdapter = new SliderAdapter(getActivity() , slideVeiwPager );
 
-        PagerAdapter headerSlideAdapter = new HeaderSlideAdapter(getActivity() , headlineBox );
+        headerSlideAdapter = new HeaderSlideAdapter(getActivity() , headlineBox );
 
         headlineBox.setAdapter(headerSlideAdapter);
 
@@ -73,14 +75,41 @@ public class Question extends Fragment {
 
         slideVeiwPager.addOnPageChangeListener(listener);
 
-        addDots();
+        headlineBox.addOnPageChangeListener(headerListener);
 
-        updateDots(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex));
 
-        System.out.println(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex)  + " current item");
 
-        slideVeiwPager.setCurrentItem(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex)  );
 
+
+
+
+        headerIsUpdateFromPageMoving = true;
+
+        if (groupIndex >= InspectionInformation.getInstance().getQuestionGroups().size()) {
+            groupIndex --;
+            addDots();
+            updateDots(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex));
+            slideVeiwPager.setCurrentItem(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex));
+            headlineBox.setCurrentItem( InspectionInformation.getInstance().getQuestionGroupIndexByQuestionID(  InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex) ));
+            groupIndex ++;
+
+        } else {
+            addDots();
+            updateDots(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex));
+            slideVeiwPager.setCurrentItem(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex));
+            headlineBox.setCurrentItem( InspectionInformation.getInstance().getQuestionGroupIndexByQuestionID(  InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex) ));
+        }
+
+
+
+
+
+
+
+
+
+
+        headerIsUpdateFromPageMoving = false;
 
         return view;
     }
@@ -98,15 +127,23 @@ public class Question extends Fragment {
         @Override
         public void onPageSelected(int position) {
 
-            com.google.android.material.textfield.TextInputLayout s =  slideVeiwPager.findViewById(R.id.notes);
+            ArrayList<com.google.android.material.textfield.TextInputLayout> textFields = new ArrayList<>();
 
-          //  s.clearFocus();
+            textFields.add(slideVeiwPager.findViewById(R.id.notes));
+            textFields.add(slideVeiwPager.findViewById(R.id.group));
+            textFields.add(slideVeiwPager.findViewById(R.id.overgangsmodstandR));
+            textFields.add(slideVeiwPager.findViewById(R.id.RCD));
+            textFields.add(slideVeiwPager.findViewById(R.id.k_group));
 
-            if (s != null) {
-
-                s.getEditText().clearFocus();
-
+            for (com.google.android.material.textfield.TextInputLayout text : textFields) {
+                if (text != null) {
+                    text.requestFocus();
+                    text.clearFocus();
+                }
             }
+
+
+
 
 
             if (dots != null)
@@ -120,8 +157,30 @@ public class Question extends Fragment {
         }
 
 
+
+
     };
 
+        ViewPager.OnPageChangeListener headerListener = new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+
+                if (!headerIsUpdateFromPageMoving) {
+                    slideVeiwPager.setCurrentItem(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(position, 0), true);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
 
 
 
@@ -134,11 +193,11 @@ public class Question extends Fragment {
 
         if (groupIndex < InspectionInformation.getInstance().getQuestionGroups().size() ) {
             dotsSize = InspectionInformation.getInstance().getQuestionGroups().get(groupIndex).getQuestions().size();
-        } else if (groupIndex == InspectionInformation.getInstance().getQuestionGroups().size()  + 1 ) {
+        } else if (groupIndex == InspectionInformation.getInstance().getQuestionGroups().size()   ) {
             dotsSize = InspectionInformation.getInstance().getKredsdetaljer().size();
-        } else if (groupIndex == InspectionInformation.getInstance().getQuestionGroups().size() + 2){
+        } else if (groupIndex == InspectionInformation.getInstance().getQuestionGroups().size() + 1){
             dotsSize = 1;
-        } else if (groupIndex == InspectionInformation.getInstance().getQuestionGroups().size() + 3) {
+        } else if (groupIndex == InspectionInformation.getInstance().getQuestionGroups().size() + 2) {
             dotsSize = InspectionInformation.getInstance().getAfprøvningAfRCD().size();
         } else {
             dotsSize = InspectionInformation.getInstance().getKortslutningsstroms().size();
@@ -168,7 +227,11 @@ public class Question extends Fragment {
 
         if (!InspectionInformation.getInstance().isTotalIndexInsideQuestionGroup(pos , groupIndex)) {
 
+            updateHeadline(pos);
+
             System.out.println("false");
+
+
 
             updateGroup(pos);
         }
@@ -183,6 +246,22 @@ public class Question extends Fragment {
             dots[InspectionInformation.getInstance().getQuestionIndexLeftOverAfterGetQuestionGroupIndexByQuestionID(pos)].setTextColor(getResources().getColor(R.color.selectedDotColor));
         }
     }
+
+    private boolean headerIsUpdateFromPageMoving = false;
+
+
+
+    public void updateHeadline(int position) {
+
+
+        headerIsUpdateFromPageMoving = true;
+
+        headlineBox.setCurrentItem( InspectionInformation.getInstance().getQuestionGroupIndexByQuestionID(position) , false  );
+
+        headerIsUpdateFromPageMoving = false;
+
+    }
+
 
     public void updateGroup(int id) {
         groupIndex = InspectionInformation.getInstance().getQuestionGroupIndexByQuestionID(id);

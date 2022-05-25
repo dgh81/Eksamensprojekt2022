@@ -16,13 +16,13 @@ public class InspectionInformation {
 
 
 
-    ArrayList<Kredsdetaljer> kredsdetaljer = new ArrayList<>();
+    ArrayList<Kredsdetaljer> kredsdetaljer;
 
-    String overgangsmodstandR;
+    String overgangsmodstandR = "";
 
-    ArrayList<AfproevningAfRCD> afprøvningAfRCD = new ArrayList<>();
+    ArrayList<AfproevningAfRCD> afprøvningAfRCD;
 
-    ArrayList<Kortslutningsstrom> kortslutningsstroms = new ArrayList<>();
+    ArrayList<Kortslutningsstrom> kortslutningsstroms;
 
 
     public static InspectionInformation instance;
@@ -106,6 +106,7 @@ public class InspectionInformation {
     public String getOvergangsmodstandR() {
         return overgangsmodstandR;
     }
+
 
     public ArrayList<AfproevningAfRCD> getAfprøvningAfRCD() {
         return afprøvningAfRCD;
@@ -192,22 +193,22 @@ public class InspectionInformation {
         if (i - kredsdetaljer.size() + 1   > 0 ) {
             i -= kredsdetaljer.size();
         } else {
-            return questionGroups.size() + 1 ;
+            return questionGroups.size()  ;
         }
 
         if (i  - 1  >= 0 ) {
             i --;
         } else {
-            return questionGroups.size() + 2;
+            return questionGroups.size() + 1;
         }
 
         if (i - afprøvningAfRCD.size() + 1  > 0 ) {
 
         } else {
-            return questionGroups.size() + 3;
+            return questionGroups.size() + 2;
         }
 
-        return questionGroups.size() + 4;
+        return questionGroups.size() + 3;
     }
 
 
@@ -258,13 +259,15 @@ public class InspectionInformation {
 
         int index = 0;
 
+        int size = questionGroups.size();
+
         for (int i = 0; i < group && i < questionGroups.size()   ; i++) {
 
             index += questionGroups.get(i).getQuestions().size();
 
         }
 
-        for (int i = questionGroups.size(); i < (questionGroups.size() + 4) && i < group   ; i++) {
+        for (int i = questionGroups.size(); i < (questionGroups.size() + 4) && i <= group   ; i++) {
 
             if (i == questionGroups.size() + 1)  {index += kredsdetaljer.size();  }
             if (i == questionGroups.size() + 2 ) {index ++ ; }
@@ -280,6 +283,9 @@ public class InspectionInformation {
 
         return index;
     }
+
+
+
 
     public boolean isTotalIndexInsideQuestionGroup(int index, int group) {
 

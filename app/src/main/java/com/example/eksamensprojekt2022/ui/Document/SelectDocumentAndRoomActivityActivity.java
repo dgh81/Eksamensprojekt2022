@@ -16,8 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.example.eksamensprojekt2022.LoginAuthentication;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
@@ -347,22 +347,44 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
 
     }
 
+    public boolean savePressed = false;
+
+
+    public boolean isSavePressed() {
+        return savePressed;
+    }
+
+    public void setSavePressed(boolean savePressed) {
+        this.savePressed = savePressed;
+    }
+
     @Override
     public void onBackPressed() {
 
         System.out.println("back pressed");
 
-        if (InspectionInformation.getInstance().getQuestionGroups() == null || InspectionInformation.getInstance().getQuestionGroups().size() == 0 ||
-                getSupportFragmentManager().findFragmentById(R.id.frameLayout).toString().equals("Question")  ) {
+        if (InspectionInformation.getInstance().getQuestionGroups() == null || InspectionInformation.getInstance().getQuestionGroups().size() == 0
+                  ) {
 
             System.out.println("we go back");
 
             super.onBackPressed();
 
+        } else if (getSupportFragmentManager().findFragmentById(R.id.frameLayout).toString().equals("Question")) {
+
+
+
+
+            super.onBackPressed();
         } else {
 
            // AlertDialog.Builder builder = new AlertDialog.Builder(SelectDocumentAndRoomActivityActivity.this);
             //final View popUp = getLayoutInflater().inflate(R.layout.pop_up_save_changes, null);
+
+           QuestionList questionList =  (QuestionList) getSupportFragmentManager().findFragmentById(R.id.frameLayout);
+
+           questionList.listViewAdapter.notifyDataSetChanged();
+
 
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -372,6 +394,8 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
 
                             UserCase.createInspectionInDataBase();
+
+                            UserCase.createMeasurementsInDataBase();
 
                             onBackPressed();
 

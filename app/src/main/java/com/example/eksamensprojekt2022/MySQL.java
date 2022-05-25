@@ -682,6 +682,85 @@ public class MySQL implements Runnable {
 
 
 
+    public void createAfproevningAfRCD(AfproevningAfRCD afproevningAfRCD) {
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("INSERT INTO AfproevningAfRCD (RCD, field1 , field2, field3, field4, field5, field6, OK, fk_inspectionInformationID) VALUES ('"
+                        + afproevningAfRCD.getRCD() +"','"
+                        + afproevningAfRCD.getField1()  + "','"
+                        + afproevningAfRCD.getField2()  + "','"
+                        + afproevningAfRCD.getField3()  + "','"
+                        + afproevningAfRCD.getField4()  + "','"
+                        + afproevningAfRCD.getField5()  + "','"
+                        + afproevningAfRCD.getField6()  + "','"
+                        + afproevningAfRCD.getOK()  + "','"
+                        + afproevningAfRCD.getFk_inspectionInformationID() + "' )" );
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createKortslutningsstrom(Kortslutningsstrom kortslutningsstrom) {
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("INSERT INTO AfproevningAfRCD (RCD, field1 , field2, field3, field4, field5, field6, OK, fk_inspectionInformationID) VALUES ('"
+                        + kortslutningsstrom.getK_gruppe() +"','"
+                        + kortslutningsstrom.getK_KiK()  + "','"
+                        + kortslutningsstrom.getK_maaltIPunkt()  + "','"
+                        + kortslutningsstrom.getS_gruppe()  + "','"
+                        + kortslutningsstrom.getS_U()  + "','"
+                        + kortslutningsstrom.getS_maaltIPunkt()  + "','"
+                        + kortslutningsstrom.getFk_inspectionInformationID() + "' )" );
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createKredsdetaljer(Kredsdetaljer kredsdetaljer) {
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("INSERT INTO Kredsdetaljer (gruppe, oB , karakteristik, tvaersnit, maksOB, zsRa, isolation, RZboolean, fk_inspectionInformationID) VALUES ('"
+                        + kredsdetaljer.getGroup() +"','"
+                        + kredsdetaljer.getoB()  + "','"
+                        + kredsdetaljer.getKarakteristik()  + "','"
+                        + kredsdetaljer.getTvaersnit()  + "','"
+                        + kredsdetaljer.getMaksOB()  + "','"
+                        + kredsdetaljer.getZsRa()  + "','"
+                        + kredsdetaljer.getIsolation()  + "','"
+                        + kredsdetaljer.iszSRa()  + "','"
+                        + kredsdetaljer.getFk_inspectionInformationID() + "' )" );
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public void createOvergangsmodstand(String overgangsmodstand, int inspectionInformationID) {
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("INSERT INTO Overgangsmodstand (overgangsmodstand, fk_inspectionInformationID) VALUES ('"
+                        + overgangsmodstand + "', '"
+                        + inspectionInformationID + "' )" );
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 }
 
 

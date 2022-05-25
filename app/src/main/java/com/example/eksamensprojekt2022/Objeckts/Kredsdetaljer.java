@@ -6,11 +6,11 @@ public class Kredsdetaljer {
     String oB;
     String karakteristik;
     String tvaersnit;
-    String MaksOB;
+    String maksOB;
     String zsRa;
     // zs = false
     // ra = true
-    boolean zSRa;
+    boolean zSRa = false;
     String isolation;
     int fk_inspectionInformationID;
 
@@ -25,14 +25,93 @@ public class Kredsdetaljer {
         this.oB = oB;
         this.karakteristik = karakteristik;
         this.tvaersnit = tvaersnit;
-        MaksOB = maksOB;
+        this.maksOB = maksOB;
         this.zsRa = zsRa;
         this.isolation = isolation;
         this.fk_inspectionInformationID = fk_inspectionInformationID;
     }
 
 
+    public int getID() {
+        return ID;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public String getoB() {
+        return oB;
+    }
+
+    public String getKarakteristik() {
+        return karakteristik;
+    }
+
+    public String getTvaersnit() {
+        return tvaersnit;
+    }
+
+    public String getMaksOB() {
+        return maksOB;
+    }
+
+    public String getZsRa() {
+        return zsRa;
+    }
+
+    public int  iszSRa() {
+        return zSRa ? 1 : 0 ;
+    }
+
+    public String getIsolation() {
+        return isolation;
+    }
+
+    public int getFk_inspectionInformationID() {
+        return fk_inspectionInformationID;
+    }
 
 
 
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public void setoB(String oB) {
+        this.oB = oB;
+    }
+
+    public void setKarakteristik(String karakteristik) {
+        this.karakteristik = karakteristik;
+    }
+
+    public void setTvaersnit(String tvaersnit) {
+        this.tvaersnit = tvaersnit;
+    }
+
+    public void setMaksOB(String maksOB) {
+        this.maksOB = maksOB;
+    }
+
+    public void setZsRa(String zsRa) {
+        this.zsRa = zsRa;
+    }
+
+    public void setzSRa(boolean zSRa) {
+        this.zSRa = zSRa;
+    }
+
+    public void setIsolation(String isolation) {
+        this.isolation = isolation;
+    }
+
+    public void setFk_inspectionInformationID(int fk_inspectionInformationID) {
+        this.fk_inspectionInformationID = fk_inspectionInformationID;
+    }
 }

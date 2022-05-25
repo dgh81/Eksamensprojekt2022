@@ -42,7 +42,6 @@ public class DocumentFragment extends Fragment {
 
          getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
 
-
         ArrayList<ProjectInformation> projectInformation =  UserCase.getAllProjectInformation();
 
         textList.clear();
@@ -53,6 +52,8 @@ public class DocumentFragment extends Fragment {
 
 
         arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_expandable_list_item_1, textList);
+
+        arrayAdapter.notifyDataSetChanged();
 
         listView.setAdapter(arrayAdapter);
 
