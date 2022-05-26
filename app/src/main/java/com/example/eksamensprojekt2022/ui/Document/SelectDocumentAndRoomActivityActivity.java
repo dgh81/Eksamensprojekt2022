@@ -373,8 +373,6 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
         } else if (getSupportFragmentManager().findFragmentById(R.id.frameLayout).toString().equals("Question")) {
 
 
-
-
             super.onBackPressed();
         } else {
 

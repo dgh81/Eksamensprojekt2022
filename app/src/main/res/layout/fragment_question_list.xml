@@ -14,7 +14,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/expanded_list"
-            android:layoutDirection="rtl"/>
+            android:layoutDirection="locale"
+            android:groupIndicator="@null"
+            />
 
 
 

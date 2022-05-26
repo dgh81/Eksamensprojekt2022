@@ -9,13 +9,14 @@
         android:id="@+id/questionText"
         android:layout_width="match_parent"
 
-        android:layout_height="275dp"
+        android:layout_height="150dp"
         android:layout_centerHorizontal="true"
         android:autoSizeMaxTextSize="30dp"
         android:autoSizeTextType="uniform"
         android:fontFamily="sans-serif-light"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
+        android:layout_marginBottom="15dp"
         android:text="This is a long text to  simulate a long text to see how it will handle a long text and if there should be a limit to how long the text can be i guess this is long enough for all? Or the text should just get smaller as the question gets larger it does good  "
         android:textAlignment="center" />
 
