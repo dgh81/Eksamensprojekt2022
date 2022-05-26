@@ -410,7 +410,7 @@ public class MySQL implements Runnable {
                 statement = connection.prepareStatement("INSERT INTO Question (fk_questionGroup, question, fk_projectID) VALUES ('"
                         + questionGroupID + "','"
                         + questionText + "','"
-                        + InspectionInformation.getInstance().getInspectorInformationID() + "','"
+                        + InspectionInformation.getInstance().getInspectionInformationID() + "','"
                         + "' )" );
             }
             statement.execute();
@@ -455,7 +455,7 @@ public class MySQL implements Runnable {
                         statement = connection.prepareStatement("INSERT INTO Inspection (fk_questionID, fk_answerID, fk_inspectionInformationID) VALUES ('"
                                 + q.getQuestionID() +"','"
                                 + q.getAnswerID() + "','"
-                                + inspectionInformation.getInspectorInformationID() + "' )" );
+                                + inspectionInformation.getInspectionInformationID() + "' )" );
                     }
                     statement.execute();
                 } catch (Exception e) {

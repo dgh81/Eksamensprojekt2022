@@ -1,15 +1,21 @@
 package com.example.eksamensprojekt2022;
 
+import static com.example.eksamensprojekt2022.MainActivity.pdfUri;
+
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Environment;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
+import com.example.eksamensprojekt2022.Objeckts.FileHandler;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
 import com.example.eksamensprojekt2022.Objeckts.Question;
@@ -70,7 +76,7 @@ public class CreatePDF extends AppCompatActivity {
     PdfFont freeSansFont;
     ArrayList<InspectionInformation> inspectionInfo;
 
-
+    public static File pdfFile;
 
     public void createPdf(Context context) throws IOException {
         this.context = context;
@@ -83,12 +89,21 @@ public class CreatePDF extends AppCompatActivity {
             byte[] fontData = IOUtils.toByteArray(inStream);
             freeSansFont = PdfFontFactory.createFont(fontData, PdfEncodings.IDENTITY_H);
         }
+/*
+        String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
+        File file = new File(pdfPath, "sagsnummer_" + projectInfo.getProjectInformationID() + ".pdf");*/
 
-        String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
-        File file = new File(pdfPath, "sagsnummer_" + projectInfo.getProjectInformationID() + ".pdf");
-        OutputStream outputstream = new FileOutputStream(file);
+        //test dgh:
+        /*String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
+        File file = new File(pdfPath, "sagsnummer_" + projectInfo.getProjectInformationID() + ".pdf");*/
 
-        PdfWriter writer = new PdfWriter(file);
+        pdfFile = new FileHandler().getPDFFile();
+        System.out.println(pdfFile.toString());
+
+
+        OutputStream outputstream = new FileOutputStream(pdfFile);
+
+        PdfWriter writer = new PdfWriter(pdfFile);
         PdfDocument pdfDocument = new PdfDocument(writer);
         Document document = new Document(pdfDocument);
 
@@ -149,6 +164,36 @@ public class CreatePDF extends AppCompatActivity {
         document.close();
         Toast.makeText(context, "Pdf Created", Toast.LENGTH_LONG).show();
 
+
+        //emailPDF();
+
+    }
+
+    private void emailPDF() throws IOException {
+        //Test start email og vedhæft pdf:
+
+        //pdfUri = FileProvider.getUriForFile(this,"com.example.eksamensprojekt2022.fileprovider",new FileHandler().getPDFFile());
+        //pdfUri = FileProvider.getUriForFile(this,"com.example.eksamensprojekt2022.fileprovider",new FileHandler().getPDFFile());
+        System.out.println(pdfUri);
+
+
+        final Intent emailIntent = new Intent( android.content.Intent.ACTION_SEND);
+
+        emailIntent.setType("plain/text");
+
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
+                new String[] { "abc@gmail.com" });
+
+        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
+                "Email Subject");
+
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT,
+                "Email Body");
+
+        emailIntent.putExtra(Intent.EXTRA_STREAM, pdfUri);
+
+        startActivity(Intent.createChooser(
+                emailIntent, "Send mail..."));
     }
 
     private class TableHeaderEventHandler implements IEventHandler {
@@ -503,5 +548,7 @@ public class CreatePDF extends AppCompatActivity {
         return inspectionInformations;
 
     }
+
+
 }
 
