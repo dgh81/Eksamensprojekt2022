@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -18,7 +17,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.view.Menu;
@@ -26,36 +24,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
+//import com.example.eksamensprojekt2022.Objeckts.EmailIntent;
+import com.example.eksamensprojekt2022.Objeckts.EmailThread;
 import com.example.eksamensprojekt2022.Objeckts.FileHandler;
-import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
-import com.example.eksamensprojekt2022.Objeckts.Question;
 import com.example.eksamensprojekt2022.Objeckts.User;
-import com.example.eksamensprojekt2022.PostCode.PostNumberToCity;
 import com.example.eksamensprojekt2022.ui.Document.SelectDocumentAndRoomActivityActivity;
 import com.example.eksamensprojekt2022.ui.Login.LoginActivity;
 import com.example.eksamensprojekt2022.ui.Login.LoginSaveData;
-import com.itextpdf.kernel.xmp.impl.Utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 
-import static android.content.Intent.EXTRA_STREAM;
-import static android.os.Environment.getExternalStoragePublicDirectory;
 //import static com.example.eksamensprojekt2022.CreatePDF.pdfUri;
 import static com.example.eksamensprojekt2022.CreatePDF.pdfFile;
 import static com.example.eksamensprojekt2022.Objeckts.FileHandler.currentImagePath;
 import static com.example.eksamensprojekt2022.ui.Document.PicFragment.picFragmentImageView;
 
-import android.util.Base64;
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -69,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     Intent cameraIntent;
 
     Uri imageUri;
+
     public static Uri pdfUri;
 
 
@@ -212,68 +200,81 @@ public class MainActivity extends AppCompatActivity {
         }
         User loggedInUser = mysql.logUserIn("Julie", "123");
     }
-    //Test FTP
-    //ftpclient = new MyFTPClientFunctions();
 
+    public void sendPdfAsEmail(View view) throws InterruptedException, SQLException, IOException {
+        EmailThread thread = new EmailThread(MainActivity.this);
+        thread.start();
+    }
 
-    // TEST Login to database
+/*    Thread emailThread = new Thread("emailThread") {
 
-
-
-    public void test(View view) throws InterruptedException, SQLException, IOException {
-
-
-        Thread thread = new Thread("My thread") {
-
-            @Override
-            public void run() {
+            public void run(){
                 System.out.println("run by: " + getName());
                 Uri pdfUri = FileProvider.getUriForFile(MainActivity.this,"com.example.eksamensprojekt2022.fileprovider",pdfFile);
-                //pdfUri = Uri.fromFile(pdfFile);
-
                 final Intent emailIntent = new Intent( Intent.ACTION_SEND);
-
+                //Set permissions
                 List<ResolveInfo> resInfoList = MainActivity.this.getPackageManager().queryIntentActivities(emailIntent, PackageManager.MATCH_DEFAULT_ONLY);
                 for (ResolveInfo resolveInfo : resInfoList) {
                     String packageName = resolveInfo.activityInfo.packageName;
-                    MainActivity.this.grantUriPermission(packageName, pdfUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    MainActivity.this.grantUriPermission(packageName, pdfUri,
+                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 }
-
+                //Set permissions
                 emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                //emailIntent.putExtra(Intent.EXTRA_STREAM, pdfUri);
-
+                //Build email contents
                 emailIntent.setType("plain/text");
-
                 emailIntent.putExtra(Intent.EXTRA_EMAIL,
                         new String[] { "danielguldberg@gmail.com" });
-
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT,
                         "Email Subject");
-
                 emailIntent.putExtra(Intent.EXTRA_TEXT,
                         "Email Body");
-
-                emailIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-                System.out.println("pdfUri: " + pdfUri);
+                //emailIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
                 emailIntent.putExtra(Intent.EXTRA_STREAM, pdfUri);
-
                 emailIntent.setDataAndType(pdfUri, getContentResolver().getType(pdfUri));
+                //Start og vælg mail klient
+                startActivity(Intent.createChooser(emailIntent, "Send mail..."));
 
-                startActivity(Intent.createChooser(
-                        emailIntent, "Send mail..."));
-
+                //new EmailIntent().run();
             }
         };
-
-        thread.start();
-
-        thread.join();
+        emailThread.start();
+        emailThread.join();*/
 
 
 
 
-    }
+      /*  @Override
+        public void run() {
+            System.out.println("run by: " + getName());
+            Uri pdfUri = FileProvider.getUriForFile(MainActivity.this,"com.example.eksamensprojekt2022.fileprovider",pdfFile);
+            final Intent emailIntent = new Intent( Intent.ACTION_SEND);
+            //Set permissions
+            List<ResolveInfo> resInfoList = MainActivity.this.getPackageManager().queryIntentActivities(emailIntent, PackageManager.MATCH_DEFAULT_ONLY);
+            for (ResolveInfo resolveInfo : resInfoList) {
+                String packageName = resolveInfo.activityInfo.packageName;
+                MainActivity.this.grantUriPermission(packageName, pdfUri,
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+            //Set permissions
+            emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            //Build email contents
+            emailIntent.setType("plain/text");
+            emailIntent.putExtra(Intent.EXTRA_EMAIL,
+                    new String[] { "danielguldberg@gmail.com" });
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT,
+                    "Email Subject");
+            emailIntent.putExtra(Intent.EXTRA_TEXT,
+                    "Email Body");
+            emailIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            emailIntent.putExtra(Intent.EXTRA_STREAM, pdfUri);
+            emailIntent.setDataAndType(pdfUri, getContentResolver().getType(pdfUri));
+            //Start og vælg mail klient
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        }
+    };*/
 
         //sendEmail();
 
