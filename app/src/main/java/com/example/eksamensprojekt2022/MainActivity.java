@@ -1,14 +1,20 @@
 package com.example.eksamensprojekt2022;
 
+
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
+import androidx.core.content.FileProvider;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.view.Menu;
@@ -25,58 +31,44 @@ import com.example.eksamensprojekt2022.ui.Document.SelectDocumentAndRoomActivity
 import com.example.eksamensprojekt2022.ui.Login.LoginActivity;
 import com.example.eksamensprojekt2022.ui.Login.LoginSaveData;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
+import static android.os.Environment.getExternalStoragePublicDirectory;
+import static com.example.eksamensprojekt2022.ui.Document.PicFragment.picFragmentImageView;
+
+import android.util.Base64;
+import java.io.ByteArrayOutputStream;
 
 public class MainActivity extends AppCompatActivity {
-
-    //Test FTP
-/*    private MyFTPClientFunctions ftpclient = null;
-    private static final String TAG = "MainActivity";
-    private static final String TEMP_FILENAME = "sample.txt";
-    private Context cntx = null;*/
-
-    //Connection connection = null;
-
-    ImageView imageView;
-    Button btOpen;
     Button idBtnGeneratePDF;
 
+    //Camera
+    ImageView imageViewThumbnail;
+    ImageView fragmentImageView;
+    Bitmap bitmapFromTempFile;
+    public static int CAMERA_CODE = 100;
+    Intent cameraIntent;
+    String currentImagePath;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        julieTest();
-
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         LoginSaveData.getInstance().context = this;
 
-        //Test Camera
-        imageView = findViewById(R.id.imageView);
-        btOpen = findViewById(R.id.btnCamera);
+        julieTest();
         idBtnGeneratePDF = findViewById(R.id.idBtnGeneratePDF);
 
-        PostNumberToCity.createPostCodeHasMap();
-
-
-        /*
-
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            {
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[] {
-                          Manifest.permission.CAMERA
-                        },
-                        100);
-            }
-        }
-
-         */
         idBtnGeneratePDF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,21 +83,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btOpen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-            }
-        });
-        //Test FTP
-        //ftpclient = new MyFTPClientFunctions();
-
-
-        // TEST Login to database
-
-
-
         MySQL mysql = new MySQL();
         Thread mysqlConnection = new Thread(mysql);
         mysqlConnection.run();
@@ -115,21 +92,11 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
-
-
-
         if (mysql.connection == null ) {
-
             System.out.println("Start connection is null");
-
             //TODO: Show that there is no connection to the server
             // TODO: Go to login page, insert login info into the text fields and disable the login button, and add a refresh button
         }
-
-
-
-
 
         if (!LoginAuthentication.attemptLoginWithSavedLoginData() ) {
             Intent intent = new Intent( MainActivity.this,  LoginActivity.class);
@@ -140,9 +107,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
 
         }
-
-
-
 
         Toolbar myToolbar =  findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -157,16 +121,70 @@ public class MainActivity extends AppCompatActivity {
          if (getParentActivityIntent() != null)
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowTitleEnabled(true);
-        ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.yellow))  );
+        ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.yellow)));
 
+        //TODO CAMERA:
+        imageViewThumbnail = findViewById(R.id.imageViewThumbnail);
+    }
 
+    public void takePictureButtonClick(View view) {
+        try {
+            cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            File imageFile = null;
+            try{
+                imageFile=getImageFile();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            if(imageFile!=null){
+                Uri imageUri = FileProvider.getUriForFile(MainActivity.this,"com.example.eksamensprojekt2022.fileprovider",imageFile);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
+                startActivityForResult(cameraIntent, CAMERA_CODE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void savePictureButtonClick(View view) {
+        String encodedImageString = bitmapEncodeToBaseString(bitmapFromTempFile);
+        MySQL mysql = new MySQL();
+        mysql.createBitmapString(encodedImageString, 1, "sagnr + rumnavn + username: + comment?");
+    }
 
+    public File getImageFile() throws IOException{
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageName = "jpg_"+timeStamp+"_";
+        File storageDir = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File imageFile = File.createTempFile(imageName,".jpg",storageDir);
+        currentImagePath = imageFile.getAbsolutePath();
+        return imageFile;
+    }
+    public String bitmapEncodeToBaseString(Bitmap bitmapToDecode) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        //OBS 50% quality giver ca 10 gange mindre data i db!!:
+        bitmapToDecode.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        String encodedImageString = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        return encodedImageString;
+    }
+    public Bitmap bitmapDecodeFromBaseString(String encodedImageString) {
+        byte[] decodedString = Base64.decode(encodedImageString, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        return  decodedByte;
+    }
+    //Camera listener:
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_CODE && resultCode == RESULT_OK) {
+            File imgFile = new File(currentImagePath);
+            String path = imgFile.getAbsolutePath();
+            bitmapFromTempFile = BitmapFactory.decodeFile(path);
 
-
-
-
-
+            fragmentImageView = picFragmentImageView;
+            fragmentImageView.setImageBitmap(bitmapFromTempFile);
+        }
     }
 
     @Override
@@ -197,22 +215,15 @@ public class MainActivity extends AppCompatActivity {
         }
         User loggedInUser = mysql.logUserIn("Julie", "123");
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100) {
-            Bitmap captureImage = (Bitmap) data.getExtras().get("data");
-            imageView.setImageBitmap(captureImage);
+    //Test FTP
+    //ftpclient = new MyFTPClientFunctions();
 
 
-            FTP ftp = new FTP();
-            ftp.sendPicToFTP(captureImage);
-        }
-    }
+    // TEST Login to database
+
+
 
     public void test(View view) throws InterruptedException, SQLException {
-
 
         /*
         Thread t = new Thread(mysql);
@@ -257,80 +268,5 @@ public class MainActivity extends AppCompatActivity {
             }
             mysql.getAnswerInfo();
         }
-
-
-
-
-
-
-
-        //FTP ftp = new FTP();
-        //ftp.sendPicToFTP();
-
-        //pt. ingen forskel på store og små bogstaver
-        //System.out.println(mysql.userIsLoggedIn("david", "123"));
-
-
-
-
-       /* new Thread(new Runnable() {
-            public void run() {
-                boolean status = false;
-                // host – your FTP address
-                // username & password – for your secured login
-                // 21 default gateway for FTP
-                String host = "linux309.unoeuro.com";
-                String username = "danielguldberg.dk";
-                String password = "280781";
-                int port = 21;
-
-                status = ftpclient.ftpConnect(host, username, password, port);
-                if (status == true) {
-                    Log.d(TAG, "Connection Success");
-
-                    String state = Environment.getExternalStorageState();
-                    if (Environment.MEDIA_MOUNTED.equals(state)) {
-                        //if (Build.VERSION.SDK_INT >= 23) {
-
-                        //File sdcard = Environment.getExternalStorageDirectory();
-                        File sdcard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                        File dir = new File(sdcard.getAbsolutePath() + "/text/");
-                        dir.mkdir();
-                        System.out.println(dir.toString());
-                        File file = new File(dir, "sample.txt");
-                        System.out.println("created file on storage path " + file.getAbsolutePath());
-                        String fileContent = "test";
-                        FileOutputStream os;
-                        try {
-                            os = new FileOutputStream(file);
-                            System.out.println("created file output stream");
-                            os.write(fileContent.getBytes());
-                            os.close();
-                            System.out.println("wrote the file to disk");
-                        } catch (IOException e) {
-                            System.out.println("error writing the file to disk");
-                            e.printStackTrace();
-                        }
-
-                        //}
-                    }
-
-                    ftpclient.ftpUpload(
-                            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                        + "/text/" + TEMP_FILENAME, TEMP_FILENAME, "/", cntx);
-                } else {
-                    Log.d(TAG, "Connection failed");
-                }
-            }
-        }).start();
-
-        new Thread(new Runnable() {
-            public void run() {
-                ftpclient.ftpDisconnect();
-            }
-        }).start();*/
-
     }
-
-
 }

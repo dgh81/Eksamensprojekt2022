@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -90,6 +91,34 @@ public class FTP extends AppCompatActivity {
     }
 
 
+    public void sendFileToFTP(File file) {
+
+        new Thread(new Runnable() {
+            public void run() {
+                boolean status = false;
+                // host – your FTP address
+                // username & password – for your secured login
+                // 21 default gateway for FTP
+                String host = "linux309.unoeuro.com";
+                String username = "danielguldberg.dk";
+                String password = "280781";
+                int port = 21;
+
+                status = ftpclient.ftpConnect(host, username, password, port);
+                if (status == true) {
+                    Log.d(TAG, "Connection Success");
+
+                    //Toast.makeText(getApplicationContext(), "Image saved to download folder.",Toast.LENGTH_LONG).show();
+
+                    ftpclient.ftpUpload(file.getPath(), file.getName(), "/", cntx);
+
+                    System.out.println("created file: " + file.getName() + " on " + " ftp:/" + "/linux309.unoeuro.com");
+                } else {
+                    Log.d(TAG, "Connection failed");
+                }
+            }
+        }).start();
+    }
 
 
 /*        new Thread(new Runnable() {

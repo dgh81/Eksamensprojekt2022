@@ -26,10 +26,6 @@ public class QuestionGroup {
         return totalAnsweredQuestions;
     }
 
-
-
-
-
     public QuestionGroup() {
     }
 
