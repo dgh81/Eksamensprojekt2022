@@ -8,6 +8,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.R;
 
@@ -19,6 +21,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
     public ExpandableListViewAdapter(Context context ) {
         this.context = context;
     }
+
 
 
 
@@ -96,8 +99,15 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
+
+    @Override
+    public void onGroupCollapsed(int groupPosition) {
+        notifyDataSetChanged();
+    }
+
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
+
 
         if (i == InspectionInformation.getInstance().getQuestionGroups().size()  ) {
 
@@ -105,12 +115,18 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.question_list_add, null);
 
+
+
+
         }  else if (i > InspectionInformation.getInstance().getQuestionGroups().size()) {
 
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.question_group_list, null);
 
             TextView text = view.findViewById(R.id.question_group);
+
+
+
 
             int size = InspectionInformation.getInstance().getQuestionGroups().size();
 
