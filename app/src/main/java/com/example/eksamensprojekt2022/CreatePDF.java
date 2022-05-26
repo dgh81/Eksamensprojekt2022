@@ -1,30 +1,24 @@
 package com.example.eksamensprojekt2022;
 
-import static com.example.eksamensprojekt2022.MainActivity.pdfUri;
-
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Environment;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
 import com.example.eksamensprojekt2022.Objeckts.FileHandler;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
 import com.example.eksamensprojekt2022.Objeckts.Question;
 import com.example.eksamensprojekt2022.Objeckts.Room;
+
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.ColorConstants;
-
 import com.itextpdf.kernel.events.Event;
 import com.itextpdf.kernel.events.IEventHandler;
 import com.itextpdf.kernel.events.PdfDocumentEvent;
@@ -32,14 +26,11 @@ import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.geom.Rectangle;
-
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.PdfWriter;
-
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.layout.Canvas;
-
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.AreaBreak;
@@ -82,7 +73,7 @@ public class CreatePDF extends AppCompatActivity {
         this.context = context;
         orderID = 28;
         inspectionInfo = GetAllInspectionInformation(orderID);
-        ProjectInformation projectInfo = mysql.projectInfo(orderID);
+        ProjectInformation projectInfo = mysql.getProjectInformation(orderID);
 
         AssetManager am = context.getAssets();
         try (InputStream inStream = am.open("freesans.ttf")) {
@@ -97,9 +88,9 @@ public class CreatePDF extends AppCompatActivity {
         /*String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
         File file = new File(pdfPath, "sagsnummer_" + projectInfo.getProjectInformationID() + ".pdf");*/
 
+        //TODO getPDFFile() burde tage argument (String filename). Tilpas her og i FileHandler. Brug navne konkatinering ovenfor.
         pdfFile = new FileHandler().getPDFFile();
         System.out.println(pdfFile.toString());
-
 
         OutputStream outputstream = new FileOutputStream(pdfFile);
 
@@ -164,36 +155,6 @@ public class CreatePDF extends AppCompatActivity {
         document.close();
         Toast.makeText(context, "Pdf Created", Toast.LENGTH_LONG).show();
 
-
-        //emailPDF();
-
-    }
-
-    private void emailPDF() throws IOException {
-        //Test start email og vedhæft pdf:
-
-        //pdfUri = FileProvider.getUriForFile(this,"com.example.eksamensprojekt2022.fileprovider",new FileHandler().getPDFFile());
-        //pdfUri = FileProvider.getUriForFile(this,"com.example.eksamensprojekt2022.fileprovider",new FileHandler().getPDFFile());
-        System.out.println(pdfUri);
-
-
-        final Intent emailIntent = new Intent( android.content.Intent.ACTION_SEND);
-
-        emailIntent.setType("plain/text");
-
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
-                new String[] { "abc@gmail.com" });
-
-        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
-                "Email Subject");
-
-        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT,
-                "Email Body");
-
-        emailIntent.putExtra(Intent.EXTRA_STREAM, pdfUri);
-
-        startActivity(Intent.createChooser(
-                emailIntent, "Send mail..."));
     }
 
     private class TableHeaderEventHandler implements IEventHandler {
