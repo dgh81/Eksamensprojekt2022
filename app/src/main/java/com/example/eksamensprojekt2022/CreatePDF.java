@@ -149,7 +149,7 @@ public class CreatePDF extends AppCompatActivity {
 
             document.add(new Paragraph("Måleresultater").setFontSize(18f).setPaddingTop(5f));
 
-            
+
             document.add(createTableKredsdetaljer(inspectionInfo.get(i)));
             document.add(createTableAfprovning(inspectionInfo.get(i)));
             document.add(createTableKortslutning(inspectionInfo.get(i)));
@@ -409,14 +409,29 @@ public class CreatePDF extends AppCompatActivity {
         table.setFontSize(10f);
         table.setPadding(0);
 
+
+
         table.addCell(new Cell(1,8).add(new Paragraph("Kredsdetaljer").setTextAlignment(TextAlignment.LEFT)).setBackgroundColor(ColorConstants.GRAY));
         table.addCell(new Cell().add(new Paragraph("Gruppe")));
         table.addCell(new Cell().add(new Paragraph().add(new Text("OB (I")).add(new Text("n").setFontSize(6)).add(new Text(")"))));
         table.addCell(new Cell().add(new Paragraph("Karakteristik")));
         table.addCell(new Cell().add(new Paragraph("Tværsnit")));
         table.addCell(new Cell().add(new Paragraph("Maks. OB")));
-        table.addCell(new Cell().add(new Paragraph().add(new Text("Z")).add(new Text("S").setFontSize(6))));
-        table.addCell(new Cell().add(new Paragraph().add(new Text("R")).add(new Text("A").setFontSize(6))));
+
+
+        if (information.getKredsdetaljer().size() > 0) {
+
+            if (information.getKredsdetaljer().get(0).iszSRa()) {
+                table.addCell(new Cell(1, 2).add(new Paragraph().add(new Text("R")).add(new Text("A").setFontSize(6))));
+            } else {
+                table.addCell(new Cell(1, 2).add(new Paragraph().add(new Text("Z")).add(new Text("S").setFontSize(6))));
+            }
+
+        } else {
+            table.addCell(new Cell().add(new Paragraph().add(new Text("Z")).add(new Text("S").setFontSize(6))));
+            table.addCell(new Cell().add(new Paragraph().add(new Text("R")).add(new Text("A").setFontSize(6))));
+        }
+
         table.addCell(new Cell().add(new Paragraph("Isolation")));
 
 
@@ -431,11 +446,12 @@ public class CreatePDF extends AppCompatActivity {
         }
 
 
+        if (!information.getOvergangsmodstandR().equals("")) {
+            table.addCell(new Cell(1, 8).setBorder(Border.NO_BORDER).setHeight(10f));
+            table.addCell(new Cell(1, 5).add(new Paragraph("Overgangsmodstand for jordingsleder og jordelektrode R:").setTextAlignment(TextAlignment.LEFT)).setBorderRight(Border.NO_BORDER));
+            table.addCell(new Cell(1, 3).add(new Paragraph(information.getOvergangsmodstandR() + " \u2126").setFont(freeSansFont).setTextAlignment(TextAlignment.RIGHT)).setBorderLeft(Border.NO_BORDER));
+        }
         table.addCell(new Cell(1, 8).setBorder(Border.NO_BORDER).setHeight(10f));
-        table.addCell(new Cell(1, 5).add(new Paragraph("Overgangsmodstand for jordingsleder og jordelektrode R:").setTextAlignment(TextAlignment.LEFT)).setBorderRight(Border.NO_BORDER));
-        table.addCell(new Cell(1, 3).add(new Paragraph(information.getOvergangsmodstandR() + " \u2126").setFont(freeSansFont).setTextAlignment(TextAlignment.RIGHT)).setBorderLeft(Border.NO_BORDER));
-        table.addCell(new Cell(1, 8).setBorder(Border.NO_BORDER).setHeight(10f));
-
 
         return table;
     }
