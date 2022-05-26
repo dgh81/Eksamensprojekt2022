@@ -27,7 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="-2dp"
-        android:onClick="savePictureButtonClick"
         android:text="Gem" />
     <Button
         android:id="@+id/takePictureButton"
@@ -35,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="-2dp"
-        android:onClick="takePictureButtonClick"
+
         android:text="Tag billede" />
 
 
