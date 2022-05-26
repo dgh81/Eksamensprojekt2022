@@ -8,7 +8,7 @@ android {
     defaultConfig {
         applicationId "com.example.eksamensprojekt2022"
         minSdk 21
-        targetSdk 32
+        targetSdk 30
         versionCode 1
         versionName "1.0"
 
@@ -30,6 +30,9 @@ android {
 dependencies {
     implementation 'com.itextpdf:itext7-core:7.1.10'
     implementation 'maven:maven:20030211.132709'
+    implementation 'commons-io:commons-io:2.6'
+
+    implementation 'com.google.android.material:material:<version>'
 
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.6.0'

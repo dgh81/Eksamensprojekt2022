@@ -2,10 +2,13 @@ package com.example.eksamensprojekt2022.ui.Document;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.text.Html;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.R;
 
+import java.util.Objects;
 
 
 public class Question extends Fragment {
@@ -22,6 +26,7 @@ public class Question extends Fragment {
     View view;
 
     private ViewPager slideVeiwPager;
+    private ViewPager headlineBox;
     private LinearLayout dotLayout;
 
     private TextView[] dots;
@@ -38,8 +43,7 @@ public class Question extends Fragment {
         this.groupIndex = groupIndex;
         this.questionIndex = questionIndex;
 
-        System.out.println(groupIndex);
-        System.out.println(questionIndex);
+
 
     }
 
@@ -54,24 +58,34 @@ public class Question extends Fragment {
         view = inflater.inflate(R.layout.fragment_question, container, false);
 
         slideVeiwPager = view.findViewById(R.id.contentBox);
+
+        headlineBox = view.findViewById(R.id.headlineBox);
+
         dotLayout = view.findViewById(R.id.dots);
 
-        sliderAdapter = new SliderAdapter(getActivity() , slideVeiwPager , InspectionInformation.getInstance());
+        sliderAdapter = new SliderAdapter(getActivity() , slideVeiwPager );
+
+        PagerAdapter headerSlideAdapter = new HeaderSlideAdapter(getActivity() , headlineBox );
+
+        headlineBox.setAdapter(headerSlideAdapter);
 
         slideVeiwPager.setAdapter(sliderAdapter);
 
         slideVeiwPager.addOnPageChangeListener(listener);
 
-        slideVeiwPager.setCurrentItem(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex)  );
-
         addDots();
 
         updateDots(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex));
 
+        System.out.println(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex)  + " current item");
+
+        slideVeiwPager.setCurrentItem(InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex)  );
 
 
         return view;
     }
+
+
 
     ViewPager.OnPageChangeListener listener = new ViewPager.OnPageChangeListener() {
 
@@ -84,15 +98,20 @@ public class Question extends Fragment {
         @Override
         public void onPageSelected(int position) {
 
-            if ( InspectionInformation.getInstance().getQuestionIndexLeftOverAfterGetQuestionGroupIndexByQuestionID(position) ==   InspectionInformation.getInstance().getQuestionGroups().get(groupIndex).getQuestions().size() ) {
-                System.out.println("update the dots");
+            com.google.android.material.textfield.TextInputLayout s =  slideVeiwPager.findViewById(R.id.notes);
+
+          //  s.clearFocus();
+
+            if (s != null) {
+
+                s.getEditText().clearFocus();
+
             }
+
+
             if (dots != null)
                 updateDots(position);
 
-
-
-            System.out.println("works?");
         }
 
         @Override
@@ -111,11 +130,24 @@ public class Question extends Fragment {
 
     public void addDots() {
 
-        System.out.println(InspectionInformation.getInstance().getQuestionGroups().get(groupIndex).getQuestions().size() + " size");
+        int dotsSize = 0;
 
-        System.out.println(groupIndex + " groupIndex");
+        if (groupIndex < InspectionInformation.getInstance().getQuestionGroups().size() ) {
+            dotsSize = InspectionInformation.getInstance().getQuestionGroups().get(groupIndex).getQuestions().size();
+        } else if (groupIndex == InspectionInformation.getInstance().getQuestionGroups().size()  + 1 ) {
+            dotsSize = InspectionInformation.getInstance().getKredsdetaljer().size();
+        } else if (groupIndex == InspectionInformation.getInstance().getQuestionGroups().size() + 2){
+            dotsSize = 1;
+        } else if (groupIndex == InspectionInformation.getInstance().getQuestionGroups().size() + 3) {
+            dotsSize = InspectionInformation.getInstance().getAfprøvningAfRCD().size();
+        } else {
+            dotsSize = InspectionInformation.getInstance().getKortslutningsstroms().size();
+        }
 
-        dots = new TextView[InspectionInformation.getInstance().getQuestionGroups().get(groupIndex).getQuestions().size()];
+        System.out.println(InspectionInformation.getInstance().getQuestionGroups().size());
+        System.out.println(dotsSize + " dotsize" + groupIndex + " groupIndex");
+
+        dots = new TextView[dotsSize];
         dotLayout.removeAllViews();
 
         System.out.println(dots.length + " length");
@@ -135,6 +167,9 @@ public class Question extends Fragment {
     public void updateDots(int pos) {
 
         if (!InspectionInformation.getInstance().isTotalIndexInsideQuestionGroup(pos , groupIndex)) {
+
+            System.out.println("false");
+
             updateGroup(pos);
         }
 
@@ -155,9 +190,11 @@ public class Question extends Fragment {
         addDots();
 
 
-
     }
 
 
-
+    @Override
+    public String toString() {
+        return "Question";
+    }
 }

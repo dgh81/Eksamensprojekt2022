@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
@@ -20,25 +21,48 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
     }
 
 
+
+
     @Override
     public int getGroupCount() {
-        return InspectionInformation.getInstance().getQuestionGroups().size() + 1 ;
+        return InspectionInformation.getInstance().getQuestionGroups().size() + 5 ;
     }
 
     @Override
     public int getChildrenCount(int i) {
 
-        if (i > InspectionInformation.getInstance().getQuestionGroups().size() - 1 ) {
+        if (i == InspectionInformation.getInstance().getQuestionGroups().size() ) {
             return 0;
+
+        } else if (i >InspectionInformation.getInstance().getQuestionGroups().size() ) {
+
+            if (i == InspectionInformation.getInstance().getQuestionGroups().size() + 1 ) {
+                return InspectionInformation.getInstance().getKredsdetaljer().size() + 1;
+            }
+
+            if (i == InspectionInformation.getInstance().getQuestionGroups().size() + 2 ) {
+                return 0;
+            }
+
+            if (i == InspectionInformation.getInstance().getQuestionGroups().size() + 3) {
+                return InspectionInformation.getInstance().getAfprøvningAfRCD().size() + 1;
+            }
+
+            if (i == InspectionInformation.getInstance().getQuestionGroups().size() + 4) {
+                return InspectionInformation.getInstance().getKortslutningsstroms().size() + 1;
+            }
+
+
         } else {
             int size = InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().size() + 1;
 
             System.out.println(size + " size");
 
             return  size ;
+
         }
 
-
+        return 0;
     }
 
     @Override
@@ -75,15 +99,29 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
 
-        if (i > InspectionInformation.getInstance().getQuestionGroups().size() - 1  ) {
+        if (i == InspectionInformation.getInstance().getQuestionGroups().size()  ) {
 
 
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.question_list_add, null);
 
-        } else {
-            String groupTitle = InspectionInformation.getInstance().getQuestionGroups().get(i).getTitle();
+        }  else if (i > InspectionInformation.getInstance().getQuestionGroups().size()) {
 
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = inflater.inflate(R.layout.question_group_list, null);
+
+            TextView text = view.findViewById(R.id.question_group);
+
+            int size = InspectionInformation.getInstance().getQuestionGroups().size();
+
+            if (size + 1 == i) {text.setText("Kredsdetaljer");}
+            if (size + 2 == i) {text.setText("Overgangsmodstand for jordingsleder og jordelektrode");}
+            if (size + 3 == i) {text.setText("Afprøvning");}
+            if (size + 4 == i) {text.setText("Kortslutningsstrøm");}
+
+        }  else {
+
+            String groupTitle = InspectionInformation.getInstance().getQuestionGroups().get(i).getTitle();
 
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.question_group_list, null);
@@ -102,33 +140,93 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         // i = group
         // i1 = groupIndex
 
-        System.out.println(i + " i");
+        if (i < InspectionInformation.getInstance().getQuestionGroups().size()   ) {
 
-        System.out.println(i1 + " i1 ");
-
-        System.out.println(InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().size() - 1 + " size of questinos");
-
-        if (i1 > InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().size() - 1  ) {
-
-
+            if (i1 == InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().size()) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.question_list_add, null);
+            } else {
 
-
-
-        } else {
-
-            String groupTitle = InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(i1).getQuestion();
+                String groupTitle = InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(i1).getQuestion();
 
 
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.question_list, null);
 
 
-            TextView text = view.findViewById(R.id.questionText);
+                TextView text = view.findViewById(R.id.questionText);
 
-            text.setText(groupTitle);
+                text.setText(groupTitle);
+            }
+        } else if (i == InspectionInformation.getInstance().getQuestionGroups().size() + 1  ) {
+
+            if (i1 < InspectionInformation.getInstance().getKredsdetaljer().size() ) {
+
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.question_list, null);
+
+
+                TextView text = view.findViewById(R.id.questionText);
+
+                text.setText("Test");
+
+
+            } else {
+
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.question_list_add, null);
+
+            }
+
+
+        } else if (i == InspectionInformation.getInstance().getQuestionGroups().size() + 3  ) {
+
+            if (i1 < InspectionInformation.getInstance().getAfprøvningAfRCD().size() ) {
+
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.question_list, null);
+
+
+                TextView text = view.findViewById(R.id.questionText);
+
+                text.setText("Test");
+
+
+            } else {
+
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.question_list_add, null);
+
+            }
+
+        } else if (i == InspectionInformation.getInstance().getQuestionGroups().size() + 4  ) {
+
+            if (i1 < InspectionInformation.getInstance().getKortslutningsstroms().size() ) {
+
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.question_list, null);
+
+
+                TextView text = view.findViewById(R.id.questionText);
+
+                text.setText("Test");
+
+
+            } else {
+
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.question_list_add, null);
+
+            }
+
+
         }
+
+
+
+
+
+
         return view;
     }
 

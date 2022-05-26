@@ -14,17 +14,6 @@ public class ProjectInformation {
     int fk_userID = 0;
     int fk_questionGroup = 0;
 
-
-
-
-
-
-
-
-
-
-
-
     ArrayList<InspectionInformation> inspectionInformations = new ArrayList<>();
 
     public ArrayList<InspectionInformation> getInspectionInformations() {

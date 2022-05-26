@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,8 +16,10 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
+import com.example.eksamensprojekt2022.Objeckts.Question;
 import com.example.eksamensprojekt2022.Objeckts.QuestionGroup;
 import com.example.eksamensprojekt2022.R;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 
@@ -27,14 +31,14 @@ public class SliderAdapter extends PagerAdapter {
 
     private ViewPager sliderAdapter;
 
-    private InspectionInformation inspectionInformation;
 
 
 
-    public SliderAdapter (Context context , ViewPager slideVeiwPager , InspectionInformation inspectionInformation) {
+
+
+    public SliderAdapter (Context context , ViewPager slideVeiwPager  ) {
         this.context = context;
         this.sliderAdapter = slideVeiwPager;
-        this.inspectionInformation = inspectionInformation;
     }
 
 
@@ -68,9 +72,18 @@ public class SliderAdapter extends PagerAdapter {
 
         int size = 0;
 
-        for (QuestionGroup group: inspectionInformation.getQuestionGroups() ) {
+        for (QuestionGroup group: InspectionInformation.getInstance().getQuestionGroups() ) {
             size += group.getQuestions().size();
         }
+
+        size += InspectionInformation.getInstance().getKredsdetaljer().size();
+
+        size ++;
+
+        size += InspectionInformation.getInstance().getAfprøvningAfRCD().size();
+
+        size += InspectionInformation.getInstance().getKortslutningsstroms().size();
+
         return size;
 
     }
@@ -83,63 +96,192 @@ public class SliderAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
 
-        String questionText = inspectionInformation.getQuestionGroups().get(inspectionInformation.getQuestionGroupIndexByQuestionID(position)).getQuestions().get(inspectionInformation.getQuestionIndexLeftOverAfterGetQuestionGroupIndexByQuestionID(position)).getQuestion();
+        if (position < InspectionInformation.getInstance().getTotalNumberOfQuestions()) {
+
+
+            layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+            View view = layoutInflater.inflate(R.layout.slide_layout, container, false);
+
+            TextView text = (TextView) view.findViewById(R.id.questionText);
+            Button yesButton = (Button) view.findViewById(R.id.yesButton);
+            Button noButton = (Button) view.findViewById(R.id.noButton);
+            Button notRelevantButton = (Button) view.findViewById(R.id.notRelevantButton);
+
+            com.google.android.material.textfield.TextInputLayout s = view.findViewById(R.id.notes);
+
+            s.clearFocus();
+
+
+            Question question = InspectionInformation.getInstance().getQuestionGroups().get(InspectionInformation.instance.getQuestionGroupIndexByQuestionID(position)
+            ).getQuestions().get(InspectionInformation.getInstance().getQuestionIndexLeftOverAfterGetQuestionGroupIndexByQuestionID(position));
+
+
+            s.getEditText().setText(question.getComment());
+
+            s.getEditText().setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+
+                        question.setComment(s.getEditText().getText().toString());
+
+
+                    }
+                }
+            });
+
+            colorButtons(question, yesButton, noButton, notRelevantButton);
+
+            yesButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    question.setAnswerID(1);
+
+                    colorButtons(question, yesButton, noButton, notRelevantButton);
+
+                    s.clearFocus();
+
+                    // sliderAdapter.setCurrentItem(sliderAdapter.getCurrentItem() + 1 , true);
+
+                }
+            });
+
+
+            noButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    question.setAnswerID(2);
+                    colorButtons(question, yesButton, noButton, notRelevantButton);
+
+                    s.clearFocus();
+                    //  sliderAdapter.setCurrentItem(sliderAdapter.getCurrentItem() + 1 , true);
+                }
+            });
+
+            notRelevantButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    question.setAnswerID(3);
+                    colorButtons(question, yesButton, noButton, notRelevantButton);
+
+                    s.clearFocus();
+                    // sliderAdapter.setCurrentItem(sliderAdapter.getCurrentItem() + 1 , true);
+                }
+            });
+
+
+            text.setText(question.getQuestion());
+
+            container.addView(view);
+
+            return view;
+
+
+        } else if (position < InspectionInformation.getInstance().getTotalNumberOfQuestions() + InspectionInformation.getInstance().getKredsdetaljer().size()) {
+
+            layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+            View view = layoutInflater.inflate(R.layout.slide_tabel_input_kredsdetaljer, container, false);
+
+
+            container.addView(view);
+
+            return view;
+
+        } else if (position < InspectionInformation.getInstance().getTotalNumberOfQuestions() + InspectionInformation.getInstance().getKredsdetaljer().size() + 1) {
+
+            layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+            View view = layoutInflater.inflate(R.layout.slide_overgangsmodstand, container, false);
+
+            container.addView(view);
+
+            return view;
+
+
+        } else if (position < InspectionInformation.getInstance().getTotalNumberOfQuestions() + InspectionInformation.getInstance().getKredsdetaljer().size()
+                + 1 + InspectionInformation.getInstance().getAfprøvningAfRCD().size()) {
+
+            layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+            View view = layoutInflater.inflate(R.layout.slide_afproevning_af_rcd, container, false);
+
+            container.addView(view);
+
+            return view;
+
+
+        } else if (position < InspectionInformation.getInstance().getTotalNumberOfQuestions() + InspectionInformation.getInstance().getKredsdetaljer().size()
+                + 1 + InspectionInformation.getInstance().getAfprøvningAfRCD().size() + InspectionInformation.getInstance().getKortslutningsstroms().size() ) {
+
+
+            layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+            View view = layoutInflater.inflate(R.layout.slide_kortslutningsstroem, container, false);
+
+            container.addView(view);
+
+            return view;
+
+        } else {
+
+
+            layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+            View view = layoutInflater.inflate(R.layout.slide_kortslutningsstroem, container, false);
+
+            container.addView(view);
+
+            return view;
 
 
 
-        layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.inflate(R.layout.slide_layout , container , false);
-
-        TextView text = (TextView) view.findViewById(R.id.questionText);
-        Button yesButton = (Button) view.findViewById(R.id.yesButton);
 
 
-        yesButton.setOnClickListener(new View.OnClickListener() {
-
-
-            @Override
-            public void onClick(View view) {
-                yesButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.green));
-
-                System.out.println(position);
-
-                InspectionInformation.getInstance().getQuestionGroups().get( InspectionInformation.instance.getQuestionGroupIndexByQuestionID(position)
-                ).getQuestions().get(InspectionInformation.getInstance().getQuestionIndexLeftOverAfterGetQuestionGroupIndexByQuestionID(position)
-                ).setAnswerID(1);
-
-
-
-                sliderAdapter.setCurrentItem(sliderAdapter.getCurrentItem() + 1 , true);
-
-            }
-        });
-
-
-        text.setText(questionText);
+        }
 
 
 
 
-
-
-
-        container.addView(view);
-
-        return view;
 
     }
-
-
 
     @Override
     public void destroyItem( ViewGroup container, int position, Object object) {
 
-        container.removeView((RelativeLayout) object);
+        container.removeView((LinearLayout) object);
 
     }
 
 
+    public void colorButtons(Question question, Button yesButton , Button noButton , Button notRelevantButton ) {
 
+        System.out.println(question.getAnswerID() + " color ");
+
+        System.out.println(question.getFk_questionGroup() + " group");
+
+        System.out.println(question.getQuestion());
+
+        switch (question.getAnswerID()   ) {
+
+
+            case 1:
+                yesButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.green));
+                noButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.white));
+                notRelevantButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.white));
+                break;
+            case 2:
+                noButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.red));
+                yesButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.white));
+                notRelevantButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.white));
+                break;
+            case 3:
+                notRelevantButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.dotsColor));
+                yesButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.white));
+                noButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.white));
+                break;
+        }
+
+
+
+
+    }
 
 
 

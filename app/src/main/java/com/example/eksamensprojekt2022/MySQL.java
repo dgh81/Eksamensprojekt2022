@@ -1,7 +1,11 @@
 package com.example.eksamensprojekt2022;
 
+import com.example.eksamensprojekt2022.Objeckts.AfproevningAfRCD;
 import com.example.eksamensprojekt2022.Objeckts.Answer;
+import com.example.eksamensprojekt2022.Objeckts.Inspection;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
+import com.example.eksamensprojekt2022.Objeckts.Kortslutningsstrom;
+import com.example.eksamensprojekt2022.Objeckts.Kredsdetaljer;
 import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
 import com.example.eksamensprojekt2022.Objeckts.Question;
 import com.example.eksamensprojekt2022.Objeckts.QuestionGroup;
@@ -126,10 +130,11 @@ public class MySQL implements Runnable {
         return questionGroups;
     }
 
-    public ArrayList<QuestionGroup> getQuestionGroupTitle() {
+    public ArrayList<QuestionGroup> getQuestionGroupTitles( int inspectionInformationID ) {
         ArrayList<QuestionGroup> questionGroups = new ArrayList<>();
         try {
-            PreparedStatement userType = connection.prepareStatement("SELECT * FROM QuestionGroup");
+            PreparedStatement userType = connection.prepareStatement("SELECT * FROM QuestionGroup WHERE fk_inspectionInformationID = 0 OR fk_inspectionInformationID = " +
+                    "' " + inspectionInformationID + "'" ) ;
             ResultSet rs = userType.executeQuery();
             while (rs.next()) {
                 QuestionGroup group = new QuestionGroup(
@@ -142,6 +147,30 @@ public class MySQL implements Runnable {
         }
         return questionGroups;
     }
+
+
+    public QuestionGroup getQuestionGroupFromTitle(String title ) {
+
+        try {
+            PreparedStatement userType = connection.prepareStatement("SELECT * FROM QuestionGroup WHERE title = '" + title + "'");
+            ResultSet rs = userType.executeQuery();
+            if (rs.next()) {
+                QuestionGroup group = new QuestionGroup(
+                        rs.getInt("ID"),
+                        rs.getString("title"));
+
+                return group;
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+
+
 
     public ArrayList<Question> getQuestionsFromGroupTitle(String title) {
         ArrayList<Question> questions = new ArrayList<>();
@@ -274,18 +303,24 @@ public class MySQL implements Runnable {
         return list;
     }
 
-    public ArrayList<Question> getQuestionsFromQuestionGroup(QuestionGroup questionGroup) {
+    public ArrayList<Question> getQuestionsFromQuestionGroup(QuestionGroup questionGroup , int inspectionInformationID) {
         ArrayList<Question> questions = new ArrayList<>();
 
+        System.out.println(questionGroup);
+
+
         try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Question WHERE fk_questionGroup = '" + questionGroup.getQuestionGroupID() + "';");
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Question WHERE fk_questionGroup = '" + questionGroup.getQuestionGroupID() + " '   AND " +
+                    "  fk_inspectionInformationID = '" +  inspectionInformationID + "' OR fk_questionGroup = '" + questionGroup.getQuestionGroupID() + "' AND " +
+                    " fk_inspectionInformationID = 0;"  );
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
                 Question q = new  Question(
                         questionGroup.getQuestionGroupID(),
                         rs.getInt("ID"),
-                        rs.getString("question")
+                        rs.getString("question"),
+                        ""
                 );
                 questions.add(q);
             }
@@ -401,6 +436,7 @@ public class MySQL implements Runnable {
     }
 
 
+
     public void createInspection(InspectionInformation inspectionInformation) {
 
         inspectionInformation = InspectionInformation.getInstance();
@@ -460,7 +496,7 @@ public class MySQL implements Runnable {
             if (rs.next()) {
                 return new InspectionInformation(
 
-                        rs.getInt("ID"),
+                        rs.getInt("InspectionInformation.ID"),
                         User.getInstance().getName(),
                         new Date(),
                         rs.getInt("fk_projectID"),
@@ -483,7 +519,9 @@ public class MySQL implements Runnable {
         ArrayList<Answer> answers  = new ArrayList<>();
     try {
 
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM QuestionGroup INNER JOIN (Question INNER JOIN Inspection ON Question.Id = Inspection.fk_questionID) ON QuestionGroup.Id = Question.fk_questionGroup WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM QuestionGroup INNER JOIN (Question INNER" +
+                " JOIN Inspection ON Question.Id = Inspection.fk_questionID) ON QuestionGroup.Id " +
+                "= Question.fk_questionGroup WHERE Inspection.fk_inspectionInformationID = '" + inspectionInformationID + "'");
         ResultSet rs = statement.executeQuery();
 
         while (rs.next()) {
@@ -491,7 +529,8 @@ public class MySQL implements Runnable {
             Answer a = new Answer(
                     rs.getInt("fk_answerID"),
                     rs.getInt("fk_questionGroup"),
-                    rs.getInt("question.id")
+                    rs.getInt("question.id"),
+                    rs.getString("comment")
             );
             answers.add(a);
         }
@@ -685,6 +724,105 @@ public class MySQL implements Runnable {
         }
     }
 
+    public void clearInspectionWithQuestionInspectionInformationID() {
+
+        System.out.println(InspectionInformation.getInstance().getInspectionInformationID());
+
+                //TODO call insert into sql: fk_questionID, fk_answerID, fk_inspectionInformationID
+                try {
+                    PreparedStatement statement = null;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        statement = connection.prepareStatement( "DELETE FROM Inspection WHERE fk_inspectionInformationID = '" + InspectionInformation.getInstance().getInspectionInformationID()
+                                + "'");
+                    }
+                    statement.execute();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+         }
+
+
+    public void createInspection() {
+
+
+        for (int i = 0; i < InspectionInformation.getInstance().getQuestionGroups().size(); i++) {
+
+            for (int j = 0; j < InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().size(); j++) {
+
+                Question q = InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(j);
+
+                System.out.println(q.getAnswerID() + "fint it now!");
+
+                System.out.println(q.getQuestion());
+
+                //TODO call insert into sql: fk_questionID, fk_answerID, fk_inspectionInformationID
+
+
+                try {
+                    PreparedStatement statement = null;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        statement = connection.prepareStatement("INSERT INTO Inspection (fk_questionID, fk_answerID, fk_inspectionInformationID , comment) VALUES ('"
+                                + q.getQuestionID() +"','"
+                                + q.getAnswerID() + "','"
+                                + InspectionInformation.getInstance().getInspectionInformationID() + "','"
+                                + q.getComment() + "')" );
+                    }
+                    statement.execute();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    public ArrayList<Integer> getAllInspectionIDs(int projectID) {
+        ArrayList<Integer> list = new ArrayList<>();
+            try {
+
+                PreparedStatement statement = connection.prepareStatement("SELECT * FROM InspectionInformation WHERE fk_projectID = '" + projectID + "'");
+                ResultSet rs = statement.executeQuery();
+
+                while (rs.next()) {
+
+                    list.add(rs.getInt("ID"));
+                }
+
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        return list;
+    }
+
+    public ArrayList<Inspection> getAllInspections(int projectID) {
+        ArrayList<Integer> list = getAllInspectionIDs(projectID);
+        ArrayList<Inspection> result = new ArrayList<>();
+
+        for (int i = 0; i < list.size(); i++) {
+            try {
+
+                PreparedStatement statement = connection.prepareStatement("SELECT * FROM Inspection WHERE fk_inspectionInformationID = '" + list.get(i) + "'");
+                ResultSet rs = statement.executeQuery();
+
+                while (rs.next()) {
+
+                    Inspection inspection = new Inspection(
+                            projectID,
+                            rs.getInt("fk_questionID"),
+                            rs.getInt("fk_answerID"),
+                            rs.getInt("fk_inspectionInformationID"),
+                            rs.getString("comment")
+                    );
+                    result.add(inspection);
+                }
+
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
 
     public void createBitmapString(String bitmapString, int inspectionInformationID, String pictureText) {
         try {
@@ -716,6 +854,131 @@ public class MySQL implements Runnable {
     }
 
 
+
+
+
+    public void createQuestion(int questionGroupID, String questionText , int inspectionInformationID) {
+
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement("INSERT INTO Question (fk_questionGroup, question, fk_inspectionInformationID) VALUES ('"
+                        + questionGroupID + "','"
+                        + questionText + "','"
+                        + InspectionInformation.getInstance().getInspectionInformationID() + "' )" );
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    public ArrayList<AfproevningAfRCD> getAfproevningAfRCDer(int inspectionInformationID) {
+        ArrayList<AfproevningAfRCD> AfproevningAfRCDer  = new ArrayList<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM AfproevningAfRCD WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+
+                AfproevningAfRCD a = new AfproevningAfRCD(
+                        rs.getInt("ID"),
+                        rs.getString("RCD"),
+                        rs.getString("field1"),
+                        rs.getString("field2"),
+                        rs.getString("field3"),
+                        rs.getString("field4"),
+                        rs.getString("field5"),
+                        rs.getString("field6"),
+                        rs.getString("OK"),
+                        rs.getInt("fk_inspectionInformationID")
+                );
+                AfproevningAfRCDer.add(a);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return AfproevningAfRCDer;
+    }
+
+    public ArrayList<Kortslutningsstrom> getKortslutningsstromme(int inspectionInformationID) {
+        ArrayList<Kortslutningsstrom> Kortslutningsstromme  = new ArrayList<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Kortslutningsstrom WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Kortslutningsstrom a = new Kortslutningsstrom(
+                        rs.getInt("ID"),
+                        rs.getString("k_gruppe"),
+                        rs.getString("k_KiK"),
+                        rs.getString("k_maaltIPunkt"),
+                        rs.getString("s_gruppe"),
+                        rs.getString("s_U"),
+                        rs.getString("s_maaltIPunkt"),
+                        rs.getInt("fk_inspectionInformationID")
+                );
+                Kortslutningsstromme.add(a);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Kortslutningsstromme;
+    }
+
+    public ArrayList<Kredsdetaljer> getKredsdetaljer(int inspectionInformationID) {
+        ArrayList<Kredsdetaljer> kredsdetaljer  = new ArrayList<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Kredsdetaljer WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Kredsdetaljer a = new Kredsdetaljer(
+                        rs.getInt("ID"),
+                        rs.getString("gruppe"),
+                        rs.getString("oB"),
+                        rs.getString("karakteristik"),
+                        rs.getString("tvaersnit"),
+                        rs.getString("MaksOB"),
+                        rs.getBoolean("RZboolean"),
+                        rs.getString("zsRa"),
+                        rs.getString("isolation"),
+                        rs.getInt("fk_inspectionInformationID")
+                );
+                kredsdetaljer.add(a);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return kredsdetaljer;
+    }
+
+
+    public String getOvergangsmodstand(int inspectionInformationID) {
+        String overgangsmodstand = "";
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Overgangsmodstand WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                overgangsmodstand = rs.getString("overgangsmodstand");
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return overgangsmodstand;
+    }
+
+
     public ArrayList<String> getPDFComments(int inspectionInformationID) {
         ArrayList<String> pdfComments = new ArrayList<>();
         try {
@@ -729,10 +992,6 @@ public class MySQL implements Runnable {
         }
         return pdfComments;
     }
-
-
-
-
 
 }
 

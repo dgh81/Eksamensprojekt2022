@@ -23,8 +23,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.Objeckts.Question;
 import com.example.eksamensprojekt2022.Objeckts.User;
+import com.example.eksamensprojekt2022.PostCode.PostNumberToCity;
 import com.example.eksamensprojekt2022.ui.Document.SelectDocumentAndRoomActivityActivity;
 import com.example.eksamensprojekt2022.ui.Login.LoginActivity;
 import com.example.eksamensprojekt2022.ui.Login.LoginSaveData;
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         julieTest();
         idBtnGeneratePDF = findViewById(R.id.idBtnGeneratePDF);
+
         idBtnGeneratePDF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

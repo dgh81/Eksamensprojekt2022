@@ -23,6 +23,8 @@ public class UserCase {
 
 
     public static void createProjectInformationInDataBase(ProjectInformation projectInformation) {
+
+
         mySQL.createProjectInformation(projectInformation);
     }
 
@@ -41,7 +43,7 @@ public class UserCase {
         mySQL.createRoom(name, ID );
     }
 
-    public static InspectionInformation getInspectionInformationFromDB(int roomID , int projectID) {
+    public static void setInspectionInformationFromDB(int roomID , int projectID) {
 
         InspectionInformation i = mySQL.getInspectionInformationDB(roomID);
 
@@ -55,22 +57,19 @@ public class UserCase {
             );
 
             mySQL.createInspectionInformation(inspectionInformation);
-            return inspectionInformation;
 
-        } else {
-            return i;
         }
-
+        InspectionInformation.setInstance( mySQL.getInspectionInformationDB(roomID));
     }
 
-    public static ArrayList<QuestionGroup> getAllQuestionGroupsWithAnswers(InspectionInformation inspectionInformation) {
+    public static void appendAllQuestionsWithAnswersToInspectionInformation() {
 
-        ArrayList<QuestionGroup> questionGroups = mySQL.getQuestionGroupTitle();
+        ArrayList<QuestionGroup> questionGroups = mySQL.getQuestionGroupTitles(InspectionInformation.instance.getInspectionInformationID());
 
-        ArrayList<Answer> answers = mySQL.getAllAnswersFromInspectionInformationID(inspectionInformation.getInspectorInformationID());
+        ArrayList<Answer> answers = mySQL.getAllAnswersFromInspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID());
 
         for (QuestionGroup group : questionGroups ) {
-            ArrayList<Question> questions =  mySQL.getQuestionsFromQuestionGroup(group);
+            ArrayList<Question> questions =  mySQL.getQuestionsFromQuestionGroup(group , InspectionInformation.getInstance().getInspectionInformationID() );
 
             for (Question question: questions ) {
                 group.getQuestions().add(question);
@@ -81,14 +80,72 @@ public class UserCase {
 
                         if (question.getQuestionID() == a.getQuestionID()) {
                             question.setAnswerID(a.getAnswerID());
+                            question.setComment(a.getComment());
                         }
                     }
                 }
             }
         }
 
-        return questionGroups;
+        InspectionInformation.getInstance().setQuestionGroups(questionGroups);
 
     }
+
+    public static void appendAllMeasurements(int fk_inspectionInformationID) {
+
+        InspectionInformation.getInstance().setAfprøvningAfRCD(mySQL.getAfproevningAfRCDer(fk_inspectionInformationID));
+        InspectionInformation.getInstance().setKredsdetaljer(mySQL.getKredsdetaljer(fk_inspectionInformationID));
+        InspectionInformation.getInstance().setKortslutningsstroms(mySQL.getKortslutningsstromme(fk_inspectionInformationID));
+        InspectionInformation.getInstance().setOvergangsmodstandR(mySQL.getOvergangsmodstand(fk_inspectionInformationID));
+        InspectionInformation.getInstance().setPDFComment(mySQL.getPDFComments(fk_inspectionInformationID));
+
+    }
+
+
+
+    public static void createInspectionInDataBase() {
+
+        InspectionInformation.getInstance().removeAllUnansweredQuestions();
+
+        mySQL.clearInspectionWithQuestionInspectionInformationID();
+
+        mySQL.createInspection();
+
+        InspectionInformation.getInstance().getQuestionGroups().clear();
+
+    }
+
+    public static void createNewQuestionInsideQuestionGroup(int questionGroupID , String question , int InspectionInformationID) {
+
+        System.out.println(questionGroupID + " " + question + " help me fint it");
+
+        mySQL.createQuestion(questionGroupID , question , InspectionInformationID);
+
+
+
+    }
+
+    public static void addQuestionGroupWithQuestions(String questionGroup, int fk_InspectionInformationID ,  ArrayList<String> questions ) {
+
+
+        mySQL.createQuestionGroup(questionGroup , fk_InspectionInformationID);
+
+        QuestionGroup questionG =  mySQL.getQuestionGroupFromTitle(questionGroup);
+
+        for (int i = 0; i < questions.size(); i++) {
+
+            createNewQuestionInsideQuestionGroup(questionG.getQuestionGroupID() , questions.get(i), fk_InspectionInformationID);
+
+
+        }
+
+
+
+
+
+
+    }
+
+
 
 }

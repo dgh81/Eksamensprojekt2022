@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.eksamensprojekt2022.MySQL;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
 import com.example.eksamensprojekt2022.Objeckts.Room;
@@ -78,21 +77,21 @@ public class ProjectFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
 
+                UserCase.setInspectionInformationFromDB( rooms.get(pos).getRoomID() , projectInformation.getProjectInformationID());
 
-                InspectionInformation.setInstance(UserCase.getInspectionInformationFromDB( rooms.get(pos).getRoomID() , projectInformation.getProjectInformationID())   );
+                UserCase.appendAllQuestionsWithAnswersToInspectionInformation();
 
-                InspectionInformation.getInstance().setQuestionGroups(UserCase.getAllQuestionGroupsWithAnswers(InspectionInformation.getInstance()));
+                UserCase.appendAllMeasurements(InspectionInformation.getInstance().getInspectionInformationID());
+
+                System.out.println(InspectionInformation.getInstance().getInspectionInformationID() + " FROM Trans");
 
                 System.out.println(InspectionInformation.getInstance());
 
-                ((SelectDocumentAndRoomActivityActivity)getActivity()).goToQuestionListPage();
+                ((SelectDocumentAndRoomActivityActivity)getActivity()).goToQuestionListPage( - 1 );
 
 
             }
         });
-
-
-
 
         return  view;
     }

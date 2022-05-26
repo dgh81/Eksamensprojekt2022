@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_marginBottom="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:background="@color/yellow"
+        android:gravity="center"
+        android:text="Vil du gemme ændringerne?"
+        android:textColor="@color/black"
+        android:textSize="20dp" />
+
+
+
+    <Button
+        android:id="@+id/Save"
+        android:layout_width="250dp"
+        android:layout_gravity="center"
+        android:layout_height="50dp"
+        android:text="Gem"
+        android:textSize="20dp"
+        android:backgroundTint="@color/green"
+        android:textColor="@color/black"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+/>
+
+    <Button
+        android:id="@+id/dontSave"
+        android:layout_width="250dp"
+        android:layout_gravity="center"
+        android:layout_height="50dp"
+        android:text="Gem ikke"
+        android:textSize="20dp"
+        android:backgroundTint="@color/red"
+        android:textColor="@color/black"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        />
+
+    <Button
+        android:id="@+id/Cancel"
+        android:layout_width="250dp"
+        android:layout_gravity="center"
+        android:layout_height="50dp"
+        android:text="Annuller"
+        android:textSize="20dp"
+        android:backgroundTint="@color/dotsColor"
+        android:textColor="@color/black"
+        android:layout_marginBottom="40dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        />
+
+
+
+
+
+
+</LinearLayout>

@@ -12,16 +12,23 @@ public class Answer {
     String answerText = "";
     int questionGroupID = 0;
     int questionID = 0;
+    String comment;
 
     public Answer(int answerID, String answerText) {
         this.answerID = answerID;
         this.answerText = answerText;
     }
 
-    public Answer(int answerID, int questionGroupID, int questionID) {
+    public Answer(int answerID, int questionGroupID, int questionID, String comment) {
         this.answerID = answerID;
         this.questionGroupID = questionGroupID;
         this.questionID = questionID;
+        this.comment = comment;
+    }
+
+
+    public String getComment() {
+        return comment;
     }
 
     public Answer() {

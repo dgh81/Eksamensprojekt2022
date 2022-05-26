@@ -1,6 +1,6 @@
 package com.example.eksamensprojekt2022.Objeckts;
 
-import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -14,7 +14,24 @@ public class InspectionInformation {
     String roomName;
     ArrayList<QuestionGroup> questionGroups;
 
+
+
+    ArrayList<Kredsdetaljer> kredsdetaljer = new ArrayList<>();
+
+    String overgangsmodstandR;
+
+    ArrayList<AfproevningAfRCD> afprøvningAfRCD = new ArrayList<>();
+
+    ArrayList<Kortslutningsstrom> kortslutningsstroms = new ArrayList<>();
+
+    ArrayList<String> PDFComment;
+
+
     public static InspectionInformation instance;
+
+
+
+
 
     public static InspectionInformation getInstance() {
 
@@ -84,12 +101,30 @@ public class InspectionInformation {
     }
 
 
+    public ArrayList<Kredsdetaljer> getKredsdetaljer() {
+        return kredsdetaljer;
+    }
 
+    public String getOvergangsmodstandR() {
+        return overgangsmodstandR;
+    }
+
+    public ArrayList<AfproevningAfRCD> getAfprøvningAfRCD() {
+        return afprøvningAfRCD;
+    }
+
+    public ArrayList<Kortslutningsstrom> getKortslutningsstroms() {
+        return kortslutningsstroms;
+    }
+
+    public ArrayList<String> getPDFComment() {
+        return PDFComment;
+    }
 
     public InspectionInformation() {
     }
 
-    public int getInspectorInformationID() {
+    public int getInspectionInformationID() {
         return inspectorInformationID;
     }
 
@@ -134,6 +169,21 @@ public class InspectionInformation {
                 '}';
     }
 
+    public int getTotalNumberOfQuestions() {
+
+        int number = 0;
+
+        for (int i = 0; i < questionGroups.size(); i++) {
+
+            number += questionGroups.get(i).getQuestions().size();
+
+        }
+        return number;
+    }
+
+
+
+
     public int getQuestionGroupIndexByQuestionID(int i) {
 
 
@@ -144,7 +194,26 @@ public class InspectionInformation {
                 return j;
             }
         }
-        return 0;
+
+        if (i - kredsdetaljer.size() + 1   > 0 ) {
+            i -= kredsdetaljer.size();
+        } else {
+            return questionGroups.size() + 1 ;
+        }
+
+        if (i  - 1  >= 0 ) {
+            i --;
+        } else {
+            return questionGroups.size() + 2;
+        }
+
+        if (i - afprøvningAfRCD.size() + 1  > 0 ) {
+
+        } else {
+            return questionGroups.size() + 3;
+        }
+
+        return questionGroups.size() + 4;
     }
 
 
@@ -157,33 +226,117 @@ public class InspectionInformation {
                 return i ;
             }
         }
-        return 0;
+
+        if (i - kredsdetaljer.size() + 1 > 0 ) {
+            i -= kredsdetaljer.size();
+        } else {
+            return i;
+        }
+
+        if (i - 1 >= 0 ) {
+            i --;
+        } else {
+            return i;
+        }
+
+        if (i - afprøvningAfRCD.size() + 1 > 0 ) {
+            i -= afprøvningAfRCD.size();
+        } else {
+            return i;
+        }
+
+        if (i - kortslutningsstroms.size() + 1 > 0) {
+            i -= kortslutningsstroms.size();
+        } else {
+            return i;
+        }
+
+
+
+        return i;
+
+
+
+
     }
 
     public int getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(int group , int question) {
+
         int index = 0;
 
-        for (int i = 0; i < group; i++) {
+        for (int i = 0; i < group && i < questionGroups.size()   ; i++) {
 
             index += questionGroups.get(i).getQuestions().size();
 
         }
 
+        for (int i = questionGroups.size(); i < (questionGroups.size() + 4) && i < group   ; i++) {
+
+            if (i == questionGroups.size() + 1)  {index += kredsdetaljer.size();  }
+            if (i == questionGroups.size() + 2 ) {index ++ ; }
+            if (i == questionGroups.size() + 3 ) {index += afprøvningAfRCD.size(); }
+            if (i == questionGroups.size() + 4 ) {index += kortslutningsstroms.size(); }
+
+        }
+
         index += question;
+
+
+        System.out.println(index + "this is last index");
 
         return index;
     }
 
     public boolean isTotalIndexInsideQuestionGroup(int index, int group) {
 
+        System.out.println(index + " this is index inside InspectionInformation " + group);
+
         return  (getQuestionGroupIndexByQuestionID(index) == group);
 
     }
 
 
+    public void removeAllUnansweredQuestions() {
 
 
+        for (int i = 0; i < questionGroups.size(); i++) {
+
+                for (int j = 0; j < questionGroups.get(i).getQuestions().size(); j++) {
+
+                    if (questionGroups.get(i).getQuestions().get(j).getAnswerID() != 4) {
+                        System.out.println(questionGroups.get(i).getQuestions().get(j).getQuestion() + "it is inside instance");
+                    }
 
 
+                    if (  questionGroups.get(i).getQuestions().get(j).getAnswerID() == 4 && questionGroups.get(i).getQuestions().get(j).getComment().equals("")  ) {
 
+                        questionGroups.get(i).getQuestions().remove(j);
+
+                        j --;
+
+                }
+            }
+        }
+    }
+
+
+    public void setKredsdetaljer(ArrayList<Kredsdetaljer> kredsdetaljer) {
+        this.kredsdetaljer = kredsdetaljer;
+    }
+
+    public void setOvergangsmodstandR(String overgangsmodstandR) {
+        this.overgangsmodstandR = overgangsmodstandR;
+    }
+
+    public void setAfprøvningAfRCD(ArrayList<AfproevningAfRCD> afprøvningAfRCD) {
+        this.afprøvningAfRCD = afprøvningAfRCD;
+    }
+
+    public void setKortslutningsstroms(ArrayList<Kortslutningsstrom> kortslutningsstroms) {
+        this.kortslutningsstroms = kortslutningsstroms;
+    }
+
+    public void setPDFComment(ArrayList<String> PDFComment) {
+        this.PDFComment = PDFComment;
+    }
 }
