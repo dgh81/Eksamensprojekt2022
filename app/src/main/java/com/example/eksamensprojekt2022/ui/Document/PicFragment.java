@@ -11,6 +11,13 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,32 +26,24 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
-import android.provider.MediaStore;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Toast;
-
 import com.example.eksamensprojekt2022.MySQL;
 import com.example.eksamensprojekt2022.Objeckts.FileHandler;
+import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
+import com.example.eksamensprojekt2022.Objeckts.Picture;
+import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
+import com.example.eksamensprojekt2022.Objeckts.User;
 import com.example.eksamensprojekt2022.R;
 
 import java.io.File;
 import java.io.IOException;
-
+import java.util.ArrayList;
 
 public class PicFragment extends Fragment {
 
-    public static ImageView picFragmentImageView;
     Button takePictureButton;
     Button savePictureButton;
     public static Bitmap bitmapFromTempFile;
-
     final int CAMERA_CODE = 100;
-
     Uri imageUri;
 
     public PicFragment() {
@@ -100,12 +99,19 @@ public class PicFragment extends Fragment {
         savePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String encodedImageString = new FileHandler().bitmapEncodeToBaseString(bitmapFromTempFile);
                 MySQL mysql = new MySQL();
-                mysql.createBitmapString(encodedImageString, 1, "sagnr + rumnavn + username: + comment?");
+                ProjectInformation project = mysql.getProjectInformation();
+                String name = "Sagnr.: " + project.getInstallationIdentification();
+                Picture pic = new Picture(bitmapFromTempFile,name, InspectionInformation.instance.getInspectionInformationID(), "test comment");
+                System.out.println(pic);
+                String encodedImageString = new FileHandler().bitmapEncodeToBaseString(bitmapFromTempFile);
+                mysql.createPicture(encodedImageString, InspectionInformation.getInstance().getInspectionInformationID(), "Sagnr. " + project.getInstallationIdentification() + ". Rumnavn: " + mysql.getRoomNameFromInspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID()) + ". Username: " + User.getInstance().getName() + " comment?");
+                //TODO Understående test henter alle Picture objekter til PDF for det aktuelle projekt. Pictures indeholder
+                // en getBitmap metode.
+                ArrayList<Picture> pics = mysql.getPicturesFromProjectInformationID(InspectionInformation.getInstance().getFk_projectID());
+                System.out.println(pics);
             }
         });
-
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -119,10 +125,6 @@ public class PicFragment extends Fragment {
             fragmentImageView.setImageBitmap(bitmapFromTempFile);
         }
     }
-
-
-
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {

@@ -1,20 +1,11 @@
 package com.example.eksamensprojekt2022.Objeckts;
 
 import static com.example.eksamensprojekt2022.CreatePDF.pdfFile;
-import static com.example.eksamensprojekt2022.MainActivity.pdfUri;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
-
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
-
-import com.example.eksamensprojekt2022.MainActivity;
-
-import java.util.List;
 
 public class EmailThread extends Thread {
     Context context;

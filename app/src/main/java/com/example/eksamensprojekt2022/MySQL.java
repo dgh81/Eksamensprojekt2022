@@ -1,11 +1,15 @@
 package com.example.eksamensprojekt2022;
 
+import android.graphics.Bitmap;
+
 import com.example.eksamensprojekt2022.Objeckts.AfproevningAfRCD;
 import com.example.eksamensprojekt2022.Objeckts.Answer;
+import com.example.eksamensprojekt2022.Objeckts.FileHandler;
 import com.example.eksamensprojekt2022.Objeckts.Inspection;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.Objeckts.Kortslutningsstrom;
 import com.example.eksamensprojekt2022.Objeckts.Kredsdetaljer;
+import com.example.eksamensprojekt2022.Objeckts.Picture;
 import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
 import com.example.eksamensprojekt2022.Objeckts.Question;
 import com.example.eksamensprojekt2022.Objeckts.QuestionGroup;
@@ -40,7 +44,7 @@ public class MySQL implements Runnable {
         }
     }
 
-    public ArrayList<ProjectInformation> getProjectInformation() {
+    public ArrayList<ProjectInformation> getAllProjectInformations() {
         ArrayList<ProjectInformation> projectInformationList = new ArrayList<>();
 
         try {
@@ -237,7 +241,7 @@ public class MySQL implements Runnable {
         return result;
     }
 
-    public ProjectInformation projectInfo(int ID) {
+    public ProjectInformation getProjectInformation(int ID) {
 
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM ProjectInformation WHERE ID = '" + ID + "';");
@@ -486,7 +490,7 @@ public class MySQL implements Runnable {
 
     }
 
-    public InspectionInformation getInspectionInformationDB(int roomID) {
+    public InspectionInformation getInspectionInformation(int roomID) {
 
         try {
 
@@ -824,7 +828,7 @@ public class MySQL implements Runnable {
         return result;
     }
 
-    public void createBitmapString(String bitmapString, int inspectionInformationID, String pictureText) {
+    public void createPicture(String bitmapString, int inspectionInformationID, String pictureText) {
         try {
             PreparedStatement statement = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -872,17 +876,6 @@ public class MySQL implements Runnable {
             e.printStackTrace();
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public ArrayList<AfproevningAfRCD> getAfproevningAfRCDer(int inspectionInformationID) {
         ArrayList<AfproevningAfRCD> AfproevningAfRCDer  = new ArrayList<>();
@@ -993,6 +986,59 @@ public class MySQL implements Runnable {
         return pdfComments;
     }
 
+    public ProjectInformation getProjectInformation() {
+        ProjectInformation project = null;
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM ProjectInformation WHERE ID = '" + InspectionInformation.getInstance().getFk_projectID() + "'");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                project = new ProjectInformation(rs.getString("customerName"),
+                        rs.getString("customerAddress"),
+                        rs.getString("customerPostalCode"),
+                        rs.getString("customerCity"),
+                        rs.getString("installationIdentification"),
+                        rs.getString("installationName"));
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return project;
+    }
+
+    public String getRoomNameFromInspectionInformationID(int inspectionInformationID) {
+        String roomname = "";
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT Room.RoomName, InspectionInformation.Id\n" +
+                    "FROM Room INNER JOIN (InspectionInformation INNER JOIN ProjectInformation ON InspectionInformation.fk_projectID = ProjectInformation.Id) ON Room.Id = InspectionInformation.fk_roomID\n" +
+                    "WHERE InspectionInformation.Id='" + inspectionInformationID + "'");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                roomname = rs.getString("roomName");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return roomname;
+    }
+    public ArrayList<Picture> getPicturesFromProjectInformationID(int projectInformationID) {
+        ArrayList<Picture> pics = new ArrayList<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT ProjectInformation.Id, Picture.*" +
+                    " FROM (Picture INNER JOIN InspectionInformation ON Picture.fk_inspectionInformationID = InspectionInformation.Id)" +
+                    " INNER JOIN ProjectInformation ON InspectionInformation.fk_projectID = ProjectInformation.Id" +
+                    " WHERE ProjectInformation.Id='" + projectInformationID + "'");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                FileHandler fileHandler = new FileHandler();
+                Bitmap bitmap = fileHandler.bitmapDecodeFromBaseString(rs.getString("base64"));
+                Picture pic = new Picture(bitmap,rs.getInt("Picture.fk_inspectionInformationID"),rs.getString("pictureText"));
+                pics.add(pic);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pics;
+    }
 }
 
 

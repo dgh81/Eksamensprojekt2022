@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.eksamensprojekt2022.Objeckts.EmailThread;
+import com.example.eksamensprojekt2022.Objeckts.Picture;
 import com.example.eksamensprojekt2022.Objeckts.User;
 import com.example.eksamensprojekt2022.ui.Document.SelectDocumentAndRoomActivityActivity;
 import com.example.eksamensprojekt2022.ui.Login.LoginActivity;
@@ -24,10 +25,11 @@ import com.example.eksamensprojekt2022.ui.Login.LoginSaveData;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     Button idBtnGeneratePDF;
-
+    Button testBtn;
     public static Uri pdfUri;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -79,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
 
             Intent intent = new Intent( MainActivity.this,  SelectDocumentAndRoomActivityActivity.class);
             startActivity(intent);
-
         }
 
         Toolbar myToolbar =  findViewById(R.id.my_toolbar);
@@ -97,6 +98,16 @@ public class MainActivity extends AppCompatActivity {
         ab.setDisplayShowTitleEnabled(true);
         ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.yellow)));
 
+        /*testBtn = findViewById(R.id.btnTest);
+
+        testBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<Picture> pics = new ArrayList<>();
+                pics = mysql.getPicturesFromProjectInformationID()
+            }
+        });*/
+
     }
 
     @Override
@@ -107,16 +118,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)  {
-
         return true;
     }
 
     public void julieTest() {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
-        System.out.println("Klik");
-
         MySQL mysql = new MySQL();
         Thread mysqlConnection = new Thread(mysql);
         mysqlConnection.run();
@@ -126,10 +133,14 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         User loggedInUser = mysql.logUserIn("Julie", "123");
+
+
+
     }
 
     //TODO Flyt til UserCase
     public void userSendsPdfAsEmail(View view) {
+        //view.getContext()
         EmailThread emailIntent = new EmailThread(MainActivity.this);
         emailIntent.start();
     }

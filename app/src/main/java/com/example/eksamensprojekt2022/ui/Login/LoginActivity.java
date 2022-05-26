@@ -42,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 if (loginSuccess) {
+                    //TODO Mangler at sætte User singleton?
                     Intent intent = new Intent(  LoginActivity.this, SelectDocumentAndRoomActivityActivity.class);
                     startActivity(intent);
 
