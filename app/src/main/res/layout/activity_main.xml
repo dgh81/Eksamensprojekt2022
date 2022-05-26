@@ -84,12 +84,10 @@
         android:id="@+id/idBtnGeneratePDF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="108dp"
-        android:layout_marginEnd="31dp"
-        android:layout_marginBottom="575dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="42dp"
         android:text="Generate PDF" />
 
     <fragment
