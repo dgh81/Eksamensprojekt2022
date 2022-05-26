@@ -8,7 +8,9 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.view.Menu;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
 import com.example.eksamensprojekt2022.Objeckts.Question;
@@ -25,6 +28,7 @@ import com.example.eksamensprojekt2022.ui.Document.SelectDocumentAndRoomActivity
 import com.example.eksamensprojekt2022.ui.Login.LoginActivity;
 import com.example.eksamensprojekt2022.ui.Login.LoginSaveData;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -329,6 +333,23 @@ public class MainActivity extends AppCompatActivity {
                 ftpclient.ftpDisconnect();
             }
         }).start();*/
+
+        final Intent emailIntent = new Intent( android.content.Intent.ACTION_SEND);
+        emailIntent.setType("plain/text");
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] { "abc@gmail.com" });
+        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Email Subject");
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Email Body");
+        File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File filepath = new File(file,"sagsnummer_28.pdf");
+        if (!filepath.exists() || !filepath.canRead()) {
+            Toast.makeText(this, "Attachment Error", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        Uri uri = Uri.parse("file://" + file);
+        emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+
 
     }
 
