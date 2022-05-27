@@ -9,15 +9,22 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.example.eksamensprojekt2022.LoginAuthentication;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
@@ -31,7 +38,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 
 
-public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
+public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity implements OnKeyboardVisibilityListener  {
 
 
     @Override
@@ -63,7 +70,7 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
         ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.yellow)));
 
 
-
+        setKeyboardVisibilityListener(this);
 
 
 
@@ -428,7 +435,46 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity {
 
     }
 
+    private void setKeyboardVisibilityListener(final OnKeyboardVisibilityListener onKeyboardVisibilityListener) {
+        final View parentView = ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
+        parentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
+            private boolean alreadyOpen;
+            private final int defaultKeyboardHeightDP = 100;
+            private final int EstimatedKeyboardDP = defaultKeyboardHeightDP + (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? 48 : 0);
+            private final Rect rect = new Rect();
+
+            @Override
+            public void onGlobalLayout() {
+                int estimatedKeyboardHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, EstimatedKeyboardDP, parentView.getResources().getDisplayMetrics());
+                parentView.getWindowVisibleDisplayFrame(rect);
+                int heightDiff = parentView.getRootView().getHeight() - (rect.bottom - rect.top);
+                boolean isShown = heightDiff >= estimatedKeyboardHeight;
+
+                if (isShown == alreadyOpen) {
+                    Log.i("Keyboard state", "Ignoring global layout change...");
+                    return;
+                }
+                alreadyOpen = isShown;
+                onKeyboardVisibilityListener.onVisibilityChanged(isShown);
+            }
+        });
+    }
+
+
+    @Override
+    public void onVisibilityChanged(boolean visible) {
+
+
+
+        if (getSupportFragmentManager().findFragmentById(R.id.frameLayout).toString().equals("Question")) {
+
+            ((Question) getSupportFragmentManager().findFragmentById(R.id.frameLayout)).dotsIsVisible(!visible);
+
+        }
+
+
+    }
 
 
 }

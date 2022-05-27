@@ -10,15 +10,22 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/yellow"
-        android:text="Opret projekt"
+        android:text="Opret sag"
         android:gravity="center"
         android:textColor="@color/black"
         android:textSize="20dp" />
 
 
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="1">
+
 
     <EditText
         android:id="@+id/customerName"
+        android:layout_weight="0.4"
         android:inputType="text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,6 +34,23 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
         android:hint="Kundenavn" />
+
+    <EditText
+        android:id="@+id/caseNumber"
+        android:layout_weight="0.6"
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:hint="Sag nr." />
+
+
+
+</LinearLayout>
+
 
     <EditText
         android:id="@+id/customerAddress"

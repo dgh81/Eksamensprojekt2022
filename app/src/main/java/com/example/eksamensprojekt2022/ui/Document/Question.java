@@ -276,4 +276,24 @@ public class Question extends Fragment {
     public String toString() {
         return "Question";
     }
+
+
+    public void dotsIsVisible(boolean visibility) {
+
+
+        System.out.println("???");
+
+        if (visibility) {
+            dotLayout.setVisibility(View.VISIBLE);
+        } else {
+            dotLayout.setVisibility(View.GONE);
+        }
+
+
+
+
+
+
+    }
+
 }

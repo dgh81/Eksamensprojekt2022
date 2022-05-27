@@ -4,11 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+
     >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="15dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:id="@+id/group"
@@ -31,7 +43,7 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="15dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:id="@+id/OB"
@@ -50,7 +62,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="15dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:id="@+id/Karakteristik"
@@ -69,7 +81,7 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="15dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:id="@+id/Tvaersnit"
@@ -91,7 +103,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="15dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:id="@+id/MaksOB"
@@ -162,7 +174,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="15dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:id="@+id/Isolation"
@@ -181,6 +193,8 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+        </LinearLayout>
 
+    </ScrollView>
 
 </LinearLayout>

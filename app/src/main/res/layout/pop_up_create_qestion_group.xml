@@ -10,7 +10,7 @@
         android:layout_height="50dp"
         android:background="@color/yellow"
         android:gravity="center"
-        android:text="Opret spørgsmåls gruppe"
+        android:text="Opret eftersyn og afprøvnings gruppe"
         android:textColor="@color/black"
         android:textSize="20dp"
         />
@@ -21,7 +21,7 @@
         android:id="@+id/questionToList"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:hint="Spørgsmål gruppe"
+        android:hint="Eftersyn og afprøvnings gruppe"
         android:layout_marginTop="20dp"
 
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -63,7 +63,7 @@
         android:layout_height="50dp"
         android:backgroundTint="@color/green"
         android:layout_marginTop="0dp"
-        android:text="Tilføj spørgsmål"
+        android:text="Tilføj eftersyn og afprøvning"
         app:iconGravity="textStart"
         app:iconPadding="10dp"
 

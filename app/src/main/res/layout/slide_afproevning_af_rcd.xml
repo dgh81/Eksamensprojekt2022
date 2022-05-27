@@ -5,9 +5,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_marginStart="40dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="40dp"
         android:id="@+id/RCD"
         android:layout_width="match_parent"
@@ -219,6 +231,10 @@ på 6 mA d.c. (Type-A)"
         />
 
 
+        </LinearLayout>
+
+
+    </ScrollView>
 
 
 </LinearLayout>

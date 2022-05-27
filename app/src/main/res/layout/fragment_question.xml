@@ -23,7 +23,6 @@
         android:layout_below="@+id/headlineBox" />
 
 
-
     <LinearLayout
         android:id="@+id/dots"
         android:layout_width="wrap_content"
@@ -34,8 +33,7 @@
 
 
 
-
-        android:orientation="horizontal"/>
+        android:orientation="horizontal" />
 
 
 </RelativeLayout>
