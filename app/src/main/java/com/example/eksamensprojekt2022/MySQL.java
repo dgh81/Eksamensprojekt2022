@@ -24,10 +24,10 @@ import java.util.Date;
 public class MySQL implements Runnable {
 
     public MySQL() {}
-
     public static Connection connection;
 
-
+    //TODO Lav rigtige prep statements igennem hele klassen!
+    // eller lav det som eksempel for et par af funktionerne...
 
     public void createProjectInformation(ProjectInformation projectInformation) {
         try {
@@ -46,33 +46,35 @@ public class MySQL implements Runnable {
 
     public ArrayList<ProjectInformation> getAllProjectInformations() {
         ArrayList<ProjectInformation> projectInformationList = new ArrayList<>();
-
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM ProjectInformation");
-
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-
-                ProjectInformation projectInformation = new ProjectInformation();
-
-                //System.out.print(rs.getString("answerText" + " - "));
+                //TODO Rettet dette til at bruge constructor:
+                // test og slet kommentarer hvis det virker.
+                //ProjectInformation projectInformation = new ProjectInformation();
+                ProjectInformation projectInformation = new ProjectInformation(rs.getInt("ID"),
+                        rs.getString("customerName"),
+                        rs.getString("customerAddress"),
+                        rs.getString("customerPostalCode"),
+                        rs.getString("customerCity"),
+                        rs.getString("installationIdentification"),
+                        rs.getString("installationName"));
+/*
                 projectInformation.setProjectInformationID(rs.getInt("ID"));
                 projectInformation.setCustomerName(rs.getString("customerName"));
                 projectInformation.setCustomerAddress(rs.getString("customerAddress"));
                 projectInformation.setCustomerPostalCode(rs.getString("customerPostalCode"));
-                projectInformation.setInstallationIdentification(rs.getString("installationIdentification"));
-                projectInformation.setInstallationName(rs.getString("installationName"));
                 projectInformation.setCustomerCity(rs.getString("customerCity"));
+                projectInformation.setInstallationIdentification(rs.getString("installationIdentification"));
+                projectInformation.setInstallationName(rs.getString("installationName"));*/
                 projectInformationList.add(projectInformation);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
         return projectInformationList;
     }
-
-
 
     @Override
     public void run() {
@@ -82,6 +84,7 @@ public class MySQL implements Runnable {
             e.printStackTrace();
         }
         try {
+            //TODO: Hvilken medtode ville vi anvende for at gøre understående info hemmelig og sikret?
             String url = "jdbc:mysql://mysql85.unoeuro.com:3306/danielguldberg_dk_db?useSSL=false";
             connection = DriverManager.getConnection(url, "danielguldberg_dk", "280781");
             System.out.println("connection created is: " + (connection != null));
@@ -94,18 +97,13 @@ public class MySQL implements Runnable {
         User loggedInUser = new User();
         boolean userCreated = false;
         try {
-
-            System.out.println(connection + " From login page");
-
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM User " +
                     "WHERE username = '" + username + "'" +
                     " AND password = '" + password + "'");
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                System.out.println("1" + rs.getInt(1));
-                System.out.println("2" + rs.getString(2));
-                System.out.println("3" + rs.getString(3));
-
+                //TODO Ret til at bruge kolonnenavne i stedet for indeksnumre:
+                // Ret til at bruge constructor?
                 loggedInUser.setUserID(rs.getInt(1));
                 loggedInUser.setName(rs.getString(2));
                 loggedInUser.setPassword(rs.getString(3));
@@ -152,9 +150,7 @@ public class MySQL implements Runnable {
         return questionGroups;
     }
 
-
     public QuestionGroup getQuestionGroupFromTitle(String title ) {
-
         try {
             PreparedStatement userType = connection.prepareStatement("SELECT * FROM QuestionGroup WHERE title = '" + title + "'");
             ResultSet rs = userType.executeQuery();
@@ -162,19 +158,13 @@ public class MySQL implements Runnable {
                 QuestionGroup group = new QuestionGroup(
                         rs.getInt("ID"),
                         rs.getString("title"));
-
                 return group;
-
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
-
-
-
-
 
     public ArrayList<Question> getQuestionsFromGroupTitle(String title) {
         ArrayList<Question> questions = new ArrayList<>();
@@ -194,6 +184,7 @@ public class MySQL implements Runnable {
         return questions;
     }
 
+    //TODO Denne kan vist slettes, når vi er færdige...
     public void getAnswerInfo() {
         try {
             PreparedStatement userType = connection.prepareStatement("SELECT ProjectInformation.installationIdentification, " +
@@ -226,13 +217,10 @@ public class MySQL implements Runnable {
 
     public ArrayList<String> getAnswerText() {
         ArrayList<String> result = new ArrayList<>();
-
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM Answer");
             ResultSet rs = statement.executeQuery();
-
             while (rs.next()) {
-                //System.out.print(rs.getString("answerText" + " - "));
                 result.add(rs.getString("answerText"));
             }
         } catch (Exception e) {
@@ -242,11 +230,9 @@ public class MySQL implements Runnable {
     }
 
     public ProjectInformation getProjectInformation(int ID) {
-
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM ProjectInformation WHERE ID = '" + ID + "';");
             ResultSet rs = statement.executeQuery();
-
             while (rs.next()) {
                 ProjectInformation info = new ProjectInformation(
                         rs.getInt("ID"),
@@ -257,13 +243,11 @@ public class MySQL implements Runnable {
                         rs.getString("installationIdentification"),
                         rs.getString("installationName")
                 );
-                System.out.println("oprettet");
                 return info;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("kunne ikke oprette");
         return null;
     }
 
@@ -271,7 +255,6 @@ public class MySQL implements Runnable {
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM InspectionInformation WHERE ID = '" + ID + "';");
             ResultSet rs = statement.executeQuery();
-
             while (rs.next()) {
                 InspectionInformation info = new InspectionInformation(
                         rs.getInt("ID"),
@@ -279,46 +262,36 @@ public class MySQL implements Runnable {
                         rs.getDate("inspectionDate"),
                         rs.getInt("fk_projectID")
                 );
-                System.out.println("oprettet");
                 return info;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("kunne ikke oprette");
         return null;
     }
 
     public ArrayList<String> getQuestionsFromGroup(int group) {
         ArrayList<String> list = new ArrayList<>();
-
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM Question WHERE fk_questionGroup = '" + group + "';");
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
                 list.add(rs.getString("question"));
-                System.out.println("added question");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("questions not added");
         }
         return list;
     }
 
     public ArrayList<Question> getQuestionsFromQuestionGroup(QuestionGroup questionGroup , int inspectionInformationID) {
         ArrayList<Question> questions = new ArrayList<>();
-
-        System.out.println(questionGroup);
-
-
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM Question WHERE fk_questionGroup = '" + questionGroup.getQuestionGroupID() + " '   AND " +
                     "  fk_inspectionInformationID = '" +  inspectionInformationID + "' OR fk_questionGroup = '" + questionGroup.getQuestionGroupID() + "' AND " +
                     " fk_inspectionInformationID = 0;"  );
             ResultSet rs = statement.executeQuery();
-
             while (rs.next()) {
                 Question q = new  Question(
                         questionGroup.getQuestionGroupID(),
@@ -329,18 +302,11 @@ public class MySQL implements Runnable {
                 questions.add(q);
             }
             return questions;
-
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("questions not added");
         }
         return questions;
-
     }
-
-
-
-
 
     public void createRoom(String name , int projectID) {
         try {
@@ -352,9 +318,6 @@ public class MySQL implements Runnable {
         }
     }
 
-
-
-
     public void deleteRoom(Room room) {
         try {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM Room WHERE roomName='" + room.getRoomName() + "'");
@@ -363,6 +326,7 @@ public class MySQL implements Runnable {
             e.printStackTrace();
         }
     }
+
     public void deleteRoom(int roomID) {
         try {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM Room WHERE ID='" + roomID + "'");
@@ -372,7 +336,6 @@ public class MySQL implements Runnable {
         }
     }
 
-    //TODO Skift fra newRoomName til ID?
     public void editRoom(Room room, String newRoomName) {
         try {
             PreparedStatement statement = connection.prepareStatement("UPDATE Room SET roomName ='" + newRoomName + "' WHERE roomName='" + room.getRoomName() + "'");
@@ -384,12 +347,10 @@ public class MySQL implements Runnable {
 
     public ArrayList<Room> getRoomsFromProjectID(int projectID) {
         ArrayList<Room> rooms = new ArrayList<>();
-
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM Room WHERE fk_projectID = '"+ projectID + "'");
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-
                 Room r = new Room(
                         rs.getInt("ID"),
                         rs.getString("roomName"),
@@ -398,16 +359,13 @@ public class MySQL implements Runnable {
                 );
                 rooms.add(r);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
         return rooms;
-
     }
 
     public void createQuestion(int questionGroupID, String questionText) {
-
         try {
             PreparedStatement statement = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -424,7 +382,6 @@ public class MySQL implements Runnable {
     }
 
     public void createQuestionGroup(String questionGroupTitle, int fk_inspectionInformationID) {
-
         try {
             PreparedStatement statement = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -439,20 +396,11 @@ public class MySQL implements Runnable {
         }
     }
 
-
-
     public void createInspection(InspectionInformation inspectionInformation) {
-
         inspectionInformation = InspectionInformation.getInstance();
-
         for (int i = 0; i < inspectionInformation.getQuestionGroups().size(); i++) {
-
             for (int j = 0; j < inspectionInformation.getQuestionGroups().get(i).getQuestions().size(); j++) {
-
                 Question q = inspectionInformation.getQuestionGroups().get(i).getQuestions().get(j);
-                System.out.println(q.getAnswerID());
-
-                //TODO call insert into sql: fk_questionID, fk_answerID, fk_inspectionInformationID
                 try {
                     PreparedStatement statement = null;
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -467,13 +415,9 @@ public class MySQL implements Runnable {
                 }
             }
         }
-
     }
 
-
     public void createInspectionInformation( InspectionInformation inspectionInformation  ) {
-
-
         try {
             PreparedStatement statement = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -487,19 +431,14 @@ public class MySQL implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public InspectionInformation getInspectionInformation(int roomID) {
-
         try {
-
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM Room INNER JOIN InspectionInformation ON Room.Id = InspectionInformation.fk_roomID WHERE Room.Id = '" + roomID + "'");
             ResultSet rs = statement.executeQuery();
-
             if (rs.next()) {
                 return new InspectionInformation(
-
                         rs.getInt("InspectionInformation.ID"),
                         User.getInstance().getName(),
                         new Date(),
@@ -508,42 +447,33 @@ public class MySQL implements Runnable {
                         rs.getString("roomName")
                 );
             }
-
         }catch (Exception e) {
             e.printStackTrace();
         }
         return  null;
-
     }
-
-
-
 
     public ArrayList<Answer> getAllAnswersFromInspectionInformationID(int inspectionInformationID) {
         ArrayList<Answer> answers  = new ArrayList<>();
-    try {
-
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM QuestionGroup INNER JOIN (Question INNER" +
-                " JOIN Inspection ON Question.Id = Inspection.fk_questionID) ON QuestionGroup.Id " +
-                "= Question.fk_questionGroup WHERE Inspection.fk_inspectionInformationID = '" + inspectionInformationID + "'");
-        ResultSet rs = statement.executeQuery();
-
-        while (rs.next()) {
-
-            Answer a = new Answer(
-                    rs.getInt("fk_answerID"),
-                    rs.getInt("fk_questionGroup"),
-                    rs.getInt("question.id"),
-                    rs.getString("comment")
-            );
-            answers.add(a);
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM QuestionGroup INNER JOIN (Question INNER" +
+                    " JOIN Inspection ON Question.Id = Inspection.fk_questionID) ON QuestionGroup.Id " +
+                    "= Question.fk_questionGroup WHERE Inspection.fk_inspectionInformationID = '" + inspectionInformationID + "'");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Answer a = new Answer(
+                        rs.getInt("fk_answerID"),
+                        rs.getInt("fk_questionGroup"),
+                        rs.getInt("question.id"),
+                        rs.getString("comment")
+                );
+                answers.add(a);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
         }
-
-    }catch (Exception e) {
-        e.printStackTrace();
-    }
-        return answers;
-    }
+            return answers;
+        }
 
 /*
     public String getOvergangsmodstand(int inspectionInformationID) {
@@ -714,9 +644,7 @@ public class MySQL implements Runnable {
         }
     }*/
 
-
-    //TODO Omdøb til deletePicture etc. og opret klasse:
-    public void deleteBitmapString(int inspectionInformationID) {
+    public void deleteAllPicturesByInspectionInformationID(int inspectionInformationID) {
         try {
             PreparedStatement statement = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -729,39 +657,22 @@ public class MySQL implements Runnable {
     }
 
     public void clearInspectionWithQuestionInspectionInformationID() {
-
-        System.out.println(InspectionInformation.getInstance().getInspectionInformationID());
-
-                //TODO call insert into sql: fk_questionID, fk_answerID, fk_inspectionInformationID
-                try {
-                    PreparedStatement statement = null;
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                        statement = connection.prepareStatement( "DELETE FROM Inspection WHERE fk_inspectionInformationID = '" + InspectionInformation.getInstance().getInspectionInformationID()
-                                + "'");
-                    }
-                    statement.execute();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-         }
-
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement( "DELETE FROM Inspection WHERE fk_inspectionInformationID = '" + InspectionInformation.getInstance().getInspectionInformationID()
+                        + "'");
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void createInspection() {
-
-
         for (int i = 0; i < InspectionInformation.getInstance().getQuestionGroups().size(); i++) {
-
             for (int j = 0; j < InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().size(); j++) {
-
                 Question q = InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(j);
-
-                System.out.println(q.getAnswerID() + "fint it now!");
-
-                System.out.println(q.getQuestion());
-
-                //TODO call insert into sql: fk_questionID, fk_answerID, fk_inspectionInformationID
-
-
                 try {
                     PreparedStatement statement = null;
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -777,21 +688,16 @@ public class MySQL implements Runnable {
                 }
             }
         }
-
     }
 
     public ArrayList<Integer> getAllInspectionIDs(int projectID) {
         ArrayList<Integer> list = new ArrayList<>();
             try {
-
                 PreparedStatement statement = connection.prepareStatement("SELECT * FROM InspectionInformation WHERE fk_projectID = '" + projectID + "'");
                 ResultSet rs = statement.executeQuery();
-
                 while (rs.next()) {
-
                     list.add(rs.getInt("ID"));
                 }
-
             }catch (Exception e) {
                 e.printStackTrace();
             }
@@ -801,15 +707,11 @@ public class MySQL implements Runnable {
     public ArrayList<Inspection> getAllInspections(int projectID) {
         ArrayList<Integer> list = getAllInspectionIDs(projectID);
         ArrayList<Inspection> result = new ArrayList<>();
-
         for (int i = 0; i < list.size(); i++) {
             try {
-
                 PreparedStatement statement = connection.prepareStatement("SELECT * FROM Inspection WHERE fk_inspectionInformationID = '" + list.get(i) + "'");
                 ResultSet rs = statement.executeQuery();
-
                 while (rs.next()) {
-
                     Inspection inspection = new Inspection(
                             projectID,
                             rs.getInt("fk_questionID"),
@@ -819,23 +721,21 @@ public class MySQL implements Runnable {
                     );
                     result.add(inspection);
                 }
-
             }catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
         return result;
     }
 
-    public void createPicture(String bitmapString, int inspectionInformationID, String pictureText) {
+    public void createPicture(String bitmapString, int inspectionInformationID, String comment) {
         try {
             PreparedStatement statement = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                statement = connection.prepareStatement("INSERT INTO Picture (base64, fk_inspectionInformationID, pictureText) VALUES ('"
+                statement = connection.prepareStatement("INSERT INTO Picture (base64, fk_inspectionInformationID, comment) VALUES ('"
                         + bitmapString +"','"
                         + inspectionInformationID +"','"
-                        + pictureText + "' )" );
+                        + comment + "')" );
             }
             statement.execute();
         } catch (Exception e) {
@@ -857,12 +757,8 @@ public class MySQL implements Runnable {
         return base64Strings;
     }
 
-
-
-
-
+    //TODO Fjern parameter inspectionInformationID?:
     public void createQuestion(int questionGroupID, String questionText , int inspectionInformationID) {
-
         try {
             PreparedStatement statement = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -882,9 +778,7 @@ public class MySQL implements Runnable {
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM AfproevningAfRCD WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
             ResultSet rs = statement.executeQuery();
-
             while (rs.next()) {
-
                 AfproevningAfRCD a = new AfproevningAfRCD(
                         rs.getInt("ID"),
                         rs.getString("RCD"),
@@ -955,13 +849,11 @@ public class MySQL implements Runnable {
         return kredsdetaljer;
     }
 
-
     public String getOvergangsmodstand(int inspectionInformationID) {
         String overgangsmodstand = "";
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM Overgangsmodstand WHERE fk_inspectionInformationID = '" + inspectionInformationID + "'");
             ResultSet rs = statement.executeQuery();
-
             while (rs.next()) {
                 overgangsmodstand = rs.getString("overgangsmodstand");
             }
@@ -970,7 +862,6 @@ public class MySQL implements Runnable {
         }
         return overgangsmodstand;
     }
-
 
     public ArrayList<String> getPDFComments(int inspectionInformationID) {
         ArrayList<String> pdfComments = new ArrayList<>();
@@ -1020,6 +911,7 @@ public class MySQL implements Runnable {
         }
         return roomname;
     }
+
     public ArrayList<Picture> getPicturesFromProjectInformationID(int projectInformationID) {
         ArrayList<Picture> pics = new ArrayList<>();
         try {
@@ -1031,7 +923,7 @@ public class MySQL implements Runnable {
             while (rs.next()) {
                 FileHandler fileHandler = new FileHandler();
                 Bitmap bitmap = fileHandler.bitmapDecodeFromBaseString(rs.getString("base64"));
-                Picture pic = new Picture(bitmap,rs.getInt("Picture.fk_inspectionInformationID"),rs.getString("pictureText"));
+                Picture pic = new Picture(bitmap,rs.getInt("Picture.fk_inspectionInformationID"),rs.getString("comment"));
                 pics.add(pic);
             }
         } catch (Exception e) {
@@ -1039,6 +931,7 @@ public class MySQL implements Runnable {
         }
         return pics;
     }
+
 }
 
 

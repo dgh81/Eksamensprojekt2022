@@ -69,12 +69,11 @@ public class PicFragment extends Fragment {
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("test on click button from fragment");
                 try {
                     android.content.Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     File imageFile = null;
                     try{
-                        imageFile= new FileHandler().getImageFile();
+                        imageFile = new FileHandler().getImageFile();
                     }catch (IOException e){
                         e.printStackTrace();
                     }
@@ -105,7 +104,7 @@ public class PicFragment extends Fragment {
                 Picture pic = new Picture(bitmapFromTempFile,name, InspectionInformation.instance.getInspectionInformationID(), "test comment");
                 System.out.println(pic);
                 String encodedImageString = new FileHandler().bitmapEncodeToBaseString(bitmapFromTempFile);
-                mysql.createPicture(encodedImageString, InspectionInformation.getInstance().getInspectionInformationID(), "Sagnr. " + project.getInstallationIdentification() + ". Rumnavn: " + mysql.getRoomNameFromInspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID()) + ". Username: " + User.getInstance().getName() + " comment?");
+                mysql.createPicture(encodedImageString, InspectionInformation.getInstance().getInspectionInformationID(), "Sagnr. " + project.getInstallationIdentification() + ". Rumnavn: " + mysql.getRoomNameFromInspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID()) + ". Username: " + User.getInstance().getName() + ". Comment: " + pic.getComment() );
                 //TODO Understående test henter alle Picture objekter til PDF for det aktuelle projekt. Pictures indeholder
                 // en getBitmap metode.
                 ArrayList<Picture> pics = mysql.getPicturesFromProjectInformationID(InspectionInformation.getInstance().getFk_projectID());
@@ -131,7 +130,8 @@ public class PicFragment extends Fragment {
         switch (requestCode) {
             case CAMERA_CODE:
                 if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-
+                    //TODO
+                    // Hvordan kan vi fortsætte hvor vi slap, hvis der bliver givet permission?? - og er det nødvendigt?
                 } else {
                     Toast.makeText(getContext(), "This Permission is needed for the app to work perfectly!", Toast.LENGTH_SHORT).show();
                 }

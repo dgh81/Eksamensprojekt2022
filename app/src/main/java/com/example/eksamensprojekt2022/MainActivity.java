@@ -134,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
         }
         User loggedInUser = mysql.logUserIn("Julie", "123");
 
-
-
     }
 
     //TODO Flyt til UserCase

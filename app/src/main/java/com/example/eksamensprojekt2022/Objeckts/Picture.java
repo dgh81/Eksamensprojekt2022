@@ -9,17 +9,6 @@ public class Picture {
     int inspectionInformationID;
     String comment;
 
-    public Picture() {
-    }
-
-    public Picture(int pictureID, Bitmap bitmap, String name, int inspectionInformationID, String comment) {
-        this.pictureID = pictureID;
-        this.bitmap = bitmap;
-        this.name = name;
-        this.inspectionInformationID = inspectionInformationID;
-        this.comment = comment;
-    }
-
     public Picture(Bitmap bitmap, String name, int inspectionInformationID, String comment) {
         this.bitmap = bitmap;
         this.name = name;
