@@ -5,12 +5,14 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eksamensprojekt2022.Objeckts.FileHandler;
 import com.example.eksamensprojekt2022.Objeckts.InspectionInformation;
+import com.example.eksamensprojekt2022.Objeckts.Picture;
 import com.example.eksamensprojekt2022.Objeckts.ProjectInformation;
 import com.example.eksamensprojekt2022.Objeckts.Question;
 import com.example.eksamensprojekt2022.Objeckts.Room;
@@ -80,6 +82,13 @@ public class CreatePDF extends AppCompatActivity {
             byte[] fontData = IOUtils.toByteArray(inStream);
             freeSansFont = PdfFontFactory.createFont(fontData, PdfEncodings.IDENTITY_H);
         }
+        /*String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+        File file = new File(pdfPath, "myPDF1.pdf");
+        OutputStream outputstream = new FileOutputStream(file);
+
+        PdfWriter writer = new PdfWriter(file);
+        PdfDocument pdfDocument = new PdfDocument(writer);
+        Document document = new Document(pdfDocument);*/
 /*
         String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
         File file = new File(pdfPath, "sagsnummer_" + projectInfo.getProjectInformationID() + ".pdf");*/
@@ -148,9 +157,16 @@ public class CreatePDF extends AppCompatActivity {
                 document.add(createTableBemaerkninger(inspectionInfo.get(i)));
             }
 
+
         }
 
         //TODO skriv bilag ind i pdf
+        document.add(new AreaBreak());
+        ArrayList<Picture> pics = mysql.getPicturesFromProjectInformationID(InspectionInformation.getInstance().getFk_projectID());
+        System.out.println(pics.toString());
+
+        createBilag(pics, document);
+
 
         document.close();
         Toast.makeText(context, "Pdf Created", Toast.LENGTH_LONG).show();
@@ -526,6 +542,71 @@ public class CreatePDF extends AppCompatActivity {
 
     }
 
+    public void createBilag(ArrayList<Picture> list, Document doc) {
+        doc.add(new Paragraph("Bilag").setFontSize(18));
+        float[] columnWidth = {500, 500};
+        int pictures = 0;
 
+        for (int i = 0; i < list.size(); i += 2) {
+
+            if (list.size() % 2 != 0) {
+
+            }
+            if (i == list.size() - 1) {
+
+                if (pictures == 4) {
+                    doc.add(new AreaBreak());
+                    pictures = 0;
+                }
+
+                Table table = new Table(columnWidth);
+                table.addCell(new Cell().add(bitmapToImage(list.get(i).getBitmap()).setHorizontalAlignment(HorizontalAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE).setHeight(200).setWidth(1000));
+                table.addCell(new Cell().setHeight(200).setWidth(1000));
+                table.addCell(new Cell().add(new Paragraph("Evt. kommentar")).setBackgroundColor(ColorConstants.GRAY));
+                table.addCell(new Cell().add(new Paragraph("Evt. kommentar")).setBackgroundColor(ColorConstants.GRAY));
+                table.addCell(new Cell().add(new Paragraph(imageComment(list.get(i))).setItalic()));
+                table.addCell(new Cell().add(new Paragraph("")));
+
+                doc.add(table);
+                pictures += 1;
+
+            } else {
+                Table table = new Table(columnWidth);
+                table.addCell(new Cell().add(bitmapToImage(list.get(i).getBitmap()).setHorizontalAlignment(HorizontalAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE).setHeight(200));
+                table.addCell(new Cell().add(bitmapToImage(list.get(i + 1).getBitmap()).setHorizontalAlignment(HorizontalAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE).setHeight(200));
+                table.addCell(new Cell().add(new Paragraph("Evt. kommentar")).setBackgroundColor(ColorConstants.GRAY));
+                table.addCell(new Cell().add(new Paragraph("Evt. kommentar")).setBackgroundColor(ColorConstants.GRAY));
+                table.addCell(new Cell().add(new Paragraph(imageComment(list.get(i))).setItalic()));
+                table.addCell(new Cell().add(new Paragraph(imageComment(list.get(i + 1))).setItalic()));
+
+                doc.add(table);
+                doc.add(new Paragraph().setHeight(20));
+                pictures += 2;
+
+
+            }
+        }
+    }
+
+    public String imageComment(Picture picture) {
+        if (picture.getComment().equals("")) {
+            return "Ingen kommentar til dette billede";
+        }
+        return picture.getComment();
+    }
+
+    public Image bitmapToImage(Bitmap bitmap) {
+        ByteArrayOutputStream outPutStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outPutStream);
+        byte[] tickBitmapData = outPutStream.toByteArray();
+
+        ImageData tickImageData = ImageDataFactory.create(tickBitmapData);
+        Image image = new Image(tickImageData);
+        image.setMaxHeight(200);
+        image.setMaxWidth(200);
+
+
+        return image;
+    }
 }
 
