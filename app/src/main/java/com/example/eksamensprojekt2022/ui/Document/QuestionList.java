@@ -65,6 +65,8 @@ public class QuestionList extends Fragment {
 
 
 
+
+
         if (startPoint >= 0) {
             listView.expandGroup(startPoint);
         }
@@ -198,6 +200,7 @@ public class QuestionList extends Fragment {
         listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+
 
                 if (groupPosition == InspectionInformation.getInstance().getQuestionGroups().size()) {
 

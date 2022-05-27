@@ -35,7 +35,7 @@
             app:fabCustomSize="100dp"
             app:fabSize="auto"
             app:maxImageSize="50dp"
-            app:srcCompat="@drawable/ic_add_new" />
+            app:srcCompat="@drawable/ic_plus" />
     </FrameLayout>
 
 

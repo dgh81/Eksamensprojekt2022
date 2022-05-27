@@ -47,30 +47,6 @@ public class SliderAdapter extends PagerAdapter {
 
 
 
-
-
-    public String[] testQuestion = {
-            "this is test question 1",
-            "this is test question 2",
-            "this is test question 3",
-            "This is a long text to  simulate a long text to see how it will handle a long text and if there should be a limit to how long the text can be i guess this is long enough for all? Or the text should just get smaller as the question gets larger it does good"
-    };
-
-    public String[] titles = {
-            "Generalt",
-            "Generalt",
-            "Generalt",
-            "Generalt",
-    };
-
-
-
-
-
-
-
-
-
     @Override
     public int getCount() {
 
@@ -475,12 +451,6 @@ public class SliderAdapter extends PagerAdapter {
 
 
     public void colorButtons(Question question, Button yesButton , Button noButton , Button notRelevantButton ) {
-
-        System.out.println(question.getAnswerID() + " color ");
-
-        System.out.println(question.getFk_questionGroup() + " group");
-
-        System.out.println(question.getQuestion());
 
         switch (question.getAnswerID()   ) {
 

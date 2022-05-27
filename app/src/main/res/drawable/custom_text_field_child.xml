@@ -5,11 +5,10 @@
         <shape android:shape="rectangle" >
             <solid android:color="@color/white"/>
             <stroke android:color="@color/selectedDotColor" android:width="1dp"/>
-            <corners android:topRightRadius="10dp" android:topLeftRadius="10dp"/>
         </shape>
     </item>
 
-    <item android:start="1.249999dp" android:end="1.249999dp" android:top="-5dp" android:height="3dp" android:gravity="bottom" >
+    <item android:start="1.249999dp" android:end="1.249999dp"  >
         <shape>
             <solid android:color="@android:color/transparent" />
             <stroke

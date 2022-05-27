@@ -111,4 +111,23 @@ public class AfproevningAfRCD {
     public void setFk_inspectionInformationID(int fk_inspectionInformationID) {
         this.fk_inspectionInformationID = fk_inspectionInformationID;
     }
+
+
+    public boolean isAnswered() {
+        boolean returnValue = true;
+
+        if (RCD == null || RCD.equals("")) {returnValue = false;}
+        if (field1 == null || field1.equals("")) {returnValue = false;}
+        if (field2 == null || field2.equals("")) {returnValue = false;}
+        if (field3 == null || field3.equals("")) {returnValue = false;}
+        if (field4 == null || field4.equals("")) {returnValue = false;}
+        if (field5 == null || field5.equals("")) {returnValue = false;}
+        if (field6 == null || field6.equals("")) {returnValue = false;}
+
+        //TODO: all boolean here
+
+        return  returnValue;
+
+    }
+
 }

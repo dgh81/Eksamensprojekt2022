@@ -114,4 +114,29 @@ public class Kredsdetaljer {
     public void setFk_inspectionInformationID(int fk_inspectionInformationID) {
         this.fk_inspectionInformationID = fk_inspectionInformationID;
     }
+
+    public boolean isAnswered() {
+        boolean returnValue = true;
+
+
+
+
+        if (group == null || group.equals("")) {returnValue = false;}
+        if (oB == null || oB.equals("")) {returnValue = false;}
+        if (karakteristik == null || karakteristik.equals("")) {returnValue = false;}
+        if (tvaersnit == null ||tvaersnit.equals("")) {returnValue = false;}
+        if (maksOB == null ||maksOB.equals("")) {returnValue = false;}
+        if (zsRa == null ||zsRa.equals("")) {returnValue = false;}
+        if (isolation == null ||isolation.equals("")) {returnValue = false;}
+
+        return returnValue;
+
+
+    }
+
+
+
+
+
+
 }

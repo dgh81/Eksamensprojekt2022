@@ -9,14 +9,20 @@
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable-anydpi/ic_action_name.xml" value="0.2215" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable-anydpi/ic_add_new.xml" value="0.2045" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable-anydpi/ic_back_arrow.xml" value="0.2045" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable-anydpi/ic_grid.xml" value="0.227" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable-anydpi/ic_plus.xml" value="0.1785" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable-anydpi/ic_questionList.xml" value="0.2055" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable-anydpi/ic_question_list.xml" value="0.227" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable-anydpi/ic_question_not_answard.xml" value="0.2285" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable-anydpi/ic_round_plus.xml" value="0.2045" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2175" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable/back.xml" value="0.2055" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable/custom_button.xml" value="0.315" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable/custom_text_field.xml" value="0.2055" />
-        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable/custom_text_field_open.xml" value="0.2285" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable/custom_text_field_child.xml" value="0.2285" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable/custom_text_field_end.xml" value="0.2285" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable/custom_text_field_group_add.xml" value="0.227" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable/custom_text_field_open.xml" value="0.22" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable/custombutton.xml" value="0.315" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2175" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/drawable/round_background.xml" value="0.2875" />
@@ -38,8 +44,9 @@
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/project_fragment.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/project_pop_up.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/question_group_list.xml" value="0.25" />
-        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/question_list.xml" value="0.13917525773195877" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/question_list.xml" value="0.25" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/question_list_add.xml" value="0.2" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/question_list_add_group.xml" value="0.2203125" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/question_text_to_list.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/select_document_and_room_activity.xml" value="0.25" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/layout/slide_afproevning_af_rcd.xml" value="0.36666666666666664" />

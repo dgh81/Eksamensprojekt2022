@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.Document.QuestionList">
@@ -11,11 +12,22 @@
         android:layout_height="match_parent">
 
         <ExpandableListView
+            android:scrollbars="none"
+            android:layout_margin="5dp"
+            android:paddingVertical="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/expanded_list"
             android:layoutDirection="locale"
             android:groupIndicator="@null"
+            android:childDivider="#00000000"
+            android:divider="#00000000"
+            app:barrierMargin="50dp"
+            app:layout_goneMarginTop="50dp"
+            app:layout_marginBaseline="50dp"
+
+
+
             />
 
 

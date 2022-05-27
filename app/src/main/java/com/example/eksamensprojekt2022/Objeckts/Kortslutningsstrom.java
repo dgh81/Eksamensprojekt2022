@@ -91,4 +91,21 @@ public class Kortslutningsstrom {
     public void setFk_inspectionInformationID(int fk_inspectionInformationID) {
         this.fk_inspectionInformationID = fk_inspectionInformationID;
     }
+
+    public boolean isAnswered() {
+        boolean returnValue = true;
+
+        if (k_gruppe == null || k_gruppe.equals("")) {returnValue = false; }
+        if (k_KiK == null || k_KiK.equals("")) {returnValue = false; }
+        if (k_maaltIPunkt == null || k_maaltIPunkt.equals("")) {returnValue = false; }
+        if (s_gruppe == null || s_gruppe.equals("")) {returnValue = false; }
+        if (s_maaltIPunkt == null || s_maaltIPunkt.equals("")) {returnValue = false; }
+        if (s_U == null || s_U.equals("")) {returnValue = false; }
+
+
+        return returnValue;
+    }
+
+
+
 }
