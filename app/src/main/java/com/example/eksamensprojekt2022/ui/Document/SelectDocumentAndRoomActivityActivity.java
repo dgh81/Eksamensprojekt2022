@@ -95,6 +95,7 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
                     EditText installationIdentification = popUp.findViewById(R.id.InstallationIdentification);
                     EditText installationName = popUp.findViewById(R.id.InstallationName);
 
+
                     customerPostCode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                         @Override
                         public void onFocusChange(View view, boolean hasFocus) {
@@ -104,7 +105,7 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
                             }
                         }
                     });
-                    
+
 
                     ArrayList<EditText> fields = new ArrayList<>();
 

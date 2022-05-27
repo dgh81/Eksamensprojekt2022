@@ -20,7 +20,7 @@ public class UserCase {
 
     public static ArrayList<ProjectInformation> getAllProjectInformation() {
 
-        return mySQL.getProjectInformation();
+        return mySQL.getAllProjectInformations();
 
     }
 
@@ -48,7 +48,7 @@ public class UserCase {
 
     public static void setInspectionInformationFromDB(int roomID , int projectID) {
 
-        InspectionInformation i = mySQL.getInspectionInformationDB(roomID);
+        InspectionInformation i = mySQL.getInspectionInformation(roomID);
 
         if ( i == null) {
 
@@ -62,7 +62,7 @@ public class UserCase {
             mySQL.createInspectionInformation(inspectionInformation);
 
         }
-        InspectionInformation.setInstance( mySQL.getInspectionInformationDB(roomID));
+        InspectionInformation.setInstance( mySQL.getInspectionInformation(roomID));
     }
 
     public static void appendAllQuestionsWithAnswersToInspectionInformation() {
@@ -100,6 +100,7 @@ public class UserCase {
         InspectionInformation.getInstance().setKredsdetaljer(mySQL.getKredsdetaljer(fk_inspectionInformationID));
         InspectionInformation.getInstance().setKortslutningsstroms(mySQL.getKortslutningsstromme(fk_inspectionInformationID));
         InspectionInformation.getInstance().setOvergangsmodstandR(mySQL.getOvergangsmodstand(fk_inspectionInformationID));
+        InspectionInformation.getInstance().setPDFComment(mySQL.getPDFComments(fk_inspectionInformationID));
 
     }
 
