@@ -562,8 +562,8 @@ public class CreatePDF extends AppCompatActivity {
                 Table table = new Table(columnWidth);
                 table.addCell(new Cell().add(bitmapToImage(list.get(i).getBitmap()).setHorizontalAlignment(HorizontalAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE).setHeight(200).setWidth(1000));
                 table.addCell(new Cell().setHeight(200).setWidth(1000));
-                table.addCell(new Cell().add(new Paragraph("Evt. kommentar")).setBackgroundColor(ColorConstants.GRAY));
-                table.addCell(new Cell().add(new Paragraph("Evt. kommentar")).setBackgroundColor(ColorConstants.GRAY));
+                table.addCell(new Cell().add(new Paragraph("Billedtekst:")).setBackgroundColor(ColorConstants.GRAY));
+                table.addCell(new Cell().add(new Paragraph("Billedtekst:")).setBackgroundColor(ColorConstants.GRAY));
                 table.addCell(new Cell().add(new Paragraph(imageComment(list.get(i))).setItalic()));
                 table.addCell(new Cell().add(new Paragraph("")));
 
@@ -574,8 +574,8 @@ public class CreatePDF extends AppCompatActivity {
                 Table table = new Table(columnWidth);
                 table.addCell(new Cell().add(bitmapToImage(list.get(i).getBitmap()).setHorizontalAlignment(HorizontalAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE).setHeight(200));
                 table.addCell(new Cell().add(bitmapToImage(list.get(i + 1).getBitmap()).setHorizontalAlignment(HorizontalAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE).setHeight(200));
-                table.addCell(new Cell().add(new Paragraph("Evt. kommentar")).setBackgroundColor(ColorConstants.GRAY));
-                table.addCell(new Cell().add(new Paragraph("Evt. kommentar")).setBackgroundColor(ColorConstants.GRAY));
+                table.addCell(new Cell().add(new Paragraph("Billedtekst:")).setBackgroundColor(ColorConstants.GRAY));
+                table.addCell(new Cell().add(new Paragraph("Billedtekst:")).setBackgroundColor(ColorConstants.GRAY));
                 table.addCell(new Cell().add(new Paragraph(imageComment(list.get(i))).setItalic()));
                 table.addCell(new Cell().add(new Paragraph(imageComment(list.get(i + 1))).setItalic()));
 
