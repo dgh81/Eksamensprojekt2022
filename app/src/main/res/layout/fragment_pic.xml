@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#7E4E4E"
-    tools:context=".ui.Document.PicFragment"
+    tools:context=".UI.DisplayFragments.PicFragment"
     android:layout_weight="100"
     >
 

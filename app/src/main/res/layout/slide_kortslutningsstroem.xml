@@ -178,6 +178,7 @@
         android:layout_height="wrap_content"
         android:inputType="text"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="50dp"
         >
 
         <com.google.android.material.textfield.TextInputEditText
