@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".UI.Activitys.MainActivity">
 
 
 
@@ -93,7 +93,7 @@
     <fragment
 
         android:id="@+id/fragmentContainerView"
-        android:name="com.example.eksamensprojekt2022.ui.Document.PicFragment"
+        android:name="com.example.eksamensprojekt2022.UI.DisplayFragments.PicFragment"
         android:layout_width="334dp"
         android:layout_height="416dp"
         android:layout_alignParentStart="true"

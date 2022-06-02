@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:tag="documentPage"
     android:layout_height="match_parent"
-    tools:context=".ui.Document.DocumentFragment">
+    tools:context=".UI.DisplayFragments.DocumentFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/yellow">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/customToolbar">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/backButton"
+            android:src="@drawable/ic_back" />
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="30dp"
+            android:layout_toEndOf="@+id/backButton"
+            android:src="@drawable/zeakabd_logo" />
+
+        <TextView
+            android:id="@+id/topText"
+            android:layout_width="150dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@+id/logo"
+            android:autoSizeMaxTextSize="12sp"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeTextType="uniform"
+            android:text="placeholder"
+            android:gravity="center_vertical"
+            />
+
+        <TextView
+            android:id="@+id/bottomText"
+            android:layout_width="150dp"
+            android:layout_height="25dp"
+            android:text="placeholder"
+            android:layout_toEndOf="@+id/logo"
+            android:layout_below="@+id/topText"
+            android:layout_marginStart="15dp"
+            android:autoSizeMaxTextSize="12sp"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="center_vertical"
+            />
+
+
+    </RelativeLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+</RelativeLayout>

@@ -1,22 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:orientation="vertical"
     android:padding="4dp"
     android:gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/custom_text_field_child"
 
-    <TextView
+>
+
+
+    <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/questionText"
-        android:text="placeholder"
-        android:textSize="18sp"
-        android:paddingLeft="?android:expandableListPreferredChildIndicatorLeft"
-        android:paddingStart="?android:expandableListPreferredChildIndicatorLeft"
-
+        app:dividerInsetStart="5dp"
+        app:dividerInsetEnd="5dp"
+        app:dividerThickness="1dp"
+        app:dividerColor="@color/selectedDotColor"
 
         />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <TextView
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:padding="5dp"
+            android:id="@+id/questionText"
+            android:text="placeholder"
+            android:textSize="18sp"
+            android:drawableStart="@drawable/ic_question_not_answard"
+
+            android:drawablePadding="10dp"
+            android:paddingLeft="?android:expandableListPreferredChildIndicatorLeft"
+            android:paddingStart="?android:expandableListPreferredChildIndicatorLeft"
+            />
+
+
+    </LinearLayout>
+
+
+
 
 
 </LinearLayout>
