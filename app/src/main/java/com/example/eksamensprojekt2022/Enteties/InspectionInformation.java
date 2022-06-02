@@ -1,6 +1,8 @@
 package com.example.eksamensprojekt2022.Enteties;
 
 
+import com.example.eksamensprojekt2022.DBController.MySQL;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -26,7 +28,7 @@ public class InspectionInformation {
 
     ArrayList<String> PDFComment;
 
-
+//TODO:
     public static InspectionInformation instance;
 
 
@@ -345,4 +347,106 @@ public class InspectionInformation {
     public void setPDFComment(ArrayList<String> PDFComment) {
         this.PDFComment = PDFComment;
     }
+
+
+
+    private static MySQL mySQL = new MySQL();
+
+
+    public static void setInspectionInformationFromDB(int roomID , int projectID) {
+
+        InspectionInformation i = mySQL.getInspectionInformation(roomID);
+
+        if ( i == null) {
+
+            InspectionInformation inspectionInformation = new InspectionInformation(
+                    User.getInstance().getName(),
+                    new Date(),
+                    projectID,
+                    roomID
+            );
+
+            mySQL.createInspectionInformation(inspectionInformation);
+
+        }
+        InspectionInformation.setInstance( mySQL.getInspectionInformation(roomID));
+    }
+
+
+
+    public static void appendAllQuestionsWithAnswersToInspectionInformation() {
+
+        ArrayList<QuestionGroup> questionGroups = mySQL.getAllQuestionGroups(InspectionInformation.getInstance().getInspectionInformationID());
+
+        ArrayList<Answer> answers = mySQL.getAllAnswersFromInspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID());
+
+        for (QuestionGroup group : questionGroups ) {
+            ArrayList<Question> questions =  mySQL.getQuestionsFromQuestionGroup(group , InspectionInformation.getInstance().getInspectionInformationID() );
+
+            for (Question question: questions ) {
+                group.getQuestions().add(question);
+
+                for (Answer a: answers) {
+
+                    if (question.getFk_questionGroup() == a.getQuestionGroupID()) {
+
+                        if (question.getQuestionID() == a.getQuestionID()) {
+                            question.setAnswerID(a.getAnswerID());
+                            question.setComment(a.getComment());
+                        }
+                    }
+                }
+            }
+        }
+
+        InspectionInformation.getInstance().setQuestionGroups(questionGroups);
+
+    }
+
+
+    public static void appendAllMeasurements(int fk_inspectionInformationID) {
+
+        InspectionInformation.getInstance().setAfprøvningAfRCD(mySQL.getAfproevningAfRCDer(fk_inspectionInformationID));
+        InspectionInformation.getInstance().setKredsdetaljer(mySQL.getKredsdetaljer(fk_inspectionInformationID));
+        InspectionInformation.getInstance().setKortslutningsstroms(mySQL.getKortslutningsstromme(fk_inspectionInformationID));
+        InspectionInformation.getInstance().setOvergangsmodstandR(mySQL.getOvergangsmodstand(fk_inspectionInformationID));
+        InspectionInformation.getInstance().setPDFComment(mySQL.getPDFComments(fk_inspectionInformationID));
+
+    }
+
+
+
+    public static void createMeasurementsInDataBase() {
+
+        mySQL.deleteMeasurementTablesWithSelectedInspectionID();
+
+        for (Kredsdetaljer kredsdetaljer: InspectionInformation.getInstance().getKredsdetaljer()) {
+            kredsdetaljer.setFk_inspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID());
+            mySQL.createKredsdetaljer(kredsdetaljer);
+        }
+
+
+        for (AfproevningAfRCD afproevningAfRCD: InspectionInformation.getInstance().getAfprøvningAfRCD() ) {
+            afproevningAfRCD.setFk_inspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID());
+            mySQL.createAfproevningAfRCD(afproevningAfRCD);
+        }
+
+
+        for (Kortslutningsstrom kortslutningsstrom: InspectionInformation.getInstance().getKortslutningsstroms() ) {
+            kortslutningsstrom.setFk_inspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID());
+            mySQL.createKortslutningsstrom(kortslutningsstrom);
+        }
+
+
+        mySQL.createOvergangsmodstand( InspectionInformation.getInstance().getOvergangsmodstandR() , InspectionInformation.getInstance().getInspectionInformationID() );
+
+        InspectionInformation.getInstance().getKredsdetaljer().clear();
+        InspectionInformation.getInstance().getAfprøvningAfRCD().clear();
+        InspectionInformation.getInstance().getKortslutningsstroms().clear();
+        InspectionInformation.getInstance().setOvergangsmodstandR("");
+
+
+    }
+
+
 }

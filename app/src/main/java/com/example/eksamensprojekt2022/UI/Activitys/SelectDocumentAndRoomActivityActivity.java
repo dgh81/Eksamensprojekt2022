@@ -1,6 +1,5 @@
 package com.example.eksamensprojekt2022.UI.Activitys;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -10,11 +9,11 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,13 +22,19 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.eksamensprojekt2022.Enteties.EmailThread;
+import com.example.eksamensprojekt2022.Tools.CreatePDF;
 import com.example.eksamensprojekt2022.Tools.LoginAuthentication;
 import com.example.eksamensprojekt2022.Enteties.InspectionInformation;
 import com.example.eksamensprojekt2022.Enteties.ProjectInformation;
 import com.example.eksamensprojekt2022.Tools.PostNumberToCity;
 import com.example.eksamensprojekt2022.R;
 import com.example.eksamensprojekt2022.UI.DisplayFragments.DocumentFragment;
+import com.example.eksamensprojekt2022.UI.DisplayFragments.PicFragment;
 import com.example.eksamensprojekt2022.UI.DisplayFragments.ProjectFragment;
 import com.example.eksamensprojekt2022.UI.DisplayFragments.QuestionFragment;
 import com.example.eksamensprojekt2022.UI.DisplayFragments.QuestionListFragment;
@@ -43,10 +48,17 @@ import java.util.ArrayList;
 public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity implements OnKeyboardVisibilityListener {
 
 
+    private ImageView backButton;
+    private TextView topText;
+    private TextView bottomText;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.select_document_and_room_activity);
+         setContentView(R.layout.select_document_and_room_activity);
 
         FrameLayout frameLayout = findViewById(R.id.frameLayout);
 
@@ -55,29 +67,27 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
         fragmentTransaction.replace(R.id.frameLayout , new DocumentFragment()  );
         fragmentTransaction.commit();
 
-        Toolbar myToolbar =  findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
-
-        ActionBar ab = getSupportActionBar();
-
-        assert ab != null;
-        ab.setTitle("\t Zealand");
-
-
-        ab.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-
-        if (getParentActivityIntent() != null)
-            ab.setDisplayHomeAsUpEnabled(true);
-        ab.setDisplayShowTitleEnabled(true);
-        ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.yellow)));
-
-
         setKeyboardVisibilityListener(this);
-
-
-
-
+        
         FloatingActionButton floatingActionButton = findViewById(R.id.fab);
+
+        backButton = findViewById(R.id.backButton);
+        topText = findViewById(R.id.topText);
+        bottomText = findViewById(R.id.bottomText);
+
+        Toolbar toolbar = findViewById(R.id.customToolbar);
+
+        setSupportActionBar(toolbar);
+
+
+
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +104,7 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
                     EditText customerAddress = popUp.findViewById(R.id.customerAddress);
                     EditText customerPostCode = popUp.findViewById(R.id.customerPostCode);
                     EditText customerCity = popUp.findViewById(R.id.customerCity);
-                    EditText installationIdentification = popUp.findViewById(R.id.InstallationIdentification);
+                    EditText caseNumber = popUp.findViewById(R.id.caseNumber);
                     EditText installationName = popUp.findViewById(R.id.InstallationName);
 
 
@@ -102,6 +112,9 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
                         @Override
                         public void onFocusChange(View view, boolean hasFocus) {
                             if (!hasFocus) {
+
+                                //TODO: handle not interger input
+
                                String city =  PostNumberToCity.getCityFromPostCode( Integer.parseInt( customerPostCode.getText().toString()) );
                                 customerCity.setText(city);
                             }
@@ -112,12 +125,11 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
                     ArrayList<EditText> fields = new ArrayList<>();
 
                     fields.add(installationName);
-                    fields.add(installationIdentification);
+                    fields.add(caseNumber);
                     fields.add(customerCity);
                     fields.add(customerPostCode);
                     fields.add(customerAddress);
                     fields.add(customerName);
-
 
                     builder.setView(popUp);
                     AlertDialog alert = builder.create();
@@ -142,7 +154,7 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
                                         customerAddress.getText().toString(),
                                         customerPostCode.getText().toString(),
                                         customerCity.getText().toString(),
-                                        installationIdentification.getText().toString(),
+                                        caseNumber.getText().toString(),
                                         installationName.getText().toString()
                                 );
                                 createProjectInformationInDatabase(projectInformation);
@@ -151,7 +163,9 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
 
                                 ArrayList<ProjectInformation> projectInformations = UserCase.getAllProjectInformation();
 
-                                goToDocumentPage(projectInformations.get(projectInformations.size() - 1));
+                                ProjectInformation.setInstance( projectInformations.get( projectInformations.size() - 1)  );
+
+                                goToDocumentPage();
 
                             }
                         }
@@ -194,13 +208,13 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
 
                                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-                                fragmentTransaction.replace(R.id.frameLayout , new ProjectFragment(projectInformation)  );
+                                fragmentTransaction.replace(R.id.frameLayout , new ProjectFragment()  );
 
                                 fragmentTransaction.addToBackStack(null);
 
                                 fragmentTransaction.commit();
 
-                                createRoom(roomName , projectInformation );
+                                createRoom(roomName);
 
                                 alert.hide();
 
@@ -210,6 +224,10 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
                 }
             }
         });
+
+
+        updateToolBar();
+
     }
 
 
@@ -221,36 +239,139 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
         return true;
     }
 
+    public AlertDialog loadingAlert;
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)  {
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getTitle().equals("Log ud")) {
-            LoginAuthentication.logOut();
+        switch (item.getItemId()) {
+            case R.id.myLogout:
+                LoginAuthentication.logOut();
 
-            Intent intent = new Intent(this,  LoginActivity.class);
-            startActivity(intent);
+                Intent intent = new Intent(this,  LoginActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.printPDF:
+
+                if (ProjectInformation.getInstance().getProjectInformationID() == 0) {
+                    Toast.makeText(this, "Du skal vælge et project", Toast.LENGTH_LONG).show();
+                } else {
+                            closeOptionsMenu();
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(SelectDocumentAndRoomActivityActivity.this);
+                            LayoutInflater layoutInflater = SelectDocumentAndRoomActivityActivity.this.getLayoutInflater();
+                            builder.setView(layoutInflater.inflate(R.layout.pop_up_loading , null));
+                            builder.setCancelable(false);
+                            SelectDocumentAndRoomActivityActivity.this.setFinishOnTouchOutside(false);
+
+                            loadingAlert = builder.create();
+                            loadingAlert.show();
+
+
+                    CreatePDF createPDF = new CreatePDF(SelectDocumentAndRoomActivityActivity.this , ProjectInformation.getInstance().getProjectInformationID());
+
+                    Thread thread = new Thread(createPDF);
+                    thread.start();
+
+                }
+
+
+
+
+
+
+                break;
+            case R.id.myHelp:
+                Toast.makeText(this, "Hjælp ikke lavet endnu", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.cam:
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.frameLayout , new PicFragment()  );
+
+                fragmentTransaction.addToBackStack(null);
+
+                fragmentTransaction.commit();
+
+
 
         }
+
 
         return true;
     }
 
 
 
+    public void pdfCreated() {
 
-    private void createRoom(EditText text, ProjectInformation projectInformation ) {
+        AlertDialog.Builder diaBuilder1 = new AlertDialog.Builder(this);
+
+        diaBuilder1.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+                EmailThread emailIntent = new EmailThread(SelectDocumentAndRoomActivityActivity.this);
+                emailIntent.start();
+
+                dialog.dismiss();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(SelectDocumentAndRoomActivityActivity.this);
+                LayoutInflater layoutInflater = SelectDocumentAndRoomActivityActivity.this.getLayoutInflater();
+                builder.setView(layoutInflater.inflate(R.layout.pop_up_loading , null));
+                builder.setCancelable(false);
+                SelectDocumentAndRoomActivityActivity.this.setFinishOnTouchOutside(false);
+
+                loadingAlert = builder.create();
+
+                TextView text = loadingAlert.findViewById(R.id.textView2);
+                text.setText("Sender...");
+
+
+                loadingAlert.show();
+
+                try {
+                    emailIntent.join();
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                loadingAlert.dismiss();
+
+            }
+        });
+
+        diaBuilder1.setNeutralButton("Annuller", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+
+
+        diaBuilder1.setTitle("Vil du sende denne PDF til mester?");
+
+        AlertDialog dialog1 = diaBuilder1.create();
+
+        dialog1.show();
+
+
+
+    }
+
+
+    private void createRoom(EditText text ) {
 
         ProjectFragment projectFragment =  (ProjectFragment) getSupportFragmentManager().findFragmentById(R.id.frameLayout);
 
         int id =  projectFragment.getProjectInformation().getProjectInformationID();
 
-        UserCase.createRoomFromName(text.getText().toString() , id );
+        UserCase.userCreatedNewRoom(text.getText().toString() , id );
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        fragmentTransaction.replace(R.id.frameLayout , new ProjectFragment(projectInformation)  );
+        fragmentTransaction.replace(R.id.frameLayout , new ProjectFragment()  );
 
         fragmentTransaction.addToBackStack(null);
 
@@ -266,7 +387,7 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
 
 
     private void createProjectInformationInDatabase(ProjectInformation projectInformation) {
-        UserCase.createProjectInformationInDataBase(projectInformation);
+        UserCase.userCreatedNewProject(projectInformation);
     }
 
 
@@ -301,22 +422,19 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
         return value;
     }
 
-    public void goToDocumentPage(ProjectInformation projectInformation) {
+    public void goToDocumentPage() {
 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.enter_right_to_left , R.anim.exit_right_to_left ,
                 R.anim.enter_left_to_right , R.anim.exit_left_to_right );
-        fragmentTransaction.replace(R.id.frameLayout , new ProjectFragment(projectInformation)  );
-
+        fragmentTransaction.replace(R.id.frameLayout , new ProjectFragment()  );
 
         fragmentTransaction.addToBackStack(null);
 
         fragmentTransaction.commit();
-
 
     }
 
@@ -330,7 +448,6 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
         fragmentTransaction.setCustomAnimations(R.anim.enter_right_to_left , R.anim.exit_right_to_left ,
                 R.anim.enter_left_to_right , R.anim.exit_left_to_right );
         fragmentTransaction.replace(R.id.frameLayout , new QuestionListFragment(startPage) );
-
 
         fragmentTransaction.addToBackStack(null);
 
@@ -355,6 +472,7 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
 
 
 
+
     }
 
     public boolean savePressed = false;
@@ -373,17 +491,21 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
 
         System.out.println("back pressed");
 
-        if (InspectionInformation.getInstance().getQuestionGroups() == null || InspectionInformation.getInstance().getQuestionGroups().size() == 0
-                  ) {
+        if (InspectionInformation.getInstance().getQuestionGroups() == null || InspectionInformation.getInstance().getQuestionGroups().size() == 0 || getSupportFragmentManager().findFragmentById(R.id.frameLayout).toString().equals("ProjectFragment")
+                || getSupportFragmentManager().findFragmentById(R.id.frameLayout).toString().equals("PicFragment") ) {
 
             System.out.println("we go back");
 
             super.onBackPressed();
 
+            updateToolBar();
+
         } else if (getSupportFragmentManager().findFragmentById(R.id.frameLayout).toString().equals("Question")) {
 
 
             super.onBackPressed();
+
+            updateToolBar();
         } else {
 
            // AlertDialog.Builder builder = new AlertDialog.Builder(SelectDocumentAndRoomActivityActivity.this);
@@ -401,10 +523,7 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
             builder.setPositiveButton("Gem", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
 
-                            UserCase.createInspectionInDataBase();
-
-                            UserCase.createMeasurementsInDataBase();
-
+                            UserCase.userPressedSaveButton();
                             onBackPressed();
 
                         }
@@ -468,16 +587,43 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
     @Override
     public void onVisibilityChanged(boolean visible) {
 
-
-
         if (getSupportFragmentManager().findFragmentById(R.id.frameLayout).toString().equals("Question")) {
 
             ((QuestionFragment) getSupportFragmentManager().findFragmentById(R.id.frameLayout)).dotsIsVisible(!visible);
 
+        } else if (getSupportFragmentManager().findFragmentById(R.id.frameLayout).toString().equals("PicFragment")) {
+            ((PicFragment) getSupportFragmentManager().findFragmentById(R.id.frameLayout)).buttonsVisible(!visible);
         }
 
-
     }
+
+    public void updateToolBar() {
+
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0 ) {
+            backButton.setVisibility(View.GONE);
+            topText.setText("");
+            bottomText.setText("");
+
+        } else if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            topText.setText(ProjectInformation.getInstance().getCustomerName());
+            bottomText.setText(ProjectInformation.getInstance().getCustomerAddress());
+            backButton.setVisibility(View.VISIBLE);
+            backButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_back));
+        } else if (getSupportFragmentManager().getBackStackEntryCount() == 2 ) {
+            backButton.setVisibility(View.VISIBLE);
+            topText.setText(ProjectInformation.getInstance().getCustomerName());
+            bottomText.setText(InspectionInformation.getInstance().getRoomName());
+            backButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_back));
+        } else if (getSupportFragmentManager().getBackStackEntryCount() == 3) {
+            topText.setText(ProjectInformation.getInstance().getCustomerName());
+            bottomText.setText(InspectionInformation.getInstance().getRoomName());
+            backButton.setVisibility(View.VISIBLE);
+            backButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_up));
+        } else {
+            backButton.setVisibility(View.VISIBLE);
+        }
+    }
+
 
 
 }

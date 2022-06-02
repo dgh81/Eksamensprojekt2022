@@ -1,6 +1,7 @@
 package com.example.eksamensprojekt2022.UI.Login;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,7 +44,10 @@ public class LoginActivity extends AppCompatActivity {
                 if (loginSuccess) {
                     //TODO Mangler at sætte User singleton?
                     Intent intent = new Intent(  LoginActivity.this, SelectDocumentAndRoomActivityActivity.class);
+                    finish();
                     startActivity(intent);
+
+
 
                 } else {
                     Toast.makeText(LoginActivity.this, "Forkert brugernavn eller adgangskode", Toast.LENGTH_LONG).show();

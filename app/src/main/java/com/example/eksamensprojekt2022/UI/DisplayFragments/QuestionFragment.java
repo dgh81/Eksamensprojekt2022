@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.eksamensprojekt2022.Enteties.InspectionInformation;
 import com.example.eksamensprojekt2022.R;
+import com.example.eksamensprojekt2022.UI.Activitys.SelectDocumentAndRoomActivityActivity;
 import com.example.eksamensprojekt2022.UI.Adaptors.HeaderSlideAdapter;
 import com.example.eksamensprojekt2022.UI.Adaptors.SliderAdapter;
 
@@ -109,6 +110,9 @@ public class QuestionFragment extends Fragment {
 
 
         headerIsUpdateFromPageMoving = false;
+
+
+        ((SelectDocumentAndRoomActivityActivity)getActivity()).updateToolBar();
 
         return view;
     }

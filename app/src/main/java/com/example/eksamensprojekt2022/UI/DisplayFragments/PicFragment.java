@@ -15,11 +15,13 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -31,8 +33,11 @@ import com.example.eksamensprojekt2022.Enteties.FileHandler;
 import com.example.eksamensprojekt2022.Enteties.InspectionInformation;
 import com.example.eksamensprojekt2022.Enteties.Picture;
 import com.example.eksamensprojekt2022.Enteties.ProjectInformation;
+import com.example.eksamensprojekt2022.Enteties.Room;
 import com.example.eksamensprojekt2022.Enteties.User;
 import com.example.eksamensprojekt2022.R;
+import com.example.eksamensprojekt2022.Tools.UserCase;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,26 +50,34 @@ public class PicFragment extends Fragment {
     public static Bitmap bitmapFromTempFile;
     final int CAMERA_CODE = 100;
     Uri imageUri;
+    private int id;
+
+
+    public View view;
 
     public PicFragment() {
-        // Required empty public constructor
+
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_pic, container, false);
-        return inflater.inflate(R.layout.fragment_pic, container, false);
-    }
+        view = inflater.inflate(R.layout.fragment_pic, container, false);
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        if (fab != null) {
+            fab.setVisibility(View.GONE);
+        }
+
+
+        com.google.android.material.textfield.TextInputLayout comment = view.findViewById(R.id.comment);
+
+        if (InspectionInformation.getInstance().getInspectionInformationID() != 0) {
+            id = InspectionInformation.getInstance().getInspectionInformationID();
+        }
+
+
         takePictureButton = (Button) view.findViewById(R.id.takePictureButton);
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +86,7 @@ public class PicFragment extends Fragment {
                     android.content.Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     File imageFile = null;
                     try{
-                        imageFile = new FileHandler().getImageFile();
+                        imageFile = new FileHandler(getActivity()).getImageFile();
                     }catch (IOException e){
                         e.printStackTrace();
                     }
@@ -95,22 +108,117 @@ public class PicFragment extends Fragment {
             }
         });
         savePictureButton = view.findViewById(R.id.savePictureButton);
-        savePictureButton.setOnClickListener(new View.OnClickListener() {
+
+        AutoCompleteTextView autoCompleteTextProjectCustomerName = view.findViewById(R.id.autoComplete);
+
+        AutoCompleteTextView autoCompleteTextInspectionID = view.findViewById(R.id.autoComplete2);
+
+        ArrayList<ProjectInformation> projectInformations = UserCase.getAllProjectInformation();
+
+        String[] testItems = new String[projectInformations.size()];
+
+        for (int i = 0; i < projectInformations.size(); i++) {
+            testItems[i] = projectInformations.get(i).getCustomerName();
+        }
+
+
+
+
+        ArrayAdapter<String> arrayAdapter;
+
+        arrayAdapter = new ArrayAdapter<String>( getActivity() , com.google.android.material.R.layout.support_simple_spinner_dropdown_item , testItems);
+
+        autoCompleteTextProjectCustomerName.setText(ProjectInformation.getInstance().getCustomerName());
+
+        autoCompleteTextInspectionID.setText(InspectionInformation.getInstance().getRoomName());
+
+        autoCompleteTextProjectCustomerName.setAdapter(arrayAdapter);
+
+        final ArrayList<Room>[] rooms = new ArrayList[]{new ArrayList<>()};
+
+        autoCompleteTextProjectCustomerName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
-                MySQL mysql = new MySQL();
-                ProjectInformation project = mysql.getProjectInformation();
-                String name = "Sagnr.: " + project.getInstallationIdentification();
-                Picture pic = new Picture(bitmapFromTempFile,name, InspectionInformation.instance.getInspectionInformationID(), "test comment");
-                System.out.println(pic);
-                String encodedImageString = new FileHandler().bitmapEncodeToBaseString(bitmapFromTempFile);
-                mysql.createPicture(encodedImageString, InspectionInformation.getInstance().getInspectionInformationID(), "Sagnr. " + project.getInstallationIdentification() + ". Rumnavn: " + mysql.getRoomNameFromInspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID()) + ". Username: " + User.getInstance().getName() + ". Comment: " + pic.getComment() );
-                //TODO Understående test henter alle Picture objekter til PDF for det aktuelle projekt. Pictures indeholder
-                // en getBitmap metode.
-                ArrayList<Picture> pics = mysql.getPicturesFromProjectInformationID(InspectionInformation.getInstance().getFk_projectID());
-                System.out.println(pics);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                rooms[0] = ProjectInformation.getRoomsFromProjectInformationID(projectInformations.get(position).getProjectInformationID() );
+
+                String[] inspectionNames = new String[rooms[0].size()];
+
+                for (int i = 0; i < rooms[0].size(); i++) {
+                    inspectionNames[i] = rooms[0].get(i).getRoomName();
+                }
+
+                ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<>(getActivity() , com.google.android.material.R.layout.support_simple_spinner_dropdown_item , inspectionNames);
+
+                autoCompleteTextInspectionID.setAdapter(arrayAdapter2);
+
             }
         });
+
+        autoCompleteTextInspectionID.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long ids) {
+
+                id = rooms[0].get(position).getRoomID();
+
+                System.out.println(id + " this is the id inside picClass");
+
+            }
+        });
+
+
+
+
+        ImageView image = view.findViewById(R.id.imageView3);
+
+        image.setImageDrawable(getResources().getDrawable(R.drawable.place_holder_image));
+
+        comment.clearFocus();
+
+
+
+        savePictureButton.setOnClickListener(new View.OnClickListener() {
+
+
+
+            @Override
+            public void onClick(View view) {
+
+                boolean canContinue = true;
+
+                if (bitmapFromTempFile == null) { canContinue = false;
+                    Toast.makeText(getActivity(), "Du skal tage et billede", Toast.LENGTH_SHORT).show(); }
+
+                if (id == 0 ) {canContinue = false;
+                    autoCompleteTextInspectionID.setError("Skal udfyldes");
+                }
+                if (autoCompleteTextProjectCustomerName.equals("")) {canContinue = false; autoCompleteTextInspectionID.setError("SKal udfyldes"); }
+                if (autoCompleteTextInspectionID.equals("")) {canContinue = false; autoCompleteTextInspectionID.setError("Skal udfyldes"); }
+
+                if (canContinue) {
+
+                    autoCompleteTextInspectionID.setError(null);
+                    autoCompleteTextProjectCustomerName.setError(null);
+
+                    String name = "Sagnr.: " + autoCompleteTextProjectCustomerName.getText().toString();
+
+                    Picture pic = new Picture(bitmapFromTempFile, name, id, comment.getEditText().getText().toString());
+
+                    UserCase.savePictureButtonClicked(pic);
+
+                    bitmapFromTempFile = null;
+
+                    image.setImageDrawable(getResources().getDrawable(R.drawable.place_holder_image));
+
+                    Toast.makeText(getActivity(), "Billedet er gemt", Toast.LENGTH_LONG).show();
+
+                }
+
+            }
+        });
+
+
+
+        return view;
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -122,6 +230,9 @@ public class PicFragment extends Fragment {
             bitmapFromTempFile = BitmapFactory.decodeFile(path);
             ImageView fragmentImageView = (ImageView) getView().findViewById(R.id.imageView3);
             fragmentImageView.setImageBitmap(bitmapFromTempFile);
+
+            System.out.println(bitmapFromTempFile + "bit from temp");
+
         }
     }
 
@@ -141,4 +252,24 @@ public class PicFragment extends Fragment {
         }
     }
 
+
+    public void buttonsVisible(boolean visible ) {
+
+        if (visible) {
+            takePictureButton.setVisibility(View.VISIBLE);
+            savePictureButton.setVisibility(View.VISIBLE);
+        } else {
+            takePictureButton.setVisibility(View.GONE);
+            savePictureButton.setVisibility(View.GONE);
+        }
+
+
+
+    }
+
+
+    @Override
+    public String toString() {
+        return "PicFragment";
+    }
 }

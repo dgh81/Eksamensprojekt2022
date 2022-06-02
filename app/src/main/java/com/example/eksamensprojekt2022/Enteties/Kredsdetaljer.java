@@ -1,18 +1,18 @@
 package com.example.eksamensprojekt2022.Enteties;
 
 public class Kredsdetaljer {
-    int ID;
-    String group;
-    String oB;
-    String karakteristik;
-    String tvaersnit;
-    String MaksOB;
-    String zsRaValue;
+    int ID = 0;
+    String group = "";
+    String oB = "";
+    String karakteristik = "";
+    String tvaersnit = "";
+    String MaksOB = "";
+    String zsRaValue = "";
     // zs = false = 0
     // ra = true = 1
-    boolean zSRa;
-    String isolation;
-    int fk_inspectionInformationID;
+    boolean zSRa = true;
+    String isolation = "";
+    int fk_inspectionInformationID = 0;
 
 
     public Kredsdetaljer() {

@@ -36,7 +36,7 @@ public class MySQL implements Runnable {
                     + projectInformation.getCustomerAddress() + "', '"
                     + projectInformation.getCustomerPostalCode() + "', '"
                     + projectInformation.getCustomerCity() + "', '"
-                    + projectInformation.getInstallationIdentification() + "', '"
+                    + projectInformation.getCaseNumber() + "', '"
                     + projectInformation.getInstallationName() +"');");
             statement.execute();
         } catch (Exception e) {
@@ -132,7 +132,7 @@ public class MySQL implements Runnable {
         return questionGroups;
     }
 
-    public ArrayList<QuestionGroup> getQuestionGroupTitles( int inspectionInformationID ) {
+    public ArrayList<QuestionGroup> getAllQuestionGroups(int inspectionInformationID ) {
         ArrayList<QuestionGroup> questionGroups = new ArrayList<>();
         try {
             PreparedStatement userType = connection.prepareStatement("SELECT * FROM QuestionGroup WHERE fk_inspectionInformationID = 0 OR fk_inspectionInformationID = " +
@@ -385,7 +385,7 @@ public class MySQL implements Runnable {
         try {
             PreparedStatement statement = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                statement = connection.prepareStatement("INSERT INTO QuestionGroup (title, fk_inspectionInformation) VALUES ('"
+                statement = connection.prepareStatement("INSERT INTO QuestionGroup (title, fk_inspectionInformationID) VALUES ('"
                         + questionGroupTitle + "','"
                         + fk_inspectionInformationID
                         + "' )" );
@@ -788,7 +788,7 @@ public class MySQL implements Runnable {
                         rs.getString("field4"),
                         rs.getString("field5"),
                         rs.getString("field6"),
-                        rs.getString("OK"),
+                        rs.getBoolean("OK"),
                         rs.getInt("fk_inspectionInformationID")
                 );
                 AfproevningAfRCDer.add(a);
@@ -944,7 +944,7 @@ public class MySQL implements Runnable {
                         + afproevningAfRCD.getField4()  + "','"
                         + afproevningAfRCD.getField5()  + "','"
                         + afproevningAfRCD.getField6()  + "','"
-                        + afproevningAfRCD.getOK()  + "','"
+                        + (afproevningAfRCD.getOK() ? 1 : 0 )  + "','"
                         + afproevningAfRCD.getFk_inspectionInformationID() + "' )" );
             }
             statement.execute();
@@ -957,7 +957,7 @@ public class MySQL implements Runnable {
         try {
             PreparedStatement statement = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                statement = connection.prepareStatement("INSERT INTO AfproevningAfRCD (RCD, field1 , field2, field3, field4, field5, field6, OK, fk_inspectionInformationID) VALUES ('"
+                statement = connection.prepareStatement("INSERT INTO Kortslutningsstrom (k_gruppe , k_KiK, k_maaltIPunkt, s_gruppe, s_U, s_maaltIPunkt, fk_inspectionInformationID) VALUES ('"
                         + kortslutningsstrom.getK_gruppe() +"','"
                         + kortslutningsstrom.getK_KiK()  + "','"
                         + kortslutningsstrom.getK_maaltIPunkt()  + "','"
@@ -984,7 +984,7 @@ public class MySQL implements Runnable {
                         + kredsdetaljer.getMaksOB()  + "','"
                         + kredsdetaljer.getZsRaValue()  + "','"
                         + kredsdetaljer.getIsolation()  + "','"
-                        + kredsdetaljer.iszSRa()  + "','"
+                        + ((kredsdetaljer.iszSRa()) ? 1 : 0 )   + "','"
                         + kredsdetaljer.getFk_inspectionInformationID() + "' )" );
             }
             statement.execute();
@@ -1009,7 +1009,53 @@ public class MySQL implements Runnable {
         }
     }
 
+    public void deleteMeasurementTablesWithSelectedInspectionID() {
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement( "DELETE FROM Kortslutningsstrom WHERE fk_inspectionInformationID = '" + InspectionInformation.getInstance().getInspectionInformationID()
+                        + "'");
 
+                System.out.println(InspectionInformation.getInstance().getInspectionInformationID() + " this is the ID");
+
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement( "DELETE FROM Kredsdetaljer WHERE fk_inspectionInformationID = '" + InspectionInformation.getInstance().getInspectionInformationID()
+                        + "'");
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement( "DELETE FROM AfproevningAfRCD WHERE fk_inspectionInformationID = '" + InspectionInformation.getInstance().getInspectionInformationID()
+                        + "'");
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            PreparedStatement statement = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                statement = connection.prepareStatement( "DELETE FROM Overgangsmodstand WHERE fk_inspectionInformationID = '" + InspectionInformation.getInstance().getInspectionInformationID()
+                        + "'");
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }
 

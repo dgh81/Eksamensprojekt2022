@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,6 +22,8 @@ import com.example.eksamensprojekt2022.Enteties.Kredsdetaljer;
 import com.example.eksamensprojekt2022.Enteties.Question;
 import com.example.eksamensprojekt2022.Enteties.QuestionGroup;
 import com.example.eksamensprojekt2022.R;
+
+import java.util.ArrayList;
 
 
 public class SliderAdapter extends PagerAdapter {
@@ -74,7 +78,6 @@ public class SliderAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
 
         if (position < InspectionInformation.getInstance().getTotalNumberOfQuestions()) {
-
 
             layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
             View view = layoutInflater.inflate(R.layout.slide_layout, container, false);
@@ -166,6 +169,10 @@ public class SliderAdapter extends PagerAdapter {
             com.google.android.material.textfield.TextInputLayout tvaersnitTextField = view.findViewById(R.id.Tvaersnit);
             com.google.android.material.textfield.TextInputLayout maksOBTextField = view.findViewById(R.id.MaksOB);
             //TODO Lav boolean værdi
+            CheckBox zs = view.findViewById(R.id.zsCheckBox);
+            CheckBox ra = view.findViewById(R.id.raCheckBox);
+
+
             com.google.android.material.textfield.TextInputLayout zsRaTextField = view.findViewById(R.id.zsRa);
             com.google.android.material.textfield.TextInputLayout isolationTextField = view.findViewById(R.id.Isolation);
 
@@ -179,6 +186,44 @@ public class SliderAdapter extends PagerAdapter {
             maksOBTextField.getEditText().setText(kredsdetaljer.getMaksOB());
             zsRaTextField.getEditText().setText(kredsdetaljer.getZsRaValue());
             isolationTextField.getEditText().setText(kredsdetaljer.getIsolation());
+            zs.setChecked(kredsdetaljer.iszSRa());
+            ra.setChecked(!kredsdetaljer.iszSRa());
+
+            zs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    zs.setChecked(isChecked);
+                    ra.setChecked(!isChecked);
+
+                    for (int i = 0; i < InspectionInformation.getInstance().getKredsdetaljer().size(); i++) {
+                        InspectionInformation.getInstance().getKredsdetaljer().get(i).setzSRa(isChecked);
+                    }
+
+                    notifyDataSetChanged();
+
+                }
+            });
+
+            ra.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    zs.setChecked(!isChecked);
+                    ra.setChecked(isChecked);
+
+                    for (int i = 0; i < InspectionInformation.getInstance().getKredsdetaljer().size(); i++) {
+                        InspectionInformation.getInstance().getKredsdetaljer().get(i).setzSRa(!isChecked);
+                    }
+
+                    notifyDataSetChanged();
+
+                }
+            });
+
+
+
+
 
             groupTextField.getEditText().setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -469,6 +514,10 @@ public class SliderAdapter extends PagerAdapter {
 
 
 
+    }
+
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
     }
 
 

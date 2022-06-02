@@ -2,18 +2,16 @@ package com.example.eksamensprojekt2022.Tools;
 
 import com.example.eksamensprojekt2022.DBController.MySQL;
 import com.example.eksamensprojekt2022.Enteties.AfproevningAfRCD;
-import com.example.eksamensprojekt2022.Enteties.Answer;
+import com.example.eksamensprojekt2022.Enteties.FileHandler;
 import com.example.eksamensprojekt2022.Enteties.InspectionInformation;
 import com.example.eksamensprojekt2022.Enteties.Kortslutningsstrom;
 import com.example.eksamensprojekt2022.Enteties.Kredsdetaljer;
+import com.example.eksamensprojekt2022.Enteties.Picture;
 import com.example.eksamensprojekt2022.Enteties.ProjectInformation;
-import com.example.eksamensprojekt2022.Enteties.Question;
 import com.example.eksamensprojekt2022.Enteties.QuestionGroup;
-import com.example.eksamensprojekt2022.Enteties.Room;
 import com.example.eksamensprojekt2022.Enteties.User;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class UserCase {
 
@@ -26,88 +24,45 @@ public class UserCase {
     }
 
 
-    public static void createProjectInformationInDataBase(ProjectInformation projectInformation) {
+    public static void savePictureButtonClicked(Picture pic) {
 
+        String encodedImageString = new FileHandler().bitmapEncodeToBaseString(pic.getBitmap());
+
+        System.out.println(pic.getInspectionInformationID());
+
+        mySQL.createPicture(encodedImageString, pic.getInspectionInformationID() , "Sagnr. "
+        + pic.getName() + ". Rumnavn: "
+        + pic.getName()  + ". Username: "
+        + User.getInstance().getName() + ". Comment: " + pic.getComment() );
+
+    }
+
+
+    public static void userSelectedRoom(int roomID , int projectID) {
+
+        InspectionInformation.setInspectionInformationFromDB( roomID , projectID);
+
+        InspectionInformation.appendAllQuestionsWithAnswersToInspectionInformation();
+
+        InspectionInformation.appendAllMeasurements(InspectionInformation.getInstance().getInspectionInformationID());
+
+    }
+
+
+
+    public static void userCreatedNewProject(ProjectInformation projectInformation) {
 
         mySQL.createProjectInformation(projectInformation);
     }
 
 
-    public static void createRoomEmptyInProject(int projectId) {
 
-    }
-
-    public static ArrayList<Room> getRoomsFromProjectInformationID(int projectID) {
-
-        return mySQL.getRoomsFromProjectID(projectID) ;
-
-    }
-
-    public static void createRoomFromName(String name , int ID ) {
+    public static void userCreatedNewRoom(String name , int ID ) {
         mySQL.createRoom(name, ID );
     }
 
-    public static void setInspectionInformationFromDB(int roomID , int projectID) {
 
-        InspectionInformation i = mySQL.getInspectionInformation(roomID);
-
-        if ( i == null) {
-
-            InspectionInformation inspectionInformation = new InspectionInformation(
-                    User.getInstance().getName(),
-                    new Date(),
-                    projectID,
-                    roomID
-            );
-
-            mySQL.createInspectionInformation(inspectionInformation);
-
-        }
-        InspectionInformation.setInstance( mySQL.getInspectionInformation(roomID));
-    }
-
-    public static void appendAllQuestionsWithAnswersToInspectionInformation() {
-
-        ArrayList<QuestionGroup> questionGroups = mySQL.getQuestionGroupTitles(InspectionInformation.instance.getInspectionInformationID());
-
-        ArrayList<Answer> answers = mySQL.getAllAnswersFromInspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID());
-
-        for (QuestionGroup group : questionGroups ) {
-            ArrayList<Question> questions =  mySQL.getQuestionsFromQuestionGroup(group , InspectionInformation.getInstance().getInspectionInformationID() );
-
-            for (Question question: questions ) {
-                group.getQuestions().add(question);
-
-                for (Answer a: answers) {
-
-                    if (question.getFk_questionGroup() == a.getQuestionGroupID()) {
-
-                        if (question.getQuestionID() == a.getQuestionID()) {
-                            question.setAnswerID(a.getAnswerID());
-                            question.setComment(a.getComment());
-                        }
-                    }
-                }
-            }
-        }
-
-        InspectionInformation.getInstance().setQuestionGroups(questionGroups);
-
-    }
-
-    public static void appendAllMeasurements(int fk_inspectionInformationID) {
-
-        InspectionInformation.getInstance().setAfprøvningAfRCD(mySQL.getAfproevningAfRCDer(fk_inspectionInformationID));
-        InspectionInformation.getInstance().setKredsdetaljer(mySQL.getKredsdetaljer(fk_inspectionInformationID));
-        InspectionInformation.getInstance().setKortslutningsstroms(mySQL.getKortslutningsstromme(fk_inspectionInformationID));
-        InspectionInformation.getInstance().setOvergangsmodstandR(mySQL.getOvergangsmodstand(fk_inspectionInformationID));
-        InspectionInformation.getInstance().setPDFComment(mySQL.getPDFComments(fk_inspectionInformationID));
-
-    }
-
-
-
-    public static void createInspectionInDataBase() {
+    public static void userPressedSaveButton() {
 
         InspectionInformation.getInstance().removeAllUnansweredQuestions();
 
@@ -117,21 +72,20 @@ public class UserCase {
 
         InspectionInformation.getInstance().getQuestionGroups().clear();
 
+        InspectionInformation.createMeasurementsInDataBase();
 
     }
 
-    public static void createNewQuestionInsideQuestionGroup(int questionGroupID , String question , int InspectionInformationID) {
 
-        System.out.println(questionGroupID + " " + question + " help me fint it");
+    public static void userCreatedNewQuestionInsideQuestionGroup(int questionGroupID , String question , int InspectionInformationID) {
 
         mySQL.createQuestion(questionGroupID , question , InspectionInformationID);
 
-
+        InspectionInformation.appendAllQuestionsWithAnswersToInspectionInformation();
 
     }
 
-    public static void addQuestionGroupWithQuestions(String questionGroup, int fk_InspectionInformationID ,  ArrayList<String> questions ) {
-
+    public static void userCreatedNewQuestionGroupWithQuestions(String questionGroup, int fk_InspectionInformationID , ArrayList<String> questions ) {
 
         mySQL.createQuestionGroup(questionGroup , fk_InspectionInformationID);
 
@@ -139,49 +93,11 @@ public class UserCase {
 
         for (int i = 0; i < questions.size(); i++) {
 
-            createNewQuestionInsideQuestionGroup(questionG.getQuestionGroupID() , questions.get(i), fk_InspectionInformationID);
-
+            userCreatedNewQuestionInsideQuestionGroup(questionG.getQuestionGroupID() , questions.get(i), fk_InspectionInformationID);
 
         }
-
-
-
-
-
 
     }
 
 
-    public static void createMeasurementsInDataBase() {
-
-        for (Kredsdetaljer kredsdetaljer: InspectionInformation.getInstance().getKredsdetaljer()) {
-            kredsdetaljer.setFk_inspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID());
-            mySQL.createKredsdetaljer(kredsdetaljer);
-        }
-
-
-
-        for (AfproevningAfRCD afproevningAfRCD: InspectionInformation.getInstance().getAfprøvningAfRCD() ) {
-            afproevningAfRCD.setFk_inspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID());
-            mySQL.createAfproevningAfRCD(afproevningAfRCD);
-        }
-
-
-
-
-        for (Kortslutningsstrom kortslutningsstrom: InspectionInformation.getInstance().getKortslutningsstroms() ) {
-            kortslutningsstrom.setFk_inspectionInformationID(InspectionInformation.getInstance().getInspectionInformationID());
-            mySQL.createKortslutningsstrom(kortslutningsstrom);
-        }
-
-
-        mySQL.createOvergangsmodstand( InspectionInformation.getInstance().getOvergangsmodstandR() , InspectionInformation.getInstance().getInspectionInformationID() );
-
-        InspectionInformation.getInstance().getKredsdetaljer().clear();
-        InspectionInformation.getInstance().getAfprøvningAfRCD().clear();
-        InspectionInformation.getInstance().getKortslutningsstroms().clear();
-        InspectionInformation.getInstance().setOvergangsmodstandR("");
-
-
-    }
 }

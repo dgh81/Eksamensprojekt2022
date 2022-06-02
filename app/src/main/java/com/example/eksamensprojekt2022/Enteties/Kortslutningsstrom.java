@@ -2,14 +2,14 @@ package com.example.eksamensprojekt2022.Enteties;
 
 public class Kortslutningsstrom {
 
-    int ID;
-    String k_gruppe;
-    String k_KiK;
-    String k_maaltIPunkt;
-    String s_gruppe;
-    String s_U;
-    String s_maaltIPunkt;
-    int fk_inspectionInformationID;
+    int ID = 0;
+    String k_gruppe = "";
+    String k_KiK = "";
+    String k_maaltIPunkt = "";
+    String s_gruppe = "";
+    String s_U = "";
+    String s_maaltIPunkt = "";
+    int fk_inspectionInformationID = 0;
 
 
     public Kortslutningsstrom() {

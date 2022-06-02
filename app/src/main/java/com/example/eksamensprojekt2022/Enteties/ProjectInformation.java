@@ -1,15 +1,31 @@
 package com.example.eksamensprojekt2022.Enteties;
 
+import com.example.eksamensprojekt2022.DBController.MySQL;
+
 import java.util.ArrayList;
 
 public class ProjectInformation {
+
+    public static ProjectInformation instance;
+
+
+    public static ProjectInformation getInstance() {
+        if (instance == null) {
+            instance = new ProjectInformation();
+        }
+        return instance;
+    }
+
+    public static void setInstance(ProjectInformation projectInformation) {
+        instance = projectInformation;
+    }
 
     int projectInformationID = 0;
     String customerName = "";
     String customerAddress = "";
     String customerPostalCode = "";
     String customerCity = "";
-    String installationIdentification = "";
+    String caseNumber = "";
     String installationName = "";
     int fk_userID = 0;
     int fk_questionGroup = 0;
@@ -30,7 +46,7 @@ public class ProjectInformation {
         this.customerAddress = customerAddress;
         this.customerPostalCode = customerPostalCode;
         this.customerCity = customerCity;
-        this.installationIdentification = installationIdentification;
+        this.caseNumber = installationIdentification;
         this.installationName = installationName;
         this.fk_userID = fk_userID;
         this.fk_questionGroup = fk_questionGroup;
@@ -42,7 +58,7 @@ public class ProjectInformation {
         this.customerAddress = customerAddress;
         this.customerPostalCode = customerPostalCode;
         this.customerCity = customerCity;
-        this.installationIdentification = installationIdentification;
+        this.caseNumber = installationIdentification;
         this.installationName = installationName;
     }
 
@@ -59,7 +75,7 @@ public class ProjectInformation {
         this.customerAddress = customerAddress;
         this.customerPostalCode = customerPostalCode;
         this.customerCity = customerCity;
-        this.installationIdentification = installationIdentification;
+        this.caseNumber = installationIdentification;
         this.installationName = installationName;
 
     }
@@ -108,12 +124,12 @@ public class ProjectInformation {
         this.customerCity = customerCity;
     }
 
-    public String getInstallationIdentification() {
-        return installationIdentification;
+    public String getCaseNumber() {
+        return caseNumber;
     }
 
-    public void setInstallationIdentification(String installationIdentification) {
-        this.installationIdentification = installationIdentification;
+    public void setCaseNumber(String caseNumber) {
+        this.caseNumber = caseNumber;
     }
 
     public String getInstallationName() {
@@ -151,10 +167,21 @@ public class ProjectInformation {
                 ", customerAddress='" + customerAddress + '\'' +
                 ", customerPostalCode='" + customerPostalCode + '\'' +
                 ", customerCity='" + customerCity + '\'' +
-                ", installationIdentification='" + installationIdentification + '\'' +
+                ", installationIdentification='" + caseNumber + '\'' +
                 ", installationName='" + installationName + '\'' +
                 ", fk_userID=" + fk_userID +
                 ", fk_questionGroup=" + fk_questionGroup +
                 '}';
     }
+
+
+
+    private static MySQL mySQL = new MySQL();
+
+    public static ArrayList<Room> getRoomsFromProjectInformationID(int projectID) {
+
+        return mySQL.getRoomsFromProjectID(projectID) ;
+
+    }
+
 }

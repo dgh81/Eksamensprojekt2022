@@ -58,14 +58,6 @@ public class QuestionListFragment extends Fragment {
         listView.setAdapter(listViewAdapter);
 
 
-
-
-
-
-
-
-
-
         if (startPoint >= 0) {
             listView.expandGroup(startPoint);
         }
@@ -103,16 +95,11 @@ public class QuestionListFragment extends Fragment {
 
                                     System.out.println("????");
 
-                                    UserCase.createNewQuestionInsideQuestionGroup(InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestionGroupID()  , editText.getText().toString() , InspectionInformation.instance.getInspectionInformationID());
+                                    UserCase.userCreatedNewQuestionInsideQuestionGroup(InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestionGroupID()  , editText.getText().toString() , InspectionInformation.instance.getInspectionInformationID());
 
                                     alert.dismiss();
 
-                                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                    fragmentTransaction.replace(R.id.frameLayout , new QuestionListFragment(i) );
-                                    fragmentTransaction.addToBackStack(null);
-                                    fragmentManager.popBackStack();
-                                    fragmentTransaction.commit();
+                                    listViewAdapter.notifyDataSetChanged();
 
                                 }
                             }
@@ -240,7 +227,7 @@ public class QuestionListFragment extends Fragment {
                             }
 
                             if (canCreate) {
-                                UserCase.addQuestionGroupWithQuestions(questionHeader.getEditText().getText().toString(), InspectionInformation.getInstance().getInspectionInformationID(), arrayList);
+                                UserCase.userCreatedNewQuestionGroupWithQuestions(questionHeader.getEditText().getText().toString(), InspectionInformation.getInstance().getInspectionInformationID(), arrayList);
 
                                 alert.dismiss();
 
@@ -268,6 +255,8 @@ public class QuestionListFragment extends Fragment {
 
 
         });
+
+        ((SelectDocumentAndRoomActivityActivity)getActivity()).updateToolBar();
 
         return view;
     }

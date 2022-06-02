@@ -13,22 +13,16 @@ public class PostNumberToCity {
 
     public static HashMap<Integer, String> postalToCityMap = new HashMap<Integer, String>(
 
-
     );
 
     // Adding Key and Value pairs to HashMap
 
-
     public static String getCityFromPostCode(int postCode) {
-
         return postalToCityMap.get(postCode);
-
-
 
     }
 
     public static void createPostCodeHasMap()  {
-
 
         postalToCityMap.put(1001,"København K");
         postalToCityMap.put(1002,"København K");

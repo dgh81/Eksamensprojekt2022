@@ -39,14 +39,14 @@ public class DocumentFragment extends Fragment {
 
         ListView listView = view.findViewById(R.id.documentListView);
 
-         getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
+        getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
 
         ArrayList<ProjectInformation> projectInformation =  UserCase.getAllProjectInformation();
 
         textList.clear();
 
         for (ProjectInformation p: projectInformation ) {
-            textList.add(  p.getInstallationName());
+            textList.add(  p.getCustomerName());
         }
 
 
@@ -59,7 +59,9 @@ public class DocumentFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
 
-                ((SelectDocumentAndRoomActivityActivity)getActivity()).goToDocumentPage(projectInformation.get(pos));
+                ProjectInformation.setInstance(projectInformation.get(pos));
+
+                ((SelectDocumentAndRoomActivityActivity)getActivity()).goToDocumentPage();
 
             }
         });
@@ -88,7 +90,7 @@ public class DocumentFragment extends Fragment {
         EditText customerAddress = popUp.findViewById(R.id.customerAddress);
         EditText customerPostCode = popUp.findViewById(R.id.customerPostCode);
         EditText customerCity = popUp.findViewById(R.id.customerCity);
-        EditText installationIdentification = popUp.findViewById(R.id.InstallationIdentification);
+        EditText caseNumber = popUp.findViewById(R.id.caseNumber);
         EditText installationName = popUp.findViewById(R.id.InstallationName);
 
 
@@ -96,7 +98,7 @@ public class DocumentFragment extends Fragment {
         ArrayList<EditText> fields = new ArrayList<>();
 
         fields.add(installationName);
-        fields.add(installationIdentification);
+        fields.add(caseNumber);
         fields.add(customerCity);
         fields.add(customerPostCode);
         fields.add(customerAddress);
@@ -106,7 +108,7 @@ public class DocumentFragment extends Fragment {
         customerAddress.setText(projectInformation.getCustomerAddress());
         customerPostCode.setText(projectInformation.getCustomerPostalCode());
         customerCity.setText(projectInformation.getCustomerCity());
-        installationIdentification.setText(projectInformation.getInstallationName());
+        caseNumber.setText(projectInformation.getCaseNumber());
         installationName.setText(projectInformation.getInstallationName());
 
 

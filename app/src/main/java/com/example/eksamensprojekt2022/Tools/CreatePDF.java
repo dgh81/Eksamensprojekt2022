@@ -18,6 +18,7 @@ import com.example.eksamensprojekt2022.Enteties.Room;
 
 import com.example.eksamensprojekt2022.DBController.MySQL;
 import com.example.eksamensprojekt2022.R;
+import com.example.eksamensprojekt2022.UI.Activitys.SelectDocumentAndRoomActivityActivity;
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -60,21 +61,160 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 
-public class CreatePDF extends AppCompatActivity {
+public class CreatePDF extends AppCompatActivity  implements Runnable {
+    private CountDownLatch countDownLatch;
     ArrayList<Integer> answers;
     int index = 0;
-    Context context;
+    private Context context;
     MySQL mysql = new MySQL();
-    int orderID;
+    private  int orderID;
     PdfFont freeSansFont;
     ArrayList<InspectionInformation> inspectionInfo;
 
     public static File pdfFile;
 
-    public void createPdf(Context context) throws IOException {
+
+
+
+    @Override
+    public void run() {
+
+        runOnUiThread(new Runnable() {
+
+            public void run() {
+
+                try {
+
+
+
+                    CreatePDF.this.context = context;
+                    inspectionInfo = GetAllInspectionInformation(orderID);
+                    ProjectInformation projectInfo = mysql.getProjectInformation(orderID);
+
+                    AssetManager am = context.getAssets();
+                    try (InputStream inStream = am.open("freesans.ttf")) {
+                        byte[] fontData = IOUtils.toByteArray(inStream);
+                        freeSansFont = PdfFontFactory.createFont(fontData, PdfEncodings.IDENTITY_H);
+                    }
+        /*String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+        File file = new File(pdfPath, "myPDF1.pdf");
+        OutputStream outputstream = new FileOutputStream(file);
+
+        PdfWriter writer = new PdfWriter(file);
+        PdfDocument pdfDocument = new PdfDocument(writer);
+        Document document = new Document(pdfDocument);*/
+/*
+        String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
+        File file = new File(pdfPath, "sagsnummer_" + projectInfo.getProjectInformationID() + ".pdf");*/
+
+                    //test dgh:
+        /*String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
+        File file = new File(pdfPath, "sagsnummer_" + projectInfo.getProjectInformationID() + ".pdf");*/
+
+                    //TODO getPDFFile() burde tage argument (String filename). Tilpas her og i FileHandler. Brug navne konkatinering ovenfor.
+                    pdfFile = new FileHandler().getPDFFile();
+                    System.out.println(pdfFile.toString());
+
+                    OutputStream outputstream = new FileOutputStream(pdfFile);
+
+                    PdfWriter writer = new PdfWriter(pdfFile);
+                    PdfDocument pdfDocument = new PdfDocument(writer);
+                    Document document = new Document(pdfDocument);
+
+                    //handler der sætter header ind når der er sideskift
+                    TableHeaderEventHandler handler = new TableHeaderEventHandler(document);
+                    pdfDocument.addEventHandler(PdfDocumentEvent.END_PAGE, handler);
+                    //Tilføjet margin så headeren starter længere nede på siden
+                    float topMargin = 30 + handler.getTableHeight();
+                    document.setMargins(topMargin, 36, 36, 36);
+
+                    //Laver dokumentet for hvert område
+                    for (int i = 0; i < inspectionInfo.size(); i++) {
+                        if (i != 0) {
+                            document.add(new AreaBreak());
+                        }
+
+                        Table tablePersonalInfo = createTablePersonalInfo(projectInfo, inspectionInfo.get(i));
+                        Table tableQuestions = createTableQuestions();
+
+                        document.add(new Paragraph("Elinstallation - Vertifikation af mindre elinstallation").setFontSize(18f));
+                        document.add(tablePersonalInfo);
+
+                        if (inspectionInfo.get(i).getQuestionGroups().size() > 0) {
+                            answerOptions(tableQuestions);
+                        }
+
+                        for (int j = 0; j < inspectionInfo.get(i).getQuestionGroups().size(); j++) {
+                            ArrayList<Question> list = new ArrayList<>();
+                            ArrayList<Integer> answers = new ArrayList<>();
+                            for (int k = 0; k < inspectionInfo.get(i).getQuestionGroups().get(j).getQuestions().size(); k++) {
+                                list.add(inspectionInfo.get(i).getQuestionGroups().get(j).getQuestions().get(k));
+                                answers.add(inspectionInfo.get(i).getQuestionGroups().get(j).getQuestions().get(k).getAnswerID());
+                            }
+                            createQuestions(tableQuestions, inspectionInfo.get(i).getQuestionGroups().get(j).getTitle(), list, answers);
+
+                        }
+
+                        document.add(tableQuestions);
+
+                        if (inspectionInfo.get(i).getQuestionGroups().size() > 0) {
+                            document.add(new AreaBreak());
+                        }
+
+                        document.add(new Paragraph("Måleresultater").setFontSize(18f).setPaddingTop(5f));
+
+
+                        document.add(createTableKredsdetaljer(inspectionInfo.get(i)));
+                        document.add(createTableAfprovning(inspectionInfo.get(i)));
+                        document.add(createTableKortslutning(inspectionInfo.get(i)));
+                        if (inspectionInfo.get(i).getPDFComment().size() > 0) {
+                            document.add(createTableBemaerkninger(inspectionInfo.get(i)));
+                        }
+
+
+                    }
+
+                    //TODO skriv bilag ind i pdf
+                    document.add(new AreaBreak());
+                    ArrayList<Picture> pics = mysql.getPicturesFromProjectInformationID(InspectionInformation.getInstance().getFk_projectID());
+                    System.out.println(pics.toString());
+
+                    createBilag(pics, document);
+
+
+                    document.close();
+
+                    Toast.makeText(context, "Pdf Created", Toast.LENGTH_LONG).show();
+
+                    ((SelectDocumentAndRoomActivityActivity) context).loadingAlert.dismiss();
+
+                    ((SelectDocumentAndRoomActivityActivity) context).pdfCreated();
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
+
+    }
+
+
+
+    public CreatePDF(Context context , int orderID ) {
         this.context = context;
-        orderID = 28;
+        this.orderID = orderID;
+    }
+
+
+
+
+    public void createPdf(Context context , int  orderID ) throws IOException {
+        this.context = context;
         inspectionInfo = GetAllInspectionInformation(orderID);
         ProjectInformation projectInfo = mysql.getProjectInformation(orderID);
 
@@ -170,7 +310,12 @@ public class CreatePDF extends AppCompatActivity {
 
 
         document.close();
-        Toast.makeText(context, "Pdf Created", Toast.LENGTH_LONG).show();
+        // Toast.makeText(context, "Pdf Created", Toast.LENGTH_LONG).show();
+
+
+        this.countDownLatch.countDown();
+
+
 
     }
 
@@ -354,7 +499,7 @@ public class CreatePDF extends AppCompatActivity {
         personalInfo.addCell(new Cell().add(new Paragraph("Post nr: " + projectInfo.getCustomerPostalCode())));
         personalInfo.addCell(new Cell().add(new Paragraph("By: " + projectInfo.getCustomerCity())));
         personalInfo.addCell(new Cell().add(new Paragraph("Sagsnummer: " + projectInfo.getProjectInformationID())));
-        personalInfo.addCell(new Cell(1, 3).add(new Paragraph("Identifikation af installationen: " + projectInfo.getInstallationIdentification())));
+        personalInfo.addCell(new Cell(1, 3).add(new Paragraph("Identifikation af installationen: " + projectInfo.getCaseNumber())));
         personalInfo.addCell(new Cell(1, 3).add(new Paragraph("Installationen er udført af: " + projectInfo.getInstallationName())));
         personalInfo.addCell(new Cell(1, 2).add(new Paragraph("Verifikation af installationen er udført af: " + inspectionInfo.getInspectorName())));
         personalInfo.addCell(new Cell().add(new Paragraph("Dato: " + dateFormatted(inspectionInfo))));
@@ -466,7 +611,7 @@ public class CreatePDF extends AppCompatActivity {
             table.addCell(new Cell().add(new Paragraph(information.getAfprøvningAfRCD().get(i).getField4()).setTextAlignment(TextAlignment.RIGHT)));
             table.addCell(new Cell().add(new Paragraph(information.getAfprøvningAfRCD().get(i).getField5()).setTextAlignment(TextAlignment.RIGHT)));
             table.addCell(new Cell().add(new Paragraph(information.getAfprøvningAfRCD().get(i).getField6()).setTextAlignment(TextAlignment.RIGHT)));
-            table.addCell(new Cell().add(new Paragraph(information.getAfprøvningAfRCD().get(i).getOK()).setTextAlignment(TextAlignment.LEFT)));
+         //TODO: fix it so its a bool   table.addCell(new Cell().add(new Paragraph(information.getAfprøvningAfRCD().get(i).getOK()).setTextAlignment(TextAlignment.LEFT)));
         }
 
         table.addCell(new Cell(1, 8).setBorder(Border.NO_BORDER).setHeight(10f));
@@ -523,15 +668,15 @@ public class CreatePDF extends AppCompatActivity {
 
         ArrayList<InspectionInformation> inspectionInformations = new ArrayList<>();
 
-        ArrayList<Room> roomsIDs = UserCase.getRoomsFromProjectInformationID(projectID);
+        ArrayList<Room> roomsIDs = ProjectInformation.getRoomsFromProjectInformationID(projectID);
 
         for (int i = 0; i < roomsIDs.size(); i++) {
 
-            UserCase.setInspectionInformationFromDB(roomsIDs.get(i).getRoomID() , projectID);
+            InspectionInformation.setInspectionInformationFromDB(roomsIDs.get(i).getRoomID() , projectID);
 
-            UserCase.appendAllQuestionsWithAnswersToInspectionInformation();
+            InspectionInformation.appendAllQuestionsWithAnswersToInspectionInformation();
 
-            UserCase.appendAllMeasurements(InspectionInformation.getInstance().getInspectionInformationID());
+            InspectionInformation.appendAllMeasurements(InspectionInformation.getInstance().getInspectionInformationID());
 
             InspectionInformation.getInstance().removeAllUnansweredQuestions();
 

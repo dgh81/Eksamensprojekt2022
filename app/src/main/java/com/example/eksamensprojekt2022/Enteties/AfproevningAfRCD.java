@@ -2,24 +2,22 @@ package com.example.eksamensprojekt2022.Enteties;
 
 public class AfproevningAfRCD {
 
-    int ID;
-    String RCD;
-    String field1;
-    String field2;
-    String field3;
-    String field4;
-    String field5;
-    String field6;
-    String OK;
-    int fk_inspectionInformationID;
-
+    int ID = 0;
+    String RCD = "";
+    String field1 = "";
+    String field2 = "";
+    String field3 = "";
+    String field4 = "";
+    String field5 = "";
+    String field6 = "";
+    boolean OK;
+    int fk_inspectionInformationID = 0;
 
     public AfproevningAfRCD() {
 
-
     }
 
-    public AfproevningAfRCD(int ID, String RCD, String field1, String field2, String field3, String field4, String field5, String field6, String OK, int fk_inspectionInformationID) {
+    public AfproevningAfRCD(int ID, String RCD, String field1, String field2, String field3, String field4, String field5, String field6, boolean OK, int fk_inspectionInformationID) {
         this.ID = ID;
         this.RCD = RCD;
         this.field1 = field1;
@@ -96,11 +94,11 @@ public class AfproevningAfRCD {
         this.field6 = field6;
     }
 
-    public String getOK() {
+    public boolean getOK() {
         return OK;
     }
 
-    public void setOK(String OK) {
+    public void setOK(boolean OK) {
         this.OK = OK;
     }
 

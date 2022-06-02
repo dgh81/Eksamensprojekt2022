@@ -8,9 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.example.eksamensprojekt2022.Enteties.InspectionInformation;
 import com.example.eksamensprojekt2022.Enteties.ProjectInformation;
 import com.example.eksamensprojekt2022.Enteties.Room;
 import com.example.eksamensprojekt2022.R;
@@ -26,9 +24,6 @@ public class ProjectFragment extends Fragment {
 
     View view;
 
-    ProjectInformation projectInformation;
-
-
     ArrayAdapter arrayAdapter;
 
     List textList = new ArrayList();
@@ -37,9 +32,7 @@ public class ProjectFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public ProjectFragment(ProjectInformation projectInformation) {
-        this.projectInformation = projectInformation;
-    }
+
 
 
 
@@ -49,18 +42,11 @@ public class ProjectFragment extends Fragment {
 
         view =  inflater.inflate(R.layout.project_fragment, container, false);
 
-
-        System.out.println(projectInformation);
-
-        TextView header = view.findViewById(R.id.header_title);
-
-        header.setText(projectInformation.getInstallationName());
-
         ListView listView = view.findViewById(R.id.documentListView);
 
         getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
 
-        ArrayList<Room> rooms =  UserCase.getRoomsFromProjectInformationID(projectInformation.getProjectInformationID());
+        ArrayList<Room> rooms =  ProjectInformation.getRoomsFromProjectInformationID(ProjectInformation.getInstance().getProjectInformationID());
 
         textList.clear();
 
@@ -69,8 +55,6 @@ public class ProjectFragment extends Fragment {
         }
 
 
-        System.out.println(listView + " help me find");
-
         arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_expandable_list_item_1, textList);
 
         listView.setAdapter(arrayAdapter);
@@ -78,27 +62,20 @@ public class ProjectFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
 
-                UserCase.setInspectionInformationFromDB( rooms.get(pos).getRoomID() , projectInformation.getProjectInformationID());
-
-                UserCase.appendAllQuestionsWithAnswersToInspectionInformation();
-
-                UserCase.appendAllMeasurements(InspectionInformation.getInstance().getInspectionInformationID());
-
-                System.out.println(InspectionInformation.getInstance().getInspectionInformationID() + " FROM Trans");
-
-                System.out.println(InspectionInformation.getInstance());
+                UserCase.userSelectedRoom( rooms.get(pos).getRoomID() , ProjectInformation.getInstance().getProjectInformationID());
 
                 ((SelectDocumentAndRoomActivityActivity)getActivity()).goToQuestionListPage( - 1 );
 
-
             }
         });
+
+        ((SelectDocumentAndRoomActivityActivity)getActivity()).updateToolBar();
 
         return  view;
     }
 
     public ProjectInformation getProjectInformation() {
-        return projectInformation;
+        return ProjectInformation.getInstance();
     }
 
     @Override

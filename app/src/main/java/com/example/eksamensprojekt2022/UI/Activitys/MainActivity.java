@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -27,6 +28,7 @@ import com.example.eksamensprojekt2022.UI.Login.LoginSaveData;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
 public class MainActivity extends AppCompatActivity {
     Button idBtnGeneratePDF;
@@ -50,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    CreatePDF pdf = new CreatePDF();
-                    pdf.createPdf(MainActivity.this);
+                    CreatePDF pdf = new CreatePDF(MainActivity.this , 28 );
+                    pdf.createPdf(MainActivity.this , 28);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -77,11 +79,22 @@ public class MainActivity extends AppCompatActivity {
 
         if (!LoginAuthentication.attemptLoginWithSavedLoginData() ) {
             Intent intent = new Intent( MainActivity.this,  LoginActivity.class);
+
+            finish();
             startActivity(intent);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.popBackStack();
+
+
         } else {
 
+
+
+
             Intent intent = new Intent( MainActivity.this,  SelectDocumentAndRoomActivityActivity.class);
+            finish();
             startActivity(intent);
+
         }
 
         Toolbar myToolbar =  findViewById(R.id.my_toolbar);
