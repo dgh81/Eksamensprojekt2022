@@ -23,6 +23,7 @@ import com.example.eksamensprojekt2022.Enteties.User;
 import com.example.eksamensprojekt2022.R;
 import com.example.eksamensprojekt2022.Tools.CreatePDF;
 import com.example.eksamensprojekt2022.Tools.LoginAuthentication;
+import com.example.eksamensprojekt2022.Tools.PostNumberToCity;
 import com.example.eksamensprojekt2022.UI.Login.LoginActivity;
 import com.example.eksamensprojekt2022.UI.Login.LoginSaveData;
 
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 /*        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);*/
+
+        PostNumberToCity.createPostCodeHasMap();
 
         LoginSaveData.getInstance().context = this;
 
@@ -65,11 +68,11 @@ public class MainActivity extends AppCompatActivity {
         MySQL mysql = new MySQL();
         Thread mysqlConnection = new Thread(mysql);
         mysqlConnection.run();
-        try {
-            mysqlConnection.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+       // try {
+         //   mysqlConnection.join();
+       // } catch (InterruptedException e) {
+         //   e.printStackTrace();
+       // }
 
         if (mysql.connection == null ) {
             System.out.println("Start connection is null");

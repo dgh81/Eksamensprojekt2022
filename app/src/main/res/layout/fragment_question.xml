@@ -9,18 +9,45 @@
 
 
 
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/headlineBox"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        android:layout_height="wrap_content"
+        android:minHeight="50dp"
+        android:id="@+id/topHeadBox">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/headlineBox"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"  />
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="0dp"
+            android:src="@drawable/ic_show_can_go_back" />
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_show_can_go_forward" />
+
+
+    </RelativeLayout>
+
 
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/contentBox"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/headlineBox" />
+        android:layout_below="@+id/topHeadBox" />
 
 
     <LinearLayout

@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.eksamensprojekt2022.Enteties.FileHandler;
 import com.example.eksamensprojekt2022.Enteties.InspectionInformation;
 import com.example.eksamensprojekt2022.Enteties.Picture;
 import com.example.eksamensprojekt2022.Enteties.ProjectInformation;

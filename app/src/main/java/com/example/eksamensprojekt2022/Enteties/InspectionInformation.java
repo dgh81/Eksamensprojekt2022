@@ -247,20 +247,12 @@ public class InspectionInformation {
         } else {
             return i;
         }
-
         if (i - kortslutningsstroms.size() + 1 > 0) {
             i -= kortslutningsstroms.size();
         } else {
             return i;
         }
-
-
-
         return i;
-
-
-
-
     }
 
     public int getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(int group , int question) {

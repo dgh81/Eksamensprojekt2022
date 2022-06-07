@@ -1,15 +1,12 @@
-package com.example.eksamensprojekt2022.Tools;
+package com.example.eksamensprojekt2022.UserCases;
 
 import com.example.eksamensprojekt2022.DBController.MySQL;
-import com.example.eksamensprojekt2022.Enteties.AfproevningAfRCD;
-import com.example.eksamensprojekt2022.Enteties.FileHandler;
 import com.example.eksamensprojekt2022.Enteties.InspectionInformation;
-import com.example.eksamensprojekt2022.Enteties.Kortslutningsstrom;
-import com.example.eksamensprojekt2022.Enteties.Kredsdetaljer;
 import com.example.eksamensprojekt2022.Enteties.Picture;
 import com.example.eksamensprojekt2022.Enteties.ProjectInformation;
 import com.example.eksamensprojekt2022.Enteties.QuestionGroup;
 import com.example.eksamensprojekt2022.Enteties.User;
+import com.example.eksamensprojekt2022.Tools.FileHandler;
 
 import java.util.ArrayList;
 

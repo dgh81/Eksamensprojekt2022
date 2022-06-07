@@ -3,22 +3,28 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    android:background="@color/grey"
+
+    >
 
 
     <TextView
         android:id="@+id/header_title"
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:text="Placeholder"
-        android:gravity="center"
-        app:autoSizeTextType="uniform"
-        app:autoSizeMinTextSize="12sp"
-        app:autoSizeMaxTextSize="30sp"
         android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="Placeholder"
+        android:textStyle="bold"
+        app:autoSizeMaxTextSize="30sp"
+        app:autoSizeMinTextSize="12sp"
+        app:autoSizeTextType="uniform" />
 
 
-        />
+
+
+
 
 
 </RelativeLayout>

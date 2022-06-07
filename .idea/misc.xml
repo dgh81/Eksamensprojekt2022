@@ -60,22 +60,33 @@
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/menu/app_bar_menu.xml" value="0.25" />
         <entry key="..\:/Users/david/AndroidStudioProjects/Eksamensprojekt2022/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2875" />
         <entry key="..\:/Users/david/AppData/Local/Android/Sdk/platforms/android-32/data/res/layout/simple_expandable_list_item_1.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/drawable-anydpi/ic_back.xml" value="0.2245" />
+        <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/drawable-anydpi/ic_back_arrow.xml" value="0.2245" />
+        <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/drawable-anydpi/ic_comment_icon.xml" value="0.2245" />
+        <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/drawable-anydpi/ic_question_answard_yes.xml" value="0.2245" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/drawable-anydpi/ic_up.xml" value="0.209" />
+        <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout-sw600dp/pop_up_room.xml" value="0.275" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout-v26/toolbar.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/activity_document.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/add_questionto_qestion_group.xml" value="0.22447916666666667" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/fragment_document_fragment.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/fragment_pic.xml" value="0.34444444444444444" />
+        <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/fragment_question.xml" value="0.25625" />
+        <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/fragment_question_list.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/pop_up_edit_project.xml" value="0.33" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/pop_up_loading.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/pop_up_room.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/project_fragment.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/project_pop_up.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/question_group_list.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/question_list.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/question_list_add.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/question_list_add_group.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/select_document_and_room_activity.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/slide_afproevning_af_rcd.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/slide_header_layout.xml" value="0.25625" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/slide_kortslutningsstroem.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/slide_layout.xml" value="0.1265625" />
+        <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/slide_layout.xml" value="0.36102564102564105" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/slide_overgangsmodstand.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/slide_tabel_input_kredsdetaljer.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/david/OneDrive/Dokumenter/GitHub/Eksamensprojekt2022/app/src/main/res/layout/toolbar.xml" value="0.36666666666666664" />

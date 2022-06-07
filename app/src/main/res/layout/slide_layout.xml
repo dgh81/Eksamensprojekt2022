@@ -109,7 +109,7 @@
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="150dp"
         android:layout_height="60dp"
-        android:text="Ikke sikker"
+        android:text="Ikke relevant"
         app:strokeColor="#988C8C"
         app:strokeWidth="2dp"
         android:layout_centerHorizontal="true"

@@ -38,19 +38,11 @@ public class QuestionFragment extends Fragment {
     int groupIndex;
     int questionIndex;
 
-
-
-
     public QuestionFragment(int groupIndex , int questionIndex) {
         this.groupIndex = groupIndex;
         this.questionIndex = questionIndex;
 
-
-
     }
-
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,12 +69,6 @@ public class QuestionFragment extends Fragment {
 
         headlineBox.addOnPageChangeListener(headerListener);
 
-
-
-
-
-
-
         headerIsUpdateFromPageMoving = true;
 
         if (groupIndex >= InspectionInformation.getInstance().getQuestionGroups().size()) {
@@ -100,27 +86,16 @@ public class QuestionFragment extends Fragment {
             headlineBox.setCurrentItem( InspectionInformation.getInstance().getQuestionGroupIndexByQuestionID(  InspectionInformation.getInstance().getTotalQuestionIndexFromQuestionGroupIDAndQuestionID(groupIndex , questionIndex) ));
         }
 
-
-
-
-
-
-
-
-
-
         headerIsUpdateFromPageMoving = false;
 
-
         ((SelectDocumentAndRoomActivityActivity)getActivity()).updateToolBar();
+
+        groupIndex = 0;
 
         return view;
     }
 
-
-
     ViewPager.OnPageChangeListener listener = new ViewPager.OnPageChangeListener() {
-
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -145,22 +120,14 @@ public class QuestionFragment extends Fragment {
                 }
             }
 
-
-
-
-
             if (dots != null)
                 updateDots(position);
-
         }
 
         @Override
         public void onPageScrollStateChanged(int state) {
 
         }
-
-
-
 
     };
 
@@ -185,11 +152,6 @@ public class QuestionFragment extends Fragment {
             }
         };
 
-
-
-
-
-
     public void addDots() {
 
         int dotsSize = 0;
@@ -206,14 +168,8 @@ public class QuestionFragment extends Fragment {
             dotsSize = InspectionInformation.getInstance().getKortslutningsstroms().size();
         }
 
-        System.out.println(InspectionInformation.getInstance().getQuestionGroups().size());
-        System.out.println(dotsSize + " dotsize" + groupIndex + " groupIndex");
-
         dots = new TextView[dotsSize];
         dotLayout.removeAllViews();
-
-        System.out.println(dots.length + " length");
-
 
         for (int i = 0; i < dots.length; i++) {
             dots[i] = new TextView(getActivity());
@@ -223,27 +179,18 @@ public class QuestionFragment extends Fragment {
         }
     }
 
-
-
-
     public void updateDots(int pos) {
 
         if (!InspectionInformation.getInstance().isTotalIndexInsideQuestionGroup(pos , groupIndex)) {
 
             updateHeadline(pos);
 
-            System.out.println("false");
-
-
-
             updateGroup(pos);
         }
-
 
         for (int i = 0; i < dots.length; i++) {
             dots[i].setTextColor(getResources().getColor(R.color.dotsColor));
         }
-
 
         if (dots.length > 0) {
             dots[InspectionInformation.getInstance().getQuestionIndexLeftOverAfterGetQuestionGroupIndexByQuestionID(pos)].setTextColor(getResources().getColor(R.color.selectedDotColor));
@@ -252,10 +199,7 @@ public class QuestionFragment extends Fragment {
 
     private boolean headerIsUpdateFromPageMoving = false;
 
-
-
     public void updateHeadline(int position) {
-
 
         headerIsUpdateFromPageMoving = true;
 
@@ -265,15 +209,12 @@ public class QuestionFragment extends Fragment {
 
     }
 
-
     public void updateGroup(int id) {
         groupIndex = InspectionInformation.getInstance().getQuestionGroupIndexByQuestionID(id);
 
         addDots();
 
-
     }
-
 
     @Override
     public String toString() {
@@ -283,19 +224,11 @@ public class QuestionFragment extends Fragment {
 
     public void dotsIsVisible(boolean visibility) {
 
-
-        System.out.println("???");
-
         if (visibility) {
             dotLayout.setVisibility(View.VISIBLE);
         } else {
             dotLayout.setVisibility(View.GONE);
         }
-
-
-
-
-
 
     }
 
