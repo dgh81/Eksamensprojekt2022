@@ -1,7 +1,7 @@
 package com.example.eksamensprojekt2022.UI.DisplayFragments;
 
 import static android.app.Activity.RESULT_OK;
-import static com.example.eksamensprojekt2022.Enteties.FileHandler.currentImagePath;
+import static com.example.eksamensprojekt2022.Tools.FileHandler.currentImagePath;
 
 import android.Manifest;
 import android.content.Intent;
@@ -28,15 +28,13 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
-import com.example.eksamensprojekt2022.DBController.MySQL;
-import com.example.eksamensprojekt2022.Enteties.FileHandler;
+import com.example.eksamensprojekt2022.Tools.FileHandler;
 import com.example.eksamensprojekt2022.Enteties.InspectionInformation;
 import com.example.eksamensprojekt2022.Enteties.Picture;
 import com.example.eksamensprojekt2022.Enteties.ProjectInformation;
 import com.example.eksamensprojekt2022.Enteties.Room;
-import com.example.eksamensprojekt2022.Enteties.User;
 import com.example.eksamensprojekt2022.R;
-import com.example.eksamensprojekt2022.Tools.UserCase;
+import com.example.eksamensprojekt2022.UserCases.UserCase;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;

@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 import com.example.eksamensprojekt2022.Enteties.AfproevningAfRCD;
 import com.example.eksamensprojekt2022.Enteties.Answer;
-import com.example.eksamensprojekt2022.Enteties.FileHandler;
+import com.example.eksamensprojekt2022.Tools.FileHandler;
 import com.example.eksamensprojekt2022.Enteties.Inspection;
 import com.example.eksamensprojekt2022.Enteties.InspectionInformation;
 import com.example.eksamensprojekt2022.Enteties.Kortslutningsstrom;
@@ -75,6 +75,7 @@ public class MySQL implements Runnable {
         }
         return projectInformationList;
     }
+
 
     @Override
     public void run() {

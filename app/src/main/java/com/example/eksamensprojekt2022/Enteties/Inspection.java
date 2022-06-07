@@ -4,14 +4,13 @@ import java.util.ArrayList;
 
 public class Inspection {
 
-    int inspectionID = 0;
-    int fk_questionID = 0;
-    int fk_answerID = 0;
-    int fk_roomID = 0;
-    int fk_inspectionInformationID = 0;
-    String comment = "";
-
-    ArrayList<QuestionGroup> questionGroups;
+   private int inspectionID = 0;
+   private int fk_questionID = 0;
+   private int fk_answerID = 0;
+   private int fk_roomID = 0;
+   private int fk_inspectionInformationID = 0;
+   private String comment = "";
+   private ArrayList<QuestionGroup> questionGroups;
 
 
     public Inspection(int inspectionID, ArrayList<QuestionGroup> questionGroups) {

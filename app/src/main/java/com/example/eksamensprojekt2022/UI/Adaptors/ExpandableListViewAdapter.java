@@ -3,6 +3,7 @@ package com.example.eksamensprojekt2022.UI.Adaptors;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -195,25 +196,45 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
                 view = inflater.inflate(R.layout.question_list_add, null);
             } else {
 
-                String groupTitle = InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(i1).getQuestion();
+                String questionText = InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(i1).getQuestion();
 
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.question_list, null);
 
                 TextView text = view.findViewById(R.id.questionText);
 
+
+
+
+
                 switch (InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(i1).getAnswerID()) {
                     case 1:
-                        text.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_question_answard_yes, 0, 0, 0 );
+                        if (InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(i1).getComment().equals("")) {
+                            text.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_question_answard_yes, 0, 0, 0);
+                        } else {
+                            text.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_question_answard_yes, 0, R.drawable.ic_comment_icon, 0);
+                    }
                         break;
                     case 2:
-                        text.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_question_answard_no, 0, 0, 0);
+                        if (InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(i1).getComment().equals("")) {
+                            text.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_question_answard_no, 0, 0, 0);
+                        } else {
+                            text.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_question_answard_no, 0, R.drawable.ic_comment_icon , 0);
+                        }
                         break;
                     case 3:
-                        text.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_question_answard_not_relavant, 0, 0, 0);
+                        if (InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(i1).getComment().equals("")) {
+                            text.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_question_answard_not_relavant, 0, 0, 0);
+                        } else {
+                            text.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_question_answard_not_relavant, 0,  R.drawable.ic_comment_icon , 0);
+                        }
+                    default:
+                        if (!InspectionInformation.getInstance().getQuestionGroups().get(i).getQuestions().get(i1).getComment().equals("")){
+                            text.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_question_not_answard, 0,  R.drawable.ic_comment_icon , 0);
+                        }
                 }
 
-                text.setText(groupTitle);
+                text.setText(questionText);
             }
         } else if (i == InspectionInformation.getInstance().getQuestionGroups().size() + 1  ) {
 

@@ -38,7 +38,7 @@ import com.example.eksamensprojekt2022.UI.DisplayFragments.PicFragment;
 import com.example.eksamensprojekt2022.UI.DisplayFragments.ProjectFragment;
 import com.example.eksamensprojekt2022.UI.DisplayFragments.QuestionFragment;
 import com.example.eksamensprojekt2022.UI.DisplayFragments.QuestionListFragment;
-import com.example.eksamensprojekt2022.Tools.UserCase;
+import com.example.eksamensprojekt2022.UserCases.UserCase;
 import com.example.eksamensprojekt2022.UI.Login.LoginActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -313,30 +313,12 @@ public class SelectDocumentAndRoomActivityActivity extends AppCompatActivity imp
                 EmailThread emailIntent = new EmailThread(SelectDocumentAndRoomActivityActivity.this);
                 emailIntent.start();
 
-                dialog.dismiss();
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(SelectDocumentAndRoomActivityActivity.this);
-                LayoutInflater layoutInflater = SelectDocumentAndRoomActivityActivity.this.getLayoutInflater();
-                builder.setView(layoutInflater.inflate(R.layout.pop_up_loading , null));
-                builder.setCancelable(false);
-                SelectDocumentAndRoomActivityActivity.this.setFinishOnTouchOutside(false);
-
-                loadingAlert = builder.create();
-
-                TextView text = loadingAlert.findViewById(R.id.textView2);
-                text.setText("Sender...");
-
-
-                loadingAlert.show();
-
                 try {
                     emailIntent.join();
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
-                loadingAlert.dismiss();
 
             }
         });

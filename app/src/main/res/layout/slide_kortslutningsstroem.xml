@@ -77,7 +77,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
+            android:inputType="number"
             android:hint="I\u2096"
             android:textSize="18sp"
             />
@@ -162,8 +162,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:hint="\uD834\uDD48U"
+            android:inputType="number"
+            android:hint="\u0394"
             android:textSize="18sp"
             />
 

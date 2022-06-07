@@ -1,5 +1,6 @@
-package com.example.eksamensprojekt2022.Enteties;
+package com.example.eksamensprojekt2022.Tools;
 
+import static android.os.Environment.DIRECTORY_DOCUMENTS;
 import static android.os.Environment.getExternalStoragePublicDirectory;
 
 import android.app.Activity;
@@ -78,8 +79,9 @@ public class FileHandler  {
     }
     public File getPDFFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String pdfName = "pdf_"+timeStamp+"_";
-        File storageDir = getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+        String pdfName = "pdf_"+timeStamp+" ";
+        File storageDir = new File(Environment.getExternalStorageDirectory().getPath() + "/Download");
+       // File pdfFile = new File(storageDir , pdfName + ".pfd");
         File pdfFile = File.createTempFile(pdfName,".pdf",storageDir);
         currentPDFPath = pdfFile.getAbsolutePath();
         return pdfFile;

@@ -23,7 +23,7 @@ import com.example.eksamensprojekt2022.R;
 import com.example.eksamensprojekt2022.UI.Activitys.SelectDocumentAndRoomActivityActivity;
 import com.example.eksamensprojekt2022.UI.Adaptors.AddQuestionGroupListViewAdapter;
 import com.example.eksamensprojekt2022.UI.Adaptors.ExpandableListViewAdapter;
-import com.example.eksamensprojekt2022.Tools.UserCase;
+import com.example.eksamensprojekt2022.UserCases.UserCase;
 
 import java.util.ArrayList;
 
